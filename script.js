@@ -4,14 +4,17 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 3;
+
 const stars = [];
 const nebula = [];
+const shootingStars = [];
+
 const numStars = 200;
 const numNebula = 5;
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 3; // higher for top-center text
 
-// Stars (orbiting)
+// Initialize stars
 for (let i = 0; i < numStars; i++) {
   const angle = Math.random() * 2 * Math.PI;
   const radius = Math.random() * Math.min(centerX, centerY);
@@ -19,7 +22,7 @@ for (let i = 0; i < numStars; i++) {
   stars.push({angle, radius, size, speed: 0.0005 + Math.random() * 0.001});
 }
 
-// Nebula clouds
+// Initialize nebula
 for (let i = 0; i < numNebula; i++) {
   nebula.push({
     x: Math.random() * canvas.width,
@@ -31,12 +34,20 @@ for (let i = 0; i < numNebula; i++) {
   });
 }
 
+// Shooting star generator
+function createShootingStar() {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height/2;
+  const length = Math.random() * 200 + 100;
+  shootingStars.push({x, y, length, speed: Math.random() * 10 + 5});
+}
+
+// Animate everything
 function draw() {
-  // Slightly transparent black to leave trails
   ctx.fillStyle = 'rgba(0,0,0,0.15)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw nebula
+  // Nebula
   nebula.forEach(n => {
     n.x += n.dx;
     n.y += n.dy;
@@ -55,7 +66,7 @@ function draw() {
     ctx.fill();
   });
 
-  // Draw stars
+  // Stars
   stars.forEach(star => {
     star.angle += star.speed;
     const x = centerX + star.radius * Math.cos(star.angle);
@@ -67,11 +78,38 @@ function draw() {
     ctx.fill();
   });
 
+  // Shooting stars
+  for (let i = shootingStars.length-1; i>=0; i--) {
+    const s = shootingStars[i];
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(s.x, s.y);
+    ctx.lineTo(s.x - s.length, s.y + s.length);
+    ctx.stroke();
+    s.x += s.speed;
+    s.y += s.speed;
+    s.length *= 0.98; // fade length
+    if (s.length < 1) shootingStars.splice(i,1);
+  }
+
+  // Randomly add shooting stars
+  if (Math.random() < 0.02) createShootingStar();
+
   requestAnimationFrame(draw);
 }
 
 draw();
 
+// Interactive nebula
+window.addEventListener('mousemove', e => {
+  nebula.forEach(n => {
+    n.dx += (e.clientX - centerX) * 0.00001;
+    n.dy += (e.clientY - centerY) * 0.00001;
+  });
+});
+
+// Resize canvas
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
