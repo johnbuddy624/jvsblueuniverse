@@ -14,7 +14,7 @@ const shootingStars = [];
 const numStars = 200;
 const numNebula = 5;
 
-// Initialize stars
+// Initialize orbiting stars
 for (let i = 0; i < numStars; i++) {
   const angle = Math.random() * 2 * Math.PI;
   const radius = Math.random() * Math.min(centerX, centerY);
@@ -22,7 +22,7 @@ for (let i = 0; i < numStars; i++) {
   stars.push({angle, radius, size, speed: 0.0005 + Math.random() * 0.001});
 }
 
-// Initialize nebula
+// Initialize nebula clouds
 for (let i = 0; i < numNebula; i++) {
   nebula.push({
     x: Math.random() * canvas.width,
@@ -34,12 +34,14 @@ for (let i = 0; i < numNebula; i++) {
   });
 }
 
-// Shooting star generator
+// Create a realistic shooting star
 function createShootingStar() {
   const x = Math.random() * canvas.width;
-  const y = Math.random() * canvas.height/2;
-  const length = Math.random() * 200 + 100;
-  shootingStars.push({x, y, length, speed: Math.random() * 10 + 5});
+  const y = Math.random() * canvas.height / 2;
+  const length = Math.random() * 100 + 50;
+  const speed = Math.random() * 10 + 5;
+  const angle = Math.random() * 0.4 - 0.2; // slight angle
+  shootingStars.push({x, y, length, speed, angle});
 }
 
 // Animate everything
@@ -62,7 +64,7 @@ function draw() {
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(n.x, n.y, n.radius, 0, 2*Math.PI);
+    ctx.arc(n.x, n.y, n.radius, 0, Math.PI*2);
     ctx.fill();
   });
 
@@ -79,21 +81,21 @@ function draw() {
   });
 
   // Shooting stars
-  for (let i = shootingStars.length-1; i>=0; i--) {
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
     const s = shootingStars[i];
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x - s.length, s.y + s.length);
+    ctx.lineTo(s.x - s.length * Math.cos(s.angle), s.y + s.length * Math.sin(s.angle));
     ctx.stroke();
-    s.x += s.speed;
-    s.y += s.speed;
-    s.length *= 0.98; // fade length
+    s.x += s.speed * Math.cos(s.angle);
+    s.y += s.speed * Math.sin(s.angle);
+    s.length *= 0.97; // fade out
     if (s.length < 1) shootingStars.splice(i,1);
   }
 
-  // Randomly add shooting stars
+  // Random shooting stars
   if (Math.random() < 0.02) createShootingStar();
 
   requestAnimationFrame(draw);
@@ -101,7 +103,7 @@ function draw() {
 
 draw();
 
-// Interactive nebula
+// Interactive nebula with mouse
 window.addEventListener('mousemove', e => {
   nebula.forEach(n => {
     n.dx += (e.clientX - centerX) * 0.00001;
