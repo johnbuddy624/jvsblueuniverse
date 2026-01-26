@@ -20,7 +20,7 @@ body {
 /* Foundation text: J&V's */
 .foundation-text {
   font-size: 10vw;
-  color: rgba(255,255,255,0.1);
+  color: rgba(200,200,200,0.3);
   position: absolute;
   top: 0;
   left: 50%;
@@ -28,6 +28,10 @@ body {
   font-weight: bold;
   z-index: 1;
   animation: pulse 3s ease-in-out infinite;
+  text-shadow:
+    2px 2px 5px #111,
+    0 0 15px #888;
+  font-family: 'Arial Black', sans-serif;
 }
 
 /* Main text: Blue Universe */
@@ -38,13 +42,15 @@ body {
   color: #00cfff;
   font-weight: bold;
   text-shadow:
-    0 0 15px #00cfff,
-    0 0 30px #00cfff,
-    0 0 50px #00a7ff;
+    0 0 5px #00cfff,
+    0 0 15px #00a7ff,
+    1px 1px 0 #444,
+    2px 2px 0 #333; /* asteroid jagged effect */
   animation: float 4s ease-in-out infinite;
+  font-family: 'Arial Black', sans-serif;
 }
 
-/* Galaxy canvas */
+/* Canvas for galaxy and nebula */
 #galaxy {
   position: absolute;
   top: 0;
@@ -54,13 +60,13 @@ body {
   z-index: 0;
 }
 
-/* Pulsing animation */
+/* Pulsing animation for J&V's */
 @keyframes pulse {
-  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.1; }
-  50% { transform: translateX(-50%) scale(1.05); opacity: 0.15; }
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(-50%) scale(1.05); opacity: 0.5; }
 }
 
-/* Float animation for main text */
+/* Floating animation for Blue Universe */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
