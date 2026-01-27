@@ -39,18 +39,18 @@ canvas {
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
-  color: #3a92cc;
+  color: #4fb3ff; /* slightly lighter for visibility */
 
   /* DARK BORDER SHADOW + Glow */
   text-shadow:
-    2px 2px 4px rgba(0,0,0,0.85), /* Dark border */
-    0 0 10px rgba(58,146,204,0.6),
-    0 0 25px rgba(58,146,204,0.4),
-    0 0 40px rgba(58,146,204,0.2);
+    2px 2px 4px rgba(0,0,0,0.85), /* Dark outline */
+    0 0 10px rgba(79,179,255,0.6),
+    0 0 25px rgba(79,179,255,0.4),
+    0 0 40px rgba(79,179,255,0.2);
   position: relative;
 }
 
-/* J&V’s — MATCH BLUE UNIVERSE STYLE WITH DARK BORDER */
+/* J&V’s — SAME COLOR AS BLUE UNIVERSE, DARK BORDER FOR VISIBILITY */
 #jv {
   position: absolute;
   top: 50%;
@@ -60,21 +60,22 @@ canvas {
   font-weight: 900;
   letter-spacing: -5px;
 
+  /* SAME COLOR & GRADIENT AS BLUE UNIVERSE */
   background: linear-gradient(
     135deg,
-    #3a92cc,
-    #3a92cc 50%,
-    #3a92cc
+    #4fb3ff,
+    #4fb3ff 50%,
+    #4fb3ff
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
   /* DARK BORDER SHADOW + Glow */
   text-shadow:
-    2px 2px 4px rgba(0,0,0,0.85), /* Dark border for readability */
-    0 0 10px rgba(58,146,204,0.6),
-    0 0 25px rgba(58,146,204,0.4),
-    0 0 40px rgba(58,146,204,0.2);
+    2px 2px 4px rgba(0,0,0,0.85), /* Dark outline */
+    0 0 10px rgba(79,179,255,0.6),
+    0 0 25px rgba(79,179,255,0.4),
+    0 0 40px rgba(79,179,255,0.2);
 
   animation: pulseGlow 3s ease-in-out infinite;
 }
@@ -84,16 +85,16 @@ canvas {
   0%, 100% {
     text-shadow:
       2px 2px 4px rgba(0,0,0,0.85),
-      0 0 10px rgba(58,146,204,0.6),
-      0 0 25px rgba(58,146,204,0.4),
-      0 0 40px rgba(58,146,204,0.2);
+      0 0 10px rgba(79,179,255,0.6),
+      0 0 25px rgba(79,179,255,0.4),
+      0 0 40px rgba(79,179,255,0.2);
   }
   50% {
     text-shadow:
       2px 2px 4px rgba(0,0,0,0.85),
-      0 0 14px rgba(58,146,204,0.8),
-      0 0 30px rgba(58,146,204,0.6),
-      0 0 50px rgba(58,146,204,0.3);
+      0 0 14px rgba(79,179,255,0.8),
+      0 0 30px rgba(79,179,255,0.6),
+      0 0 50px rgba(79,179,255,0.3);
   }
 }
 </style>
