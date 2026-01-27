@@ -11,10 +11,10 @@ body {
   font-family: 'Arial Black', sans-serif;
 }
 
-/* TEXT CONTAINER — STABLE */
+/* CONTAINER — NEUTRAL */
 .universe-container {
   position: absolute;
-  top: 2%;
+  top: 0%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -22,10 +22,10 @@ body {
   z-index: 5;
 }
 
-/* BLUE UNIVERSE — HIGHER */
+/* BLUE UNIVERSE — POSITION UP ONLY */
 .main-text {
-  font-size: 5vw;
-  margin-top: 0;
+  font-size: 5vw;          /* LOCKED */
+  margin-top: -1.5vw;     /* moved up */
   color: #00cfff;
   text-align: center;
   text-shadow:
@@ -36,10 +36,10 @@ body {
   animation: float 4s ease-in-out infinite;
 }
 
-/* J&V’s — SMALLER + LOWER */
+/* J&V’s — POSITION DOWN ONLY */
 .foundation-text {
-  font-size: 7vw;
-  margin-top: 6vw;
+  font-size: 7vw;          /* LOCKED */
+  margin-top: 8vw;        /* moved down */
   letter-spacing: 0.03em;
   color: rgba(220, 230, 255, 0.65);
   text-align: center;
@@ -49,14 +49,10 @@ body {
   animation: foundationPulse 4.5s ease-in-out infinite;
 }
 
-/* FLOATING BLUE UNIVERSE */
+/* FLOAT */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-42px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-42px); }
 }
 
 /* FOUNDATION PULSE */
@@ -78,14 +74,15 @@ body {
   z-index: 1;
 }
 
-/* MOBILE */
+/* MOBILE — SIZE STILL LOCKED */
 @media (max-width: 768px) {
   .main-text {
-    font-size: 9vw;
+    font-size: 9vw;        /* same as before */
+    margin-top: -2vw;
   }
 
   .foundation-text {
-    font-size: 12vw;
-    margin-top: 10vw;
+    font-size: 12vw;       /* same as before */
+    margin-top: 12vw;
   }
 }
