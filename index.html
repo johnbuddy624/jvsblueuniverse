@@ -35,12 +35,12 @@ canvas {
   white-space: nowrap;
 }
 
-/* J&V’s text with sharp 0% → 80% shimmer */
+/* J&V’s text: disappear entirely → 80% → disappear */
 #jv {
   font-size: 200px;
   font-weight: 900;
   letter-spacing: -5px;
-  color: rgba(0,51,102,0); /* completely invisible initially */
+  color: rgba(0,51,102,0); /* fully invisible at start */
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(0,51,102,0.6),
@@ -49,7 +49,7 @@ canvas {
   position: relative;
   display: inline-block;
   z-index: 10;
-  animation: glassShimmer 3s ease-in-out infinite, pulseGlow 3s ease-in-out infinite;
+  animation: popInOut 3s ease-in-out infinite, pulseGlow 3s ease-in-out infinite;
 }
 
 /* Blue Universe text */
@@ -69,7 +69,7 @@ canvas {
   white-space: nowrap;
 }
 
-/* PULSE ANIMATION FOR GLOW */
+/* Pulse for glow effect */
 @keyframes pulseGlow {
   0%, 100% {
     text-shadow:
@@ -87,8 +87,8 @@ canvas {
   }
 }
 
-/* SHARP GLASS SHIMMER (0% → 80%) */
-@keyframes glassShimmer {
+/* POP IN/OUT ANIMATION: completely invisible → 80% → completely invisible */
+@keyframes popInOut {
   0%, 100% { color: rgba(0,51,102,0); }
   50% { color: rgba(0,51,102,0.8); }
 }
