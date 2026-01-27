@@ -1,171 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>J&V's Blue Universe</title>
-
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  background: black;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-/* STAR CANVAS */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-}
-
-/* LOGO CONTAINER */
-#logo-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  z-index: 5;
-  pointer-events: none;
-}
-
-/* BLUE UNIVERSE */
-#blue-universe {
-  font-size: 64px;
-  font-weight: 700;
-  color: #4fb3ff;
-  text-shadow:
-    0 0 10px rgba(79,179,255,0.6),
-    0 0 25px rgba(79,179,255,0.4),
-    0 0 40px rgba(79,179,255,0.2);
-  position: relative;
-}
-
-/* J&V’s perfectly centered INSIDE Blue Universe */
-#jv {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 48px;
-  font-weight: 600;
-  color: white;
-  letter-spacing: normal;
-  text-shadow:
-    0 0 8px rgba(255,255,255,0.6),
-    0 0 16px rgba(255,255,255,0.3);
-}
-</style>
-</head>
-
-<body>
-
-<canvas id="space"></canvas>
-
-<div id="logo-wrapper">
-  <div id="blue-universe">
-    Blue Universe
-    <div id="jv">J&amp;V’s</div>
-  </div>
-</div>
-
-<script>
-const canvas = document.getElementById("space");
+const canvas = document.getElementById("galaxy");
 const ctx = canvas.getContext("2d");
 
-let w, h;
 function resize() {
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
-window.addEventListener("resize", resize);
 resize();
+window.addEventListener("resize", resize);
 
-/* BACKGROUND STARS */
-const stars = Array.from({ length: 300 }, () => ({
-  x: Math.random() * w,
-  y: Math.random() * h,
-  r: Math.random() * 1.4 + 0.3,
-  a: Math.random()
-}));
+const center = {
+  x: canvas.width / 2,
+  y: canvas.height / 4
+};
 
-/* SHOOTING STARS (FROM OFF-SCREEN ONLY) */
-let shootingStars = [];
+const stars = [];
+const meteors = [];
+const nebulae = [];
+const ufos = [];
 
-function spawnShootingStar() {
-  const edge = Math.floor(Math.random() * 4);
-  let x, y, vx, vy;
-
-  switch (edge) {
-    case 0: // left
-      x = -100; y = Math.random() * h;
-      vx = Math.random() * 8 + 6; vy = Math.random() * 4 - 2;
-      break;
-    case 1: // top
-      x = Math.random() * w; y = -100;
-      vx = Math.random() * 4 - 2; vy = Math.random() * 8 + 6;
-      break;
-    case 2: // right
-      x = w + 100; y = Math.random() * h;
-      vx = -(Math.random() * 8 + 6); vy = Math.random() * 4 - 2;
-      break;
-    case 3: // bottom
-      x = Math.random() * w; y = h + 100;
-      vx = Math.random() * 4 - 2; vy = -(Math.random() * 8 + 6);
-      break;
-  }
-
-  shootingStars.push({
-    x, y, vx, vy,
-    life: 0,
-    max: 80
+/* STARS */
+for (let i = 0; i < 260; i++) {
+  stars.push({
+    angle: Math.random() * Math.PI * 2,
+    radius: Math.random() * Math.min(canvas.width, canvas.height) / 2,
+    size: Math.random() * 2 + 0.6,
+    speed: 0.0004 + Math.random() * 0.001
   });
 }
 
-/* RARE SPAWN */
-setInterval(() => {
-  if (Math.random() < 0.35) spawnShootingStar();
-}, 4000);
+/* NEBULA */
+for (let i = 0; i < 6; i++) {
+  nebulae.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: 260 + Math.random() * 340,
+    dx: (Math.random() - 0.5) * 0.04,
+    dy: (Math.random() - 0.5) * 0.04,
+    color: `rgba(${90 + Math.random()*80},${110 + Math.random()*80},255,0.08)`
+  });
+}
+
+/* METEOR */
+function spawnMeteor() {
+  meteors.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height * 0.5,
+    vx: 6 + Math.random() * 4,
+    vy: 2 + Math.random() * 3,
+    life: 0,
+    trail: []
+  });
+}
+
+/* UFO — RARE */
+function spawnUFO() {
+  ufos.push({
+    x: -120,
+    y: Math.random() * canvas.height * 0.25,
+    speed: 1.1 + Math.random()
+  });
+}
 
 function draw() {
-  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  /* STARS */
-  ctx.fillStyle = "white";
-  stars.forEach(s => {
-    ctx.globalAlpha = s.a;
+  /* NEBULA */
+  nebulae.forEach(n => {
+    n.x += n.dx;
+    n.y += n.dy;
+    const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+    g.addColorStop(0, n.color);
+    g.addColorStop(1, "transparent");
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
     ctx.fill();
   });
-  ctx.globalAlpha = 1;
+
+  /* ORBITING STARS */
+  stars.forEach(s => {
+    s.angle += s.speed;
+    const x = center.x + Math.cos(s.angle) * s.radius;
+    const y = center.y + Math.sin(s.angle) * s.radius;
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(x, y, s.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
 
   /* SHOOTING STARS */
-  shootingStars.forEach((s, i) => {
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 1.2;
+  for (let i = meteors.length - 1; i >= 0; i--) {
+    const m = meteors[i];
+    m.trail.push({ x: m.x, y: m.y, a: 1 });
+    if (m.trail.length > 18) m.trail.shift();
+
+    m.trail.forEach(t => {
+      ctx.fillStyle = `rgba(255,255,255,${t.a})`;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+      t.a *= 0.85;
+    });
+
     ctx.beginPath();
-    ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x - s.vx * 3, s.y - s.vy * 3);
-    ctx.stroke();
+    ctx.arc(m.x, m.y, 3.5, 0, Math.PI * 2);
+    ctx.fill();
 
-    s.x += s.vx;
-    s.y += s.vy;
-    s.life++;
+    m.x += m.vx;
+    m.y += m.vy;
+    m.life++;
+    if (m.life > 60) meteors.splice(i, 1);
+  }
 
-    if (s.life > s.max) shootingStars.splice(i, 1);
+  /* UFO */
+  ufos.forEach((u, i) => {
+    ctx.fillStyle = "rgba(200,220,255,0.95)";
+    ctx.beginPath();
+    ctx.ellipse(u.x, u.y, 18, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    u.x += u.speed;
+    if (u.x > canvas.width + 60) ufos.splice(i, 1);
   });
+
+  if (Math.random() < 0.018) spawnMeteor();
+  if (Math.random() < 0.00012) spawnUFO();
 
   requestAnimationFrame(draw);
 }
-
 draw();
-</script>
 
-</body>
-</html>
+/* AUDIO — DELAYED & WARM */
+window.addEventListener("load", () => {
+  const audio = document.getElementById("welcomeAudio");
+  if (!audio) return;
+  audio.volume = 0;
+
+  setTimeout(() => {
+    audio.play().catch(() => {});
+    let v = 0;
+    const fade = setInterval(() => {
+      v += 0.02;
+      audio.volume = Math.min(v, 1);
+      if (v >= 1) clearInterval(fade);
+    }, 80);
+  }, 2400);
+});
