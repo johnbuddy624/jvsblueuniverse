@@ -130,7 +130,7 @@ function draw() {
 }
 draw();
 
-/* AUDIO — DELAYED & WARM */
+/* AUDIO */
 window.addEventListener("load", () => {
   const audio = document.getElementById("welcomeAudio");
   if (!audio) return;
