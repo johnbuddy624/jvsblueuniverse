@@ -8,10 +8,10 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-// CENTER — stays elevated
+// CENTER — elevated
 const center = {
   x: canvas.width / 2,
-  y: canvas.height / 4.3
+  y: canvas.height / 4.5
 };
 
 const stars = [];
@@ -20,7 +20,7 @@ const nebulae = [];
 const ufos = [];
 
 // STARS
-for (let i = 0; i < 220; i++) {
+for (let i = 0; i < 240; i++) {
   stars.push({
     angle: Math.random() * Math.PI * 2,
     radius: Math.random() * Math.min(canvas.width, canvas.height) / 2,
@@ -34,25 +34,26 @@ for (let i = 0; i < 6; i++) {
   nebulae.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    r: 220 + Math.random() * 300,
+    r: 240 + Math.random() * 320,
     dx: (Math.random() - 0.5) * 0.04,
     dy: (Math.random() - 0.5) * 0.04,
     color: `rgba(${90 + Math.random()*70},${110 + Math.random()*70},255,0.08)`
   });
 }
 
-// METEOR
+// SHOOTING STAR — STAR STYLE
 function spawnMeteor() {
   meteors.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height * 0.5,
-    len: 100 + Math.random() * 100,
-    speed: 7 + Math.random() * 6,
-    angle: Math.random() * 0.4 - 0.2
+    vx: 6 + Math.random() * 4,
+    vy: 2 + Math.random() * 3,
+    life: 0,
+    trail: []
   });
 }
 
-// UFO — MUCH RARER
+// UFO — RARE
 function spawnUFO() {
   ufos.push({
     x: -120,
@@ -61,9 +62,8 @@ function spawnUFO() {
   });
 }
 
-// DRAW LOOP
 function draw() {
-  ctx.fillStyle = "rgba(0,0,0,0.22)";
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // NEBULA
@@ -81,37 +81,44 @@ function draw() {
     ctx.fill();
   });
 
-  // STARS
+  // ORBITING STARS
   stars.forEach(s => {
     s.angle += s.speed;
     const x = center.x + Math.cos(s.angle) * s.radius;
     const y = center.y + Math.sin(s.angle) * s.radius;
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#ffffff";
     ctx.beginPath();
     ctx.arc(x, y, s.size, 0, Math.PI * 2);
     ctx.fill();
   });
 
-  // METEORS
+  // SHOOTING STARS — POINT STYLE
   for (let i = meteors.length - 1; i >= 0; i--) {
     const m = meteors[i];
-    ctx.strokeStyle = "rgba(255,255,255,0.85)";
-    ctx.lineWidth = 2;
 
+    m.trail.push({ x: m.x, y: m.y, a: 1 });
+    if (m.trail.length > 18) m.trail.shift();
+
+    m.trail.forEach(t => {
+      ctx.fillStyle = `rgba(255,255,255,${t.a})`;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+      t.a *= 0.85;
+    });
+
+    // head
+    ctx.fillStyle = "#ffffff";
     ctx.beginPath();
-    ctx.moveTo(m.x, m.y);
-    ctx.lineTo(
-      m.x - Math.cos(m.angle) * m.len,
-      m.y + Math.sin(m.angle) * m.len
-    );
-    ctx.stroke();
+    ctx.arc(m.x, m.y, 3.5, 0, Math.PI * 2);
+    ctx.fill();
 
-    m.x += Math.cos(m.angle) * m.speed;
-    m.y += Math.sin(m.angle) * m.speed;
-    m.len *= 0.96;
+    m.x += m.vx;
+    m.y += m.vy;
+    m.life++;
 
-    if (m.len < 2) meteors.splice(i, 1);
+    if (m.life > 60) meteors.splice(i, 1);
   }
 
   // UFO
@@ -126,13 +133,13 @@ function draw() {
   });
 
   if (Math.random() < 0.02) spawnMeteor();
-  if (Math.random() < 0.00025) spawnUFO(); // 🔥 reduced a LOT
+  if (Math.random() < 0.0002) spawnUFO();
 
   requestAnimationFrame(draw);
 }
 draw();
 
-// AUDIO — delayed & gentle
+// AUDIO — delayed & warm
 window.addEventListener("load", () => {
   const audio = document.getElementById("welcomeAudio");
   if (!audio) return;
@@ -141,11 +148,11 @@ window.addEventListener("load", () => {
 
   setTimeout(() => {
     audio.play().catch(() => {});
-    let vol = 0;
+    let v = 0;
     const fade = setInterval(() => {
-      vol += 0.02;
-      audio.volume = Math.min(vol, 1);
-      if (vol >= 1) clearInterval(fade);
+      v += 0.02;
+      audio.volume = Math.min(v, 1);
+      if (v >= 1) clearInterval(fade);
     }, 80);
   }, 2200);
 });
