@@ -35,7 +35,7 @@ canvas {
   white-space: nowrap;
 }
 
-/* J&V’s text with front-to-back opacity wave */
+/* J&V’s text */
 #jv {
   font-size: 200px;
   font-weight: 900;
@@ -52,13 +52,11 @@ canvas {
   top: -40px;
 }
 
-/* Wrap each letter in a span for animation */
 #jv span {
   display: inline-block;
   animation: letterWave 3s ease-in-out infinite;
 }
 
-/* Blue Universe text */
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
@@ -75,7 +73,6 @@ canvas {
   white-space: nowrap;
 }
 
-/* Front-to-back opacity animation */
 @keyframes letterWave {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
@@ -105,10 +102,10 @@ window.addEventListener("resize", resize);
 resize();
 
 /* BACKGROUND STARS */
-const stars = Array.from({ length: 360 }, () => ({  // reduced from 400 → 360
+const stars = Array.from({ length: 360 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
-  r: Math.random() * 2.3 + 0.2,  // changed size from 0.2 → 2.5px
+  r: Math.random() * 2.3 + 0.2,
   a: Math.random()
 }));
 
@@ -120,20 +117,25 @@ function spawnShootingStar() {
   let x, y, vx, vy;
 
   switch (edge) {
-    case 0: x = -100; y = Math.random() * h; vx = Math.random()*8+6; vy=Math.random()*4-2; break;
-    case 1: x = Math.random()*w; y = -100; vx = Math.random()*4-2; vy = Math.random()*8+6; break;
-    case 2: x = w+100; y = Math.random()*h; vx = -(Math.random()*8+6); vy = Math.random()*4-2; break;
-    case 3: x = Math.random()*w; y = h+100; vx = Math.random()*4-2; vy = -(Math.random()*8+6); break;
+    case 0: x = -100; y = Math.random() * h; vx = Math.random()*8 + 4; vy = Math.random()*4 - 2; break;
+    case 1: x = Math.random()*w; y = -100; vx = Math.random()*4 - 2; vy = Math.random()*8 + 2; break;
+    case 2: x = w+100; y = Math.random()*h; vx = -(Math.random()*8 + 4); vy = Math.random()*4 - 2; break;
+    case 3: x = Math.random()*w; y = h+100; vx = Math.random()*4 - 2; vy = -(Math.random()*8 + 2); break;
   }
 
-  shootingStars.push({ x, y, vx, vy, life:0, max:80 });
+  // Determine trail width: 95% normal, 5% longer streaks
+  let lineWidth = Math.random() < 0.05 ? Math.random()*0.5 + 2.5 : 1.2;
+
+  shootingStars.push({ x, y, vx, vy, life:0, max:80, lineWidth });
 }
 
+/* Rare spawn */
 setInterval(() => { if (Math.random() < 0.35) spawnShootingStar(); }, 4000);
 
 function draw() {
   ctx.clearRect(0, 0, w, h);
 
+  // Draw background stars
   ctx.fillStyle = "white";
   stars.forEach(s => {
     ctx.globalAlpha = s.a;
@@ -143,9 +145,10 @@ function draw() {
   });
   ctx.globalAlpha = 1;
 
+  // Draw shooting stars
   shootingStars.forEach((s,i)=>{
     ctx.strokeStyle="white";
-    ctx.lineWidth=1.2;
+    ctx.lineWidth=s.lineWidth;
     ctx.beginPath();
     ctx.moveTo(s.x,s.y);
     ctx.lineTo(s.x - s.vx*3, s.y - s.vy*3);
@@ -161,7 +164,7 @@ function draw() {
 }
 draw();
 
-/* SPLIT J&V’s into individual letters for front-to-back animation */
+/* Split J&V’s into individual letters */
 const jvContainer = document.getElementById("jv");
 const text = "J&V’s";
 jvContainer.innerHTML = text.split("").map((letter,i)=>`<span style="animation-delay:${i*0.2}s">${letter}</span>`).join("");
