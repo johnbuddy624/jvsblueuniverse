@@ -52,7 +52,7 @@ function spawnMeteor() {
   });
 }
 
-/* UFO — VERY RARE */
+/* UFO — RARE */
 function spawnUFO() {
   ufos.push({
     x: -120,
@@ -130,7 +130,7 @@ function draw() {
 }
 draw();
 
-/* AUDIO */
+/* AUDIO — DELAYED & WARM */
 window.addEventListener("load", () => {
   const audio = document.getElementById("welcomeAudio");
   if (!audio) return;
