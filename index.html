@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>J&V's Blue Universe Sphere</title>
+<title>J&V's Blue Universe</title>
 
 <style>
 html, body {
@@ -13,7 +13,6 @@ html, body {
   height: 100%;
   width: 100%;
   font-family: 'Segoe UI', sans-serif;
-  perspective: 1000px;
 }
 
 /* STAR CANVAS */
@@ -27,7 +26,7 @@ canvas {
 /* LOGO CONTAINER */
 #logo-wrapper {
   position: absolute;
-  top: 80px;
+  top: 80px; /* Locked */
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -36,12 +35,12 @@ canvas {
   white-space: nowrap;
 }
 
-/* J&V’s in the middle */
+/* J&V’s text */
 #jv {
   font-size: 200px;
   font-weight: 900;
   letter-spacing: -5px;
-  color: #003366;
+  color: #003366; /* deep ocean blue */
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(0,51,102,0.6),
@@ -53,30 +52,24 @@ canvas {
   z-index: 10;
 }
 
-/* Blue Universe curved letters */
+/* Blue Universe text */
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
   color: #4fb3ff;
-  position: absolute;
+  text-shadow:
+    2px 2px 4px rgba(0,0,0,0.85),
+    0 0 10px rgba(79,179,255,0.6),
+    0 0 25px rgba(79,179,255,0.4),
+    0 0 40px rgba(79,179,255,0.2);
+  position: absolute; /* centered on logo wrapper */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   white-space: nowrap;
 }
 
-/* Individual letters as spans for curvature */
-#blue-universe span {
-  display: inline-block;
-  text-shadow:
-    2px 2px 4px rgba(0,0,0,0.85),
-    0 0 10px rgba(79,179,255,0.6),
-    0 0 25px rgba(79,179,255,0.4),
-    0 0 40px rgba(79,179,255,0.2);
-  transform-origin: bottom center;
-}
-
-/* PULSE */
+/* PULSE ANIMATION */
 @keyframes pulseGlow {
   0%, 100% {
     text-shadow:
@@ -102,16 +95,10 @@ canvas {
 
 <div id="logo-wrapper">
   <div id="jv">J&amp;V’s</div>
-  <div id="blue-universe">
-    <!-- Split Blue Universe into spans for curvature -->
-    <span>B</span><span>l</span><span>u</span><span>e</span>
-    <span> </span>
-    <span>U</span><span>n</span><span>i</span><span>v</span><span>e</span><span>r</span><span>s</span><span>e</span>
-  </div>
+  <div id="blue-universe">Blue Universe</div>
 </div>
 
 <script>
-/* Canvas stars and shooting stars */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
@@ -123,6 +110,7 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+/* BACKGROUND STARS */
 const stars = Array.from({ length: 300 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
@@ -130,7 +118,9 @@ const stars = Array.from({ length: 300 }, () => ({
   a: Math.random()
 }));
 
+/* SHOOTING STARS */
 let shootingStars = [];
+
 function spawnShootingStar() {
   const edge = Math.floor(Math.random() * 4);
   let x, y, vx, vy;
@@ -149,6 +139,7 @@ setInterval(() => { if (Math.random() < 0.35) spawnShootingStar(); }, 4000);
 
 function draw() {
   ctx.clearRect(0, 0, w, h);
+
   ctx.fillStyle = "white";
   stars.forEach(s => {
     ctx.globalAlpha = s.a;
@@ -175,20 +166,6 @@ function draw() {
   requestAnimationFrame(draw);
 }
 draw();
-
-/* Blue Universe sphere curvature */
-const blueLetters = document.querySelectorAll("#blue-universe span");
-const total = blueLetters.length;
-const radius = 200; // radius of curvature
-const centerIndex = Math.floor(total / 2);
-
-blueLetters.forEach((letter, i) => {
-  const offset = i - centerIndex;
-  const angle = offset * 5; // degrees per letter
-  const zTranslate = -Math.abs(offset) * 10; // closer letters come forward slightly
-
-  letter.style.transform = `rotateX(${angle}deg) translateZ(${zTranslate}px)`;
-});
 </script>
 
 </body>
