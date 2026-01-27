@@ -26,20 +26,20 @@ canvas {
 /* LOGO CONTAINER */
 #logo-wrapper {
   position: absolute;
-  top: 80px;  /* Locked position */
+  top: 80px; /* LOCKED */
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
   z-index: 5;
   pointer-events: none;
-  white-space: nowrap; /* Force single line */
+  white-space: nowrap;
 }
 
-/* BLUE UNIVERSE */
+/* BLUE UNIVERSE (LOCKED) */
 #blue-universe {
-  font-size: 100px; /* Locked size */
-  font-weight: 500;  /* Lighter, airy, glowing */
-  color: #3a92cc;   /* Slightly darker than original light blue */
+  font-size: 100px;
+  font-weight: 500;
+  color: #3a92cc;
   text-shadow:
     0 0 10px rgba(58,146,204,0.6),
     0 0 25px rgba(58,146,204,0.4),
@@ -47,46 +47,50 @@ canvas {
   position: relative;
 }
 
-/* J&V’s perfectly centered INSIDE Blue Universe */
+/* J&V’s — ONLY COLOR CHANGED */
 #jv {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 200px; /* Locked size */
-  font-weight: 900; /* Solid foundation */
-  letter-spacing: -5px; /* Locked */
-  
-  /* Lighter asteroid gradient than Blue Universe */
-  background: linear-gradient(135deg, #6faee6, #5caee0 50%, #4aa0cc); 
+  font-size: 200px;
+  font-weight: 900;
+  letter-spacing: -5px;
+
+  /* NAVY BLUE ASTEROID SURFACE */
+  background: linear-gradient(
+    135deg,
+    #1f3556,   /* navy highlight */
+    #182c47 50%,
+    #0f1f35    /* deep navy shadow */
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  /* Text shadows for depth & cosmic glow */
   text-shadow:
-    2px 2px 3px rgba(0,0,0,0.8),    /* foundation shadow */
-    -2px -2px 2px rgba(0,0,0,0.6),  /* depth variation */
-    0 0 6px rgba(58,146,204,0.3),   /* subtle blue glow tie-in */
-    0 0 10px rgba(58,146,204,0.2);  /* extended cosmic shimmer */
+    2px 2px 3px rgba(0,0,0,0.85),
+    -2px -2px 2px rgba(0,0,0,0.6),
+    0 0 6px rgba(58,146,204,0.25),
+    0 0 10px rgba(58,146,204,0.15);
 
-  /* Slow pulsing effect to simulate life */
   animation: pulseGlow 3s ease-in-out infinite;
 }
 
+/* PULSE (LOCKED) */
 @keyframes pulseGlow {
   0%, 100% {
     text-shadow:
-      2px 2px 3px rgba(0,0,0,0.8),
+      2px 2px 3px rgba(0,0,0,0.85),
       -2px -2px 2px rgba(0,0,0,0.6),
-      0 0 6px rgba(58,146,204,0.3),
-      0 0 10px rgba(58,146,204,0.2);
+      0 0 6px rgba(58,146,204,0.25),
+      0 0 10px rgba(58,146,204,0.15);
   }
   50% {
     text-shadow:
-      2px 2px 3px rgba(0,0,0,0.8),
+      2px 2px 3px rgba(0,0,0,0.85),
       -2px -2px 2px rgba(0,0,0,0.6),
-      0 0 9px rgba(58,146,204,0.5),
-      0 0 15px rgba(58,146,204,0.35);
+      0 0 9px rgba(58,146,204,0.4),
+      0 0 15px rgba(58,146,204,0.3);
   }
 }
 </style>
@@ -123,7 +127,7 @@ const stars = Array.from({ length: 300 }, () => ({
   a: Math.random()
 }));
 
-/* SHOOTING STARS (FROM OFF-SCREEN ONLY) */
+/* SHOOTING STARS */
 let shootingStars = [];
 
 function spawnShootingStar() {
@@ -140,35 +144,33 @@ function spawnShootingStar() {
   shootingStars.push({ x, y, vx, vy, life:0, max:80 });
 }
 
-/* RARE SPAWN */
-setInterval(() => { if (Math.random() < 0.35) spawnShootingStar(); }, 4000);
+setInterval(() => {
+  if (Math.random() < 0.35) spawnShootingStar();
+}, 4000);
 
 function draw() {
   ctx.clearRect(0, 0, w, h);
 
-  /* STARS */
   ctx.fillStyle = "white";
   stars.forEach(s => {
     ctx.globalAlpha = s.a;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
     ctx.fill();
   });
   ctx.globalAlpha = 1;
 
-  /* SHOOTING STARS */
   shootingStars.forEach((s, i) => {
     ctx.strokeStyle = "white";
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x - s.vx*3, s.y - s.vy*3);
+    ctx.lineTo(s.x - s.vx * 3, s.y - s.vy * 3);
     ctx.stroke();
 
     s.x += s.vx;
     s.y += s.vy;
     s.life++;
-
     if (s.life > s.max) shootingStars.splice(i, 1);
   });
 
