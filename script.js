@@ -8,13 +8,12 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-// CENTER POINT (moved UP slightly)
+// CENTER — nudged upward slightly
 const center = {
   x: canvas.width / 2,
-  y: canvas.height / 3.8
+  y: canvas.height / 4.2
 };
 
-// SYSTEMS
 const stars = [];
 const meteors = [];
 const nebulae = [];
@@ -47,13 +46,13 @@ function spawnMeteor() {
   meteors.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height * 0.5,
-    len: 90 + Math.random() * 90,
-    speed: 6 + Math.random() * 6,
+    len: 100 + Math.random() * 100,
+    speed: 7 + Math.random() * 6,
     angle: Math.random() * 0.4 - 0.2
   });
 }
 
-// UFO (RARE)
+// UFO — rare
 function spawnUFO() {
   ufos.push({
     x: -120,
@@ -126,7 +125,6 @@ function draw() {
     if (u.x > canvas.width + 60) ufos.splice(i, 1);
   });
 
-  // RANDOM EVENTS
   if (Math.random() < 0.02) spawnMeteor();
   if (Math.random() < 0.0007) spawnUFO();
 
@@ -134,7 +132,7 @@ function draw() {
 }
 draw();
 
-// AUDIO — DELAY + FADE-IN
+// AUDIO — delay + fade
 window.addEventListener("load", () => {
   const audio = document.getElementById("welcomeAudio");
   if (!audio) return;
