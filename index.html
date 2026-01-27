@@ -47,7 +47,7 @@ canvas {
   position: relative;
 }
 
-/* J&V’s — COLOR MATCHED TO BLUE UNIVERSE */
+/* J&V’s — MATCH BLUE UNIVERSE TEXTURE & GLOW */
 #jv {
   position: absolute;
   top: 50%;
@@ -57,7 +57,7 @@ canvas {
   font-weight: 900;
   letter-spacing: -5px;
 
-  /* MATCH BLUE UNIVERSE COLOR */
+  /* SAME COSMIC BLUE UNIVERSE GRADIENT */
   background: linear-gradient(
     135deg,
     #3a92cc,
@@ -67,11 +67,11 @@ canvas {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
+  /* MATCH BLUE UNIVERSE GLOW */
   text-shadow:
-    2px 2px 3px rgba(0,0,0,0.85),
-    -2px -2px 2px rgba(0,0,0,0.6),
-    0 0 6px rgba(58,146,204,0.25),
-    0 0 10px rgba(58,146,204,0.15);
+    0 0 10px rgba(58,146,204,0.6),
+    0 0 25px rgba(58,146,204,0.4),
+    0 0 40px rgba(58,146,204,0.2);
 
   animation: pulseGlow 3s ease-in-out infinite;
 }
@@ -80,17 +80,15 @@ canvas {
 @keyframes pulseGlow {
   0%, 100% {
     text-shadow:
-      2px 2px 3px rgba(0,0,0,0.85),
-      -2px -2px 2px rgba(0,0,0,0.6),
-      0 0 6px rgba(58,146,204,0.25),
-      0 0 10px rgba(58,146,204,0.15);
+      0 0 10px rgba(58,146,204,0.6),
+      0 0 25px rgba(58,146,204,0.4),
+      0 0 40px rgba(58,146,204,0.2);
   }
   50% {
     text-shadow:
-      2px 2px 3px rgba(0,0,0,0.85),
-      -2px -2px 2px rgba(0,0,0,0.6),
-      0 0 9px rgba(58,146,204,0.4),
-      0 0 15px rgba(58,146,204,0.3);
+      0 0 14px rgba(58,146,204,0.8),
+      0 0 30px rgba(58,146,204,0.6),
+      0 0 50px rgba(58,146,204,0.3);
   }
 }
 </style>
