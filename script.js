@@ -8,10 +8,10 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-// CENTER — nudged upward slightly
+// CENTER — stays elevated
 const center = {
   x: canvas.width / 2,
-  y: canvas.height / 4.2
+  y: canvas.height / 4.3
 };
 
 const stars = [];
@@ -52,12 +52,12 @@ function spawnMeteor() {
   });
 }
 
-// UFO — rare
+// UFO — MUCH RARER
 function spawnUFO() {
   ufos.push({
     x: -120,
-    y: Math.random() * canvas.height * 0.28,
-    speed: 1.4 + Math.random()
+    y: Math.random() * canvas.height * 0.25,
+    speed: 1.2 + Math.random()
   });
 }
 
@@ -126,13 +126,13 @@ function draw() {
   });
 
   if (Math.random() < 0.02) spawnMeteor();
-  if (Math.random() < 0.0007) spawnUFO();
+  if (Math.random() < 0.00025) spawnUFO(); // 🔥 reduced a LOT
 
   requestAnimationFrame(draw);
 }
 draw();
 
-// AUDIO — delay + fade
+// AUDIO — delayed & gentle
 window.addEventListener("load", () => {
   const audio = document.getElementById("welcomeAudio");
   if (!audio) return;
@@ -147,5 +147,5 @@ window.addEventListener("load", () => {
       audio.volume = Math.min(vol, 1);
       if (vol >= 1) clearInterval(fade);
     }, 80);
-  }, 2000);
+  }, 2200);
 });
