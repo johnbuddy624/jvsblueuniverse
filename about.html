@@ -117,9 +117,19 @@ canvas {
 
 /* ===== INDIVIDUAL BUTTON SIZES ===== */
 #home { width: 120px; height: 120px; }
-#about-text { width: 400px; height: 200px; border-radius: 20px; font-size: 22px; font-weight: normal; text-align: left; padding: 20px; cursor: default; background: rgba(0,0,0,0.3); box-shadow: 0 0 15px #70c2ff, 0 0 30px rgba(79,179,255,0.5); }
+#about-text { width: 160px; height: 160px; }
 
-/* Float animation handled in JS */
+/* ===== ABOUT TEXT BUTTON (static content) ===== */
+#about-text {
+  border-radius: 20px;
+  background: rgba(0,0,0,0.3);
+  font-size: 22px;
+  font-weight: normal;
+  text-align: left;
+  padding: 20px;
+  cursor: default;
+  box-shadow: 0 0 15px #70c2ff, 0 0 30px rgba(79,179,255,0.5);
+}
 </style>
 </head>
 
@@ -178,23 +188,11 @@ draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  const link = btn.getAttribute('data-link');
-  if(link) btn.addEventListener('click',()=>{ window.location.href=link; });
+  btn.addEventListener('click',()=>{ 
+    const link = btn.getAttribute('data-link');
+    if(link) window.location.href = link;
+  });
 });
-
-/* ===== FLOATING ABOUT TEXT ===== */
-const aboutText = document.getElementById('about-text');
-let floatAngle = 0;
-function floatAboutText(){
-  floatAngle += 0.01;
-  const radiusX = 10; // subtle horizontal float
-  const radiusY = 8;  // subtle vertical float
-  const x = Math.cos(floatAngle)*radiusX;
-  const y = Math.sin(floatAngle)*radiusY;
-  aboutText.style.transform = `translate(${x}px, ${y}px)`;
-  requestAnimationFrame(floatAboutText);
-}
-floatAboutText();
 </script>
 
 </body>
