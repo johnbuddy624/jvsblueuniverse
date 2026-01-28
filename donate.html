@@ -121,6 +121,8 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
+/* ===== HOME BUTTON (ONLY CHANGE: MAKE IT CIRCLE) ===== */
+#home-btn { width: 120px; height: 120px; border-radius: 50%; }
 
 /* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
@@ -188,14 +190,12 @@ canvas {
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-    
+    <div class="cosmic-btn" id="home-btn" data-link="index.html">Home</div>
+
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
     </div>
-
-    <!-- HOME BUTTON ORBITING LIKE THE OTHERS -->
-    <div class="cosmic-btn" id="home-btn">Home</div>
   </div>
 </div>
 
@@ -251,14 +251,14 @@ donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
   paused = !paused;
 });
 
-/* ===== PLANETS ORBITS INCLUDING HOME ===== */
+/* ===== PLANETS ORBITS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
   {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
-  {id:'home-btn', distance:200, speed:0.16, stretchX:1.1, stretchY:0.9} // Home now orbits
+  {id:'home-btn', distance:160, speed:0.2, stretchX:1, stretchY:1} // added home orbit
 ];
 
 buttonData.forEach(data=>{
@@ -271,7 +271,6 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
-// Animate buttons
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
