@@ -90,12 +90,12 @@ canvas {
   100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
 }
 
-/* ===== BUTTON CONTAINER (CIRCULAR) ===== */
+/* ===== BUTTON CONTAINER ===== */
 #button-container {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 400px;  /* diameter of circle */
+  width: 400px;  
   height: 400px;
   transform: translate(-50%, -50%);
   pointer-events: auto;
@@ -104,7 +104,7 @@ canvas {
 
 .cosmic-btn {
   position: absolute;
-  padding: 10px 30px; /* smaller */
+  padding: 10px 30px;
   font-size: 20px;
   font-weight: bold;
   color: #70c2ff;
@@ -123,12 +123,14 @@ canvas {
   transform: scale(1.05);
 }
 
-/* POSITION BUTTONS IN CIRCLE */
-#button-container .cosmic-btn:nth-child(1) { top: 0%; left: 50%; transform: translate(-50%, -50%); }
-#button-container .cosmic-btn:nth-child(2) { top: 25%; left: 85%; transform: translate(-50%, -50%); }
-#button-container .cosmic-btn:nth-child(3) { top: 75%; left: 85%; transform: translate(-50%, -50%); }
-#button-container .cosmic-btn:nth-child(4) { top: 100%; left: 50%; transform: translate(-50%, -50%); }
-#button-container .cosmic-btn:nth-child(5) { top: 50%; left: 0%; transform: translate(-50%, -50%); }
+/* ===== BUTTON POSITIONS (Membership as reference) ===== */
+#button-container .cosmic-btn:nth-child(1) { top: 0%; left: 50%; transform: translate(-50%, -50%); } /* Shop */
+#button-container .cosmic-btn:nth-child(2) { top: 25%; left: 85%; transform: translate(-50%, -50%); } /* Downloads */
+#button-container .cosmic-btn:nth-child(3) { top: 75%; left: 85%; transform: translate(-50%, -50%); } /* Affiliate Links */
+#button-container .cosmic-btn:nth-child(4) { top: 50%; left: 50%; transform: translate(-50%, -50%); } /* Membership */
+#button-container .cosmic-btn:nth-child(5) { top: 50%; left: 0%; transform: translate(-50%, -50%); } /* About Us */
+#button-container .cosmic-btn:nth-child(6) { top: 65%; left: 50%; transform: translate(-50%, -50%); } /* Donate below Membership */
+
 </style>
 </head>
 
@@ -146,6 +148,7 @@ canvas {
     <div class="cosmic-btn" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" data-link="about.html">About Us</div>
+    <div class="cosmic-btn" data-link="donate.html">Donate</div>
   </div>
 </div>
 
