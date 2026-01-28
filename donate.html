@@ -13,11 +13,13 @@ html, body {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
 }
+
 canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
 }
+
 #logo-wrapper {
   position: fixed;
   top: 0;
@@ -26,11 +28,14 @@ canvas {
   pointer-events: none;
   z-index: 9999;
 }
+
 #jv {
   font-size: 160px;
   font-weight: 900;
   color: rgba(79,179,255,1);
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),0 0 10px rgba(79,179,255,0.6),0 0 25px rgba(79,179,255,0.35);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),
+               0 0 10px rgba(79,179,255,0.6),
+               0 0 25px rgba(79,179,255,0.35);
   position: absolute;
   top: 20px;
   left: 50%;
@@ -38,15 +43,19 @@ canvas {
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
 }
+
 @keyframes jv-breathe {
   0%,100% { opacity: 0.2; transform: translateX(-50%) scale(1); }
   50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
 }
+
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
   color: #70c2ff;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),0 0 12px rgba(79,179,255,0.65),0 0 28px rgba(79,179,255,0.4);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),
+               0 0 12px rgba(79,179,255,0.65),
+               0 0 28px rgba(79,179,255,0.4);
   white-space: nowrap;
   position: absolute;
   top: 50px;
@@ -55,11 +64,13 @@ canvas {
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
 }
+
 @keyframes blue-breathe {
   0% { opacity:0.85; transform:translateX(-50%) scale(1); }
   50% { opacity:1; transform:translateX(-50%) scale(1.02); }
   100% { opacity:0.85; transform:translateX(-50%) scale(1); }
 }
+
 #button-container {
   position: absolute;
   top: 510px;
@@ -69,6 +80,7 @@ canvas {
   pointer-events: auto;
   z-index: 10150;
 }
+
 .cosmic-btn {
   position: absolute;
   font-size: 20px;
@@ -88,40 +100,69 @@ canvas {
   word-wrap: break-word;
   pointer-events: auto;
 }
+
 .cosmic-btn:hover {
   background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 20px #70c2ff,0 0 40px rgba(79,179,255,0.7),0 0 60px rgba(79,179,255,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
   transform: scale(1.05);
 }
+
 #shop { width: 120px; height: 120px; }
 #downloads { width: 140px; height: 140px; }
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
+
 #donate {
-  width: 120px; height: 120px;
-  z-index: 10160; position: absolute;
-  border-radius: 50%; overflow: hidden; display: flex; flex-direction: column;
+  width: 120px;
+  height: 120px;
+  z-index: 10160;
+  position: absolute;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
+
 #donate div {
-  flex: 1; width:100%; display:flex; justify-content:center; align-items:center;
-  cursor:pointer; font-weight:bold; color:#70c2ff;
-  border:2px solid #70c2ff;
-  box-shadow:0 0 10px #70c2ff,0 0 20px rgba(79,179,255,0.5),0 0 40px rgba(79,179,255,0.3);
-  transition:all 0.3s ease-in-out; background:rgba(0,0,0,0.25);
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  color: #70c2ff;
+  border: 2px solid #70c2ff;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  transition: all 0.3s ease-in-out;
+  background: rgba(0,0,0,0.25);
 }
+
 #donate div:hover {
   background: rgba(0,0,0,0.5);
-  box-shadow:0 0 20px #70c2ff,0 0 40px rgba(79,179,255,0.7),0 0 60px rgba(79,179,255,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
 }
+
 #donate .pause-half { border-bottom:none; }
 #donate .donate-half { border-top:none; }
+
 #page-content {
-  position: absolute; top:300px; left:50%; transform:translateX(-50%);
-  width:80%; max-width:900px; text-align:center;
-  font-size:28px; line-height:1.6; color:#70c2ff;
-  text-shadow:1px 1px 4px rgba(0,0,0,0.85);
-  z-index:10000;
+  position: absolute;
+  top: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 900px;
+  text-align: center;
+  font-size: 28px;
+  line-height: 1.6;
+  color: #70c2ff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
+  z-index: 10000;
+
+  /* ALLOW BUTTONS CLICK THROUGH */
+  pointer-events: none;
 }
 </style>
 </head>
@@ -211,19 +252,22 @@ function draw(){
 }
 draw();
 
+/* ===== BUTTON EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
   if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
 });
+
+/* ===== DONATE BUTTON: HOME FUNCTION ===== */
 const donateBtn = document.getElementById('donate');
 donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='index.html'; });
+
+/* ===== PAUSE BUTTON ===== */
 let paused=false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
   paused=!paused;
-  buttonData.forEach((data,i)=>{
-    const btn=document.getElementById(data.id);
-    if(paused) btn.dataset.angle=(360/buttonData.length)*i;
-  });
 });
+
+/* ===== ORBITING PLANETS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
@@ -231,12 +275,17 @@ const buttonData=[
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
   {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
 ];
+
 buttonData.forEach(data=>{
   const btn=document.getElementById(data.id);
   let angle=Math.random()*360;
-  btn.dataset.angle=angle; btn.dataset.distance=data.distance; btn.dataset.speed=data.speed;
-  btn.dataset.stretchX=data.stretchX; btn.dataset.stretchY=data.stretchY;
+  btn.dataset.angle=angle; 
+  btn.dataset.distance=data.distance;
+  btn.dataset.speed=data.speed;
+  btn.dataset.stretchX=data.stretchX;
+  btn.dataset.stretchY=data.stretchY;
 });
+
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
