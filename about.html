@@ -45,7 +45,6 @@ canvas {
   transform: translateX(-50%);
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
-  pointer-events: none;
 }
 
 @keyframes jv-breathe {
@@ -69,7 +68,6 @@ canvas {
   transform: translateX(-50%);
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
-  pointer-events: none;
 }
 
 @keyframes blue-breathe {
@@ -117,18 +115,26 @@ canvas {
 
 /* ===== INDIVIDUAL BUTTON SIZES ===== */
 #home { width: 120px; height: 120px; }
-#about-text { width: 160px; height: 160px; }
+#donate { width: 120px; height: 120px; }
 
-/* ===== ABOUT TEXT BUTTON (static content) ===== */
+/* ===== ABOUT US PANEL ===== */
 #about-text {
+  width: 400px;
+  height: 200px;
   border-radius: 20px;
-  background: rgba(0,0,0,0.3);
   font-size: 22px;
   font-weight: normal;
   text-align: left;
   padding: 20px;
   cursor: default;
+  background: rgba(0,0,0,0.3);
   box-shadow: 0 0 15px #70c2ff, 0 0 30px rgba(79,179,255,0.5);
+  position: absolute;
+  top: 150px; /* vertical position from top of page */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10200;
+  top: 165px; /* nudged down 15px */
 }
 </style>
 </head>
@@ -142,15 +148,13 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <!-- Home Button -->
     <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
-
-    <!-- About Text Panel -->
-    <div class="cosmic-btn" id="about-text">
-      Welcome to J&V’s Blue Universe!<br><br>
-      Here, we explore cosmic creativity, innovation, and fun. Our universe is full of stars, planets, and cosmic surprises. Enjoy your journey!
-    </div>
+    <div class="cosmic-btn" id="donate" data-link="donate.html">Donate</div>
   </div>
+</div>
+
+<div id="about-text">
+  <p>Welcome to J&V’s Blue Universe! We are passionate creators bringing cosmic experiences to life through interactive design, visuals, and storytelling. Our mission is to make your journey through our universe immersive, playful, and unforgettable.</p>
 </div>
 
 <script>
@@ -160,6 +164,7 @@ const ctx = canvas.getContext("2d");
 let w, h;
 function resize() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
 window.addEventListener("resize", resize); resize();
+
 let px=0, py=0;
 window.addEventListener("deviceorientation", e=>{ px=(e.gamma||0)/45; py=(e.beta||0)/45; });
 
@@ -177,21 +182,57 @@ setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
 function draw(){
   ctx.clearRect(0,0,w,h);
   ctx.globalCompositeOperation="screen";
-  nebulae.forEach(n=>{ n.x+=n.dx; n.y+=n.dy; const glowRadius=n.r*n.z*1.2; const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius); grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`); grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill(); n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); }); n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); }); });
+  nebulae.forEach(n=>{
+    n.x+=n.dx; n.y+=n.dy;
+    const glowRadius=n.r*n.z*1.2;
+    const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius);
+    grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`);
+    grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`);
+    ctx.fillStyle=grad;
+    ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill();
+    n.particles.forEach(p=>{
+      const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z;
+      const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z;
+      ctx.globalAlpha=0.07;
+      ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2);
+      ctx.fillStyle=n.color; ctx.fill();
+    });
+    n.stars.forEach(s=>{
+      s.angle+=s.speed;
+      const sx=n.x+Math.cos(s.angle)*s.radius*n.z;
+      const sy=n.y+Math.sin(s.angle)*s.radius*n.z;
+      ctx.globalAlpha=s.alpha*n.z;
+      ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill();
+    });
+  });
   ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
-  stars.forEach(s=>{ ctx.globalAlpha=s.a*s.z; ctx.beginPath(); ctx.arc(s.x+px*s.z*10,s.y+py*s.z*10,s.r*s.z,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); });
+  stars.forEach(s=>{
+    ctx.globalAlpha=s.a*s.z;
+    ctx.beginPath(); ctx.arc(s.x+px*s.z*10,s.y+py*s.z*10,s.r*s.z,0,Math.PI*2);
+    ctx.fillStyle="white"; ctx.fill();
+  });
   ctx.globalAlpha=1;
-  shootingStars.forEach((s,i)=>{ const tail=(s.fireball?40:20)*s.z; const grad=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail); grad.addColorStop(0,`rgba(${s.color},${0.9*s.z})`); grad.addColorStop(0.3,`rgba(${s.color},${0.5*s.z})`); grad.addColorStop(1,`rgba(${s.color},0)`); ctx.strokeStyle=grad; ctx.lineWidth=s.width*s.z; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail); ctx.stroke(); s.x+=s.vx; s.y+=s.vy; if(s.x<-200||s.x>w+200||s.y<-200||s.y>h+200) shootingStars.splice(i,1); });
+  shootingStars.forEach((s,i)=>{
+    const tail=(s.fireball?40:20)*s.z;
+    const grad=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail);
+    grad.addColorStop(0,`rgba(${s.color},${0.9*s.z})`);
+    grad.addColorStop(0.3,`rgba(${s.color},${0.5*s.z})`);
+    grad.addColorStop(1,`rgba(${s.color},0)`);
+    ctx.strokeStyle=grad;
+    ctx.lineWidth=s.width*s.z;
+    ctx.lineCap="round";
+    ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail); ctx.stroke();
+    s.x+=s.vx; s.y+=s.vy;
+    if(s.x<-200||s.x>w+200||s.y<-200||s.y>h+200) shootingStars.splice(i,1);
+  });
   requestAnimationFrame(draw);
 }
 draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{ 
-    const link = btn.getAttribute('data-link');
-    if(link) window.location.href = link;
-  });
+  btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
 });
 </script>
 
