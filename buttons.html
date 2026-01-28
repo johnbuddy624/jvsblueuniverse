@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Buttons Test</title>
+<style>
+html, body { margin:0; padding:0; width:100%; height:100%; background:black; overflow:hidden; font-family: "Segoe UI", sans-serif; }
+
+/* Button container */
+#button-container {
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:0;
+  height:0;
+  pointer-events:auto;
+}
+
+/* Button style */
+.cosmic-btn {
+  position:absolute;
+  font-size:20px;
+  font-weight:bold;
+  color:#70c2ff;
+  background:rgba(0,0,0,0.25);
+  border:2px solid #70c2ff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  transition: all 0.3s ease-in-out;
+}
+.cosmic-btn:hover { transform:scale(1.05); background:rgba(0,0,0,0.5); }
+
+/* Sizes */
+#home { width:120px; height:120px; }
+#shop { width:120px; height:120px; }
+#downloads { width:140px; height:140px; }
+#affiliate { width:160px; height:160px; }
+#membership { width:150px; height:150px; }
+#about { width:130px; height:130px; }
+#donate { width:120px; height:120px; display:flex; flex-direction:column; overflow:hidden; }
+
+/* Split donate */
+#donate div { flex:1; display:flex; justify-content:center; align-items:center; border:2px solid #70c2ff; cursor:pointer; }
+#donate .pause-half { border-bottom:none; }
+#donate .donate-half { border-top:none; }
+</style>
+</head>
+<body>
+
+<div id="button-container">
+  <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
+  <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
+  <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
+  <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate</div>
+  <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
+  <div class="cosmic-btn" id="about" data-link="about.html">About</div>
+  
+  <div class="cosmic-btn" id="donate">
+    <div class="pause-half">⏸</div>
+    <div class="donate-half">Donate</div>
+  </div>
+</div>
+
+<script>
+// BUTTON ORBITS
+const buttonData = [
+  {id:'home', distance:140, speed:0.2},
+  {id:'shop', distance:180, speed:0.18},
+  {id:'downloads', distance:220, speed:0.14},
+  {id:'affiliate', distance:260, speed:0.12},
+  {id:'membership', distance:300, speed:0.10},
+  {id:'about', distance:340, speed:0.08}
+];
+
+buttonData.forEach(data=>{
+  const btn = document.getElementById(data.id);
+  btn.dataset.angle = Math.random()*360;
+  btn.dataset.distance = data.distance;
+  btn.dataset.speed = data.speed;
+});
+
+let paused = false;
+function animateButtons(){
+  buttonData.forEach(data=>{
+    const btn = document.getElementById(data.id);
+    if(paused) return;
+    let angle = parseFloat(btn.dataset.angle);
+    angle += parseFloat(btn.dataset.speed);
+    if(angle>360) angle-=360;
+    btn.dataset.angle = angle;
+    const rad = angle*Math.PI/180;
+    const x = Math.cos(rad)*btn.dataset.distance;
+    const y = Math.sin(rad)*btn.dataset.distance;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+  });
+  requestAnimationFrame(animateButtons);
+}
+animateButtons();
+
+// BUTTON EVENTS
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.dataset.link; });
+});
+
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='https://www.paypal.me/JohnBender612'; });
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused = !paused; });
+
+</script>
+</body>
+</html>
