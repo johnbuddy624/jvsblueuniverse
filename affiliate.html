@@ -2,71 +2,104 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe Ad</title>
+<title>Ad – J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
   padding: 0;
+  background: black;
+  overflow: hidden;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  background: black;
   font-family: "Segoe UI", sans-serif;
 }
-
-/* Canvas for stars */
-canvas {
+/* Canvas background */
+canvas { position: fixed; inset: 0; z-index: 1; }
+/* Logo */
+#logo-wrapper {
   position: fixed;
-  inset: 0;
-  z-index: 1;
-}
-
-/* Logo text overlay */
-#overlay-text {
-  position: absolute;
-  top: 20%;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  color: #70c2ff;
-  font-size: 48px;
-  font-weight: bold;
+  z-index: 9999;
+  pointer-events: none;
+}
+#jv {
+  font-size: 120px; font-weight: 900;
+  color: rgba(79,179,255,1);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),
+               0 0 10px rgba(79,179,255,0.6),
+               0 0 25px rgba(79,179,255,0.35);
   text-align: center;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
-  z-index: 10000;
-  opacity: 0;
-  animation: fadeInOut 8s infinite;
 }
-
-@keyframes fadeInOut {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { opacity: 0; }
+#blue-universe {
+  font-size: 60px; font-weight: 500;
+  color: #70c2ff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),
+               0 0 12px rgba(79,179,255,0.65),
+               0 0 28px rgba(79,179,255,0.4);
+  text-align: center;
 }
-
-/* Orbiting planet buttons */
-.planet-btn {
+/* Buttons orbiting */
+#button-container {
   position: absolute;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  top: 50%; left: 50%;
+  width: 0; height: 0; z-index: 10150;
+  pointer-events: auto;
+}
+.cosmic-btn {
+  position: absolute;
+  font-size: 20px; font-weight: bold;
+  color: #70c2ff;
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
-  color: #70c2ff;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 10px #70c2ff,0 0 20px rgba(79,179,255,0.5),0 0 40px rgba(79,179,255,0.3);
   transition: all 0.3s ease-in-out;
-  z-index: 1000;
 }
-
-.planet-btn:hover {
+.cosmic-btn:hover { 
   background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
   transform: scale(1.05);
-  box-shadow: 0 0 20px #70c2ff,0 0 40px rgba(79,179,255,0.7),0 0 60px rgba(79,179,255,0.5);
+}
+/* Individual sizes */
+#shop { width: 120px; height: 120px; }
+#downloads { width: 140px; height: 140px; }
+#affiliate { width: 160px; height: 160px; }
+#membership { width: 150px; height: 150px; }
+#about { width: 130px; height: 130px; }
+#donate { width: 140px; height: 140px; }
+#home { width: 120px; height: 120px; }
+/* Slideshow container */
+#slideshow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 400px;
+  z-index: 100;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(79,179,255,0.7);
+}
+#slideshow img {
+  width: 100%; height: 100%;
+  position: absolute; top: 0; left: 0;
+  opacity: 0; transition: opacity 1s ease-in-out;
+}
+/* Page text overlay */
+#ad-text {
+  position: absolute;
+  bottom: 60px; width: 100%;
+  text-align: center;
+  color: #70c2ff;
+  font-size: 36px;
+  text-shadow: 1px 1px 8px rgba(0,0,0,0.8);
+  z-index: 10100;
 }
 </style>
 </head>
@@ -74,73 +107,114 @@ canvas {
 
 <canvas id="space"></canvas>
 
-<div id="overlay-text">Explore the Cosmic Wonders of J&V’s Blue Universe!</div>
+<div id="logo-wrapper">
+  <div id="jv">J&V’s</div>
+  <div id="blue-universe">Blue Universe</div>
+</div>
 
-<!-- Orbiting planet buttons -->
-<div class="planet-btn" id="home-btn">Home</div>
-<div class="planet-btn" id="shop-btn">Shop</div>
-<div class="planet-btn" id="donate-btn">Donate</div>
-<div class="planet-btn" id="affiliate-btn">Affiliate</div>
+<div id="button-container">
+  <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
+  <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
+  <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate</div>
+  <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
+  <div class="cosmic-btn" id="about" data-link="about.html">About</div>
+  <div class="cosmic-btn" id="donate" data-link="https://www.paypal.me/JohnBender612">Donate</div>
+  <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
+</div>
 
-<!-- Audio -->
+<div id="slideshow">
+  <img src="ad1.jpg" style="opacity:1;">
+  <img src="ad2.jpg">
+  <img src="ad3.jpg">
+</div>
+
+<div id="ad-text">Welcome to Your Cosmic Adventure!</div>
+
 <audio id="voiceover" autoplay>
   <source src="voice.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// Canvas setup
+/* ===== SPACE CANVAS ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
 function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
-window.addEventListener("resize",resize); resize();
+window.addEventListener("resize", resize); resize();
+let px=0, py=0;
+window.addEventListener("deviceorientation", e=>{ px=(e.gamma||0)/45; py=(e.beta||0)/45; });
 
-// Stars
-const stars = Array.from({length:300},()=>({
-  x: Math.random()*w,
-  y: Math.random()*h,
-  r: Math.random()*2+1,
-  a: Math.random()
-}));
-
-// Draw stars
-function drawStars(){
-  ctx.clearRect(0,0,w,h);
-  stars.forEach(s=>{
-    ctx.globalAlpha = s.a;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
-  });
-  requestAnimationFrame(drawStars);
-}
-drawStars();
-
-// Orbiting planets
-const planets = [
-  {el: document.getElementById("home-btn"), distance: 200, angle: Math.random()*360, speed: 0.12, link:"index.html"},
-  {el: document.getElementById("shop-btn"), distance: 260, angle: Math.random()*360, speed: 0.08, link:"shop.html"},
-  {el: document.getElementById("donate-btn"), distance: 320, angle: Math.random()*360, speed: 0.06, link:"https://www.paypal.me/JohnBender612"},
-  {el: document.getElementById("affiliate-btn"), distance: 380, angle: Math.random()*360, speed: 0.04, link:"affiliate.html"}
-];
-
-planets.forEach(p=>{
-  p.el.addEventListener('click', ()=>{ window.location.href = p.link; });
+const stars = Array.from({length:360},()=>({x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2, a:Math.random(), r:Math.random()*2+2}));
+const nebulae = Array.from({length:2},()=>{
+  const hue=210+Math.random()*60;
+  const z=Math.random()+0.5;
+  return { x: Math.random()*w, y: Math.random()*h, r: Math.random()*500+400, dx:(Math.random()-0.5)*0.04, dy:(Math.random()-0.5)*0.04, z, hue, color:`hsla(${hue},70%,50%,0.07)`, particles:Array.from({length:Math.floor(Math.random()*80)+150},()=>({x:Math.random()*4+1,y:Math.random()*4+1})), stars:Array.from({length:Math.floor(Math.random()*50)+50},()=>({angle:Math.random()*Math.PI*2, radius:Math.random()*180+80, size:Math.random()*1+0.2, alpha:Math.random()*0.5+0.1, speed:(Math.random()-0.5)*0.001})) };
 });
 
-function animatePlanets(){
-  planets.forEach(p=>{
-    p.angle += p.speed;
-    const rad = p.angle * Math.PI/180;
-    const x = Math.cos(rad)*p.distance + w/2 - 60;
-    const y = Math.sin(rad)*p.distance + h/2 - 60;
-    p.el.style.transform = `translate(${x}px, ${y}px)`;
-  });
-  requestAnimationFrame(animatePlanets);
-}
-animatePlanets();
+let shootingStars=[];
+function spawnShootingStar(){ const z=Math.random()*0.8+0.2; const fireball=Math.random()<0.01; shootingStars.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()*10-5)*z, vy:(Math.random()*10-5)*z, z, fireball, width:fireball?Math.random()*2+4:Math.random()*1.2+1.4, color: fireball?"255,180,80":"255,255,255"}); }
+setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
 
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  ctx.globalCompositeOperation="screen";
+  nebulae.forEach(n=>{ n.x+=n.dx; n.y+=n.dy; const glowRadius=n.r*n.z*1.2; const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius); grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`); grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill(); n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); }); n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); }); });
+  ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
+  stars.forEach(s=>{ ctx.globalAlpha=s.a*s.z; ctx.beginPath(); ctx.arc(s.x+px*s.z*10,s.y+py*s.z*10,s.r*s.z,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); });
+  ctx.globalAlpha=1;
+  shootingStars.forEach((s,i)=>{ const tail=(s.fireball?40:20)*s.z; const grad=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail); grad.addColorStop(0,`rgba(${s.color},${0.9*s.z})`); grad.addColorStop(0.3,`rgba(${s.color},${0.5*s.z})`); grad.addColorStop(1,`rgba(${s.color},0)`); ctx.strokeStyle=grad; ctx.lineWidth=s.width*s.z; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail); ctx.stroke(); s.x+=s.vx; s.y+=s.vy; if(s.x<-200||s.x>w+200||s.y<-200||s.y>h+200) shootingStars.splice(i,1); });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== BUTTON ORBITS ===== */
+const buttonData=[
+  {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
+  {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
+  {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
+  {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
+  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
+  {id:'donate', distance:380, speed:0.07, stretchX:1.1, stretchY:0.9},
+  {id:'home', distance:160, speed:0.16, stretchX:1, stretchY:1}
+];
+
+buttonData.forEach(data=>{
+  const btn=document.getElementById(data.id);
+  let angle=Math.random()*360;
+  btn.dataset.angle=angle;
+  btn.dataset.distance=data.distance;
+  btn.dataset.speed=data.speed;
+  btn.dataset.stretchX=data.stretchX;
+  btn.dataset.stretchY=data.stretchY;
+  btn.addEventListener('click',()=>{ window.location.href=btn.dataset.link || btn.getAttribute('data-link'); });
+});
+
+let paused=false;
+function animateButtons(){
+  buttonData.forEach(data=>{
+    const btn=document.getElementById(data.id);
+    if(paused) return;
+    let angle=parseFloat(btn.dataset.angle);
+    angle+=parseFloat(btn.dataset.speed);
+    if(angle>360) angle-=360;
+    btn.dataset.angle=angle;
+    const rad=angle*Math.PI/180;
+    const x=Math.cos(rad)*data.distance*data.stretchX;
+    const y=Math.sin(rad)*data.distance*data.stretchY;
+    btn.style.transform=`translate(${x}px, ${y}px)`;
+  });
+  requestAnimationFrame(animateButtons);
+}
+animateButtons();
+
+/* ===== SLIDESHOW ===== */
+const slides = document.querySelectorAll('#slideshow img');
+let current=0;
+setInterval(()=>{
+  slides[current].style.opacity=0;
+  current=(current+1)%slides.length;
+  slides[current].style.opacity=1;
+},3000);
 </script>
 
 </body>
