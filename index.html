@@ -38,6 +38,8 @@
     cursor: pointer;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 30px rgba(0,170,255,0.6);
+    color: white;
+    text-shadow: 0 0 8px rgba(255,255,255,0.6);
   }
 
   /* Pause / Resume control */
@@ -67,7 +69,12 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: radial-gradient(circle, #0ff, #004);
+    background: radial-gradient(
+      circle at 30% 30%,
+      #66ffff,
+      #0077aa 40%,
+      #002233 75%
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,6 +83,8 @@
     cursor: pointer;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 20px rgba(0,255,255,0.4);
+    color: white;
+    text-shadow: 0 0 6px rgba(0,255,255,0.8);
   }
 </style>
 </head>
@@ -95,10 +104,10 @@
 
   const planets = [
     { label: "Shop",        speed: 0.0030, dist: 220, ex: 1.1,  ey: 0.9  },
-    { label: "Downloads",  speed: 0.0024, dist: 260, ex: 1.05, ey: 0.95 },
-    { label: "Affiliate",  speed: 0.0020, dist: 300, ex: 1.15, ey: 0.85 },
-    { label: "Membership", speed: 0.0032, dist: 180, ex: 1.0,  ey: 1.0  },
-    { label: "About Us",   speed: 0.0022, dist: 240, ex: 1.08, ey: 0.92 }
+    { label: "Downloads",   speed: 0.0024, dist: 260, ex: 1.05, ey: 0.95 },
+    { label: "Affiliate",   speed: 0.0020, dist: 300, ex: 1.15, ey: 0.85 },
+    { label: "Membership",  speed: 0.0032, dist: 180, ex: 1.0,  ey: 1.0  },
+    { label: "About Us",    speed: 0.0022, dist: 240, ex: 1.08, ey: 0.92 }
   ];
 
   const planetElements = planets.map(p => {
