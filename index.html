@@ -93,15 +93,15 @@ canvas {
 /* ===== BUTTON CONTAINER ===== */
 #button-container {
   position: absolute;
-  top: 50%;
+  top: 650px; /* center for Donate button */
   left: 50%;
-  width: 400px;  
-  height: 400px;
-  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
   pointer-events: auto;
   z-index: 10150;
 }
 
+/* ===== BUTTON STYLES ===== */
 .cosmic-btn {
   position: absolute;
   font-size: 20px;
@@ -127,60 +127,27 @@ canvas {
   transform: scale(1.05);
 }
 
-/* ===== INDIVIDUAL CIRCLE SIZES FOR BUTTONS ===== */
-/* Shop */
-#button-container .cosmic-btn:nth-child(1) { 
-  top: calc(50% + 300px); 
-  left: 25%; 
-  width: 120px; 
-  height: 120px; 
-  transform: translate(-50%, -50%); 
+/* ===== INDIVIDUAL BUTTON SIZES ===== */
+#shop { width: 120px; height: 120px; }
+#downloads { width: 140px; height: 140px; }
+#affiliate { width: 160px; height: 160px; }
+#membership { width: 150px; height: 150px; }
+#about { width: 130px; height: 130px; }
+#donate { width: 100px; height: 100px; z-index:10160; } /* center sun */
+
+/* ===== ORBIT ANIMATION ===== */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(var(--distance)) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(var(--distance)) rotate(-360deg); }
 }
 
-/* Downloads */
-#button-container .cosmic-btn:nth-child(2) { 
-  top: calc(50% + 500px); 
-  left: 25%; 
-  width: 140px; 
-  height: 140px; 
-  transform: translate(-50%, -50%); 
-}
-
-/* Affiliate Links */
-#button-container .cosmic-btn:nth-child(3) { 
-  top: calc(75% + 200px); 
-  left: 85%; 
-  width: 160px; 
-  height: 160px; 
-  transform: translate(-50%, -50%); 
-}
-
-/* Membership */
-#button-container .cosmic-btn:nth-child(4) { 
-  top: calc(50% + 300px); 
-  left: 50%; 
-  width: 150px; 
-  height: 150px; 
-  transform: translate(-50%, -50%); 
-}
-
-/* About Us */
-#button-container .cosmic-btn:nth-child(5) { 
-  top: calc(50% + 500px); 
-  left: 0%; 
-  width: 130px; 
-  height: 130px; 
-  transform: translate(-50%, -50%); 
-}
-
-/* Donate button moved down 30px */
-#button-container .cosmic-btn:nth-child(6) { 
-  top: 650px;  /* was 620px */
-  left: 50%; 
-  width: 100px; 
-  height: 100px; 
-  transform: translate(-50%, -50%);
-}
+/* Assign each planet an orbit distance and animation duration */
+#shop { --distance: 220px; animation: orbit 20s linear infinite; transform-origin: 50% 50%; }
+#downloads { --distance: 260px; animation: orbit 25s linear infinite; transform-origin: 50% 50%; }
+#affiliate { --distance: 300px; animation: orbit 30s linear infinite; transform-origin: 50% 50%; }
+#membership { --distance: 180px; animation: orbit 22s linear infinite; transform-origin: 50% 50%; }
+#about { --distance: 240px; animation: orbit 28s linear infinite; transform-origin: 50% 50%; }
+#donate { top: 0; left: 0; transform: translate(0,0); } /* center */
 
 </style>
 </head>
@@ -194,12 +161,12 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <div class="cosmic-btn" data-link="shop.html">Shop</div>
-    <div class="cosmic-btn" data-link="downloads.html">Downloads</div>
-    <div class="cosmic-btn" data-link="affiliate.html">Affiliate Links</div>
-    <div class="cosmic-btn" data-link="membership.html">Membership</div>
-    <div class="cosmic-btn" data-link="about.html">About Us</div>
-    <div class="cosmic-btn" data-link="donate.html">Donate</div>
+    <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
+    <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
+    <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
+    <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
+    <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
+    <div class="cosmic-btn" id="donate" data-link="donate.html">Donate</div>
   </div>
 </div>
 
