@@ -1,1 +1,121 @@
-hgf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blue Universe Ad Slideshow</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: black;
+}
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+#overlay-text {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Segoe UI", sans-serif;
+  font-size: 36px;
+  color: #70c2ff;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+  z-index: 100;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="adCanvas"></canvas>
+<div id="overlay-text">Visit J&V's Blue Universe!</div>
+
+<script>
+// === Canvas Setup ===
+const canvas = document.getElementById("adCanvas");
+const ctx = canvas.getContext("2d");
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
+
+window.addEventListener("resize", () => {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+});
+
+// === Slideshow Slides ===
+const slides = [
+  { hue: 210, saturation: 70, light: 50 },
+  { hue: 180, saturation: 60, light: 55 },
+  { hue: 270, saturation: 80, light: 45 },
+];
+
+let currentSlide = 0;
+let slideTimer = 0;
+const slideDuration = 600; // frames (~10 seconds at 60fps)
+
+// === Stars ===
+const stars = Array.from({length:300}, () => ({
+  x: Math.random()*w,
+  y: Math.random()*h,
+  r: Math.random()*2+1,
+  alpha: Math.random()*0.5+0.5
+}));
+
+// === Draw Frame ===
+function draw(){
+  // Fade to next slide
+  slideTimer++;
+  if(slideTimer > slideDuration){
+    slideTimer = 0;
+    currentSlide = (currentSlide + 1) % slides.length;
+  }
+
+  // Background gradient
+  const slide = slides[currentSlide];
+  const grd = ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,w/1.2);
+  grd.addColorStop(0, `hsla(${slide.hue},${slide.saturation}%,${slide.light}%,0.15)`);
+  grd.addColorStop(1, `hsla(${slide.hue},${slide.saturation}%,${slide.light}%,0.0)`);
+  ctx.fillStyle = grd;
+  ctx.fillRect(0,0,w,h);
+
+  // Stars
+  stars.forEach(s => {
+    s.x += (Math.random()-0.5)*0.2;
+    s.y += (Math.random()-0.5)*0.2;
+    if(s.x < 0) s.x = w;
+    if(s.x > w) s.x = 0;
+    if(s.y < 0) s.y = h;
+    if(s.y > h) s.y = 0;
+    ctx.globalAlpha = s.alpha;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+// === Clickable Canvas ===
+canvas.addEventListener("click", () => {
+  window.open("https://jvblueuniverse.com", "_blank"); // your ad link
+});
+
+// === Optional GIF Export (simplified) ===
+// This requires including gif.js or similar library
+// Frames can be captured via: gif.addFrame(ctx, {copy:true});
+// Then gif.render() to save as a GIF file
+
+</script>
+</body>
+</html>
