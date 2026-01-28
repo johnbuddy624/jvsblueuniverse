@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>About – J&V’s Blue Universe</title>
+<title>Donate – J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -121,7 +121,6 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
-#home { width: 130px; height: 130px; }
 
 /* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
@@ -161,7 +160,7 @@ canvas {
 /* ===== PAGE CONTENT ===== */
 #page-content {
   position: absolute;
-  top: 300px;
+  top: 240px; /* moved up 60px */
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -200,7 +199,7 @@ canvas {
 </div>
 
 <div id="page-content">
-  <p>Welcome to J&V’s Blue Universe! We’re a team of passionate cosmic explorers dedicated to bringing you the magic of the universe. Here you can learn about our journey, our mission, and how we strive to create a world filled with wonder and discovery. Thank you for joining us among the stars!</p>
+  <p>Thank you for supporting J&V’s Blue Universe! Your donations help us maintain and expand our cosmic creations, keeping the universe magical and full of wonder. Every contribution helps us bring you more stars, planets, and cosmic adventures.</p>
 </div>
 
 <script>
@@ -238,11 +237,11 @@ draw();
 
 /* ===== BUTTON EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
 });
 
 const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='https://www.paypal.me/JohnBender612'; });
 let paused = false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused = !paused; });
 
@@ -266,6 +265,7 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
+// Animate buttons
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
@@ -286,6 +286,7 @@ function animateButtons(){
   requestAnimationFrame(animateButtons);
 }
 animateButtons();
+
 </script>
 
 </body>
