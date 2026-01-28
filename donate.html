@@ -172,29 +172,6 @@ canvas {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
   z-index: 10000;
 }
-
-/* ===== HOME BUTTON STYLE (CIRCULAR) ===== */
-#home-btn {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #70c2ff;
-  font-size: 20px;
-  font-weight: bold;
-  background: rgba(0,0,0,0.25);
-  border: 2px solid #70c2ff;
-  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-#home-btn:hover {
-  background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
-}
 </style>
 </head>
 <body>
@@ -217,7 +194,7 @@ canvas {
       <div class="donate-half">Donate</div>
     </div>
 
-    <!-- New Home button -->
+    <!-- HOME BUTTON ORBITING LIKE THE OTHERS -->
     <div class="cosmic-btn" id="home-btn">Home</div>
   </div>
 </div>
@@ -261,7 +238,10 @@ draw();
 
 /* ===== BUTTON EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{
+    let target = btn.getAttribute('data-link');
+    window.location.href=target;
+  });
 });
 
 const donateBtn = document.getElementById('donate');
@@ -271,13 +251,14 @@ donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
   paused = !paused;
 });
 
-/* ===== PLANETS ORBITS ===== */
+/* ===== PLANETS ORBITS INCLUDING HOME ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
-  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
+  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
+  {id:'home-btn', distance:200, speed:0.16, stretchX:1.1, stretchY:0.9} // Home now orbits
 ];
 
 buttonData.forEach(data=>{
@@ -290,6 +271,7 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
+// Animate buttons
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
@@ -310,10 +292,6 @@ function animateButtons(){
   requestAnimationFrame(animateButtons);
 }
 animateButtons();
-
-/* ===== HOME BUTTON CLICK ===== */
-document.getElementById('home-btn').addEventListener('click',()=>{ window.location.href='index.html'; });
-
 </script>
 
 </body>
