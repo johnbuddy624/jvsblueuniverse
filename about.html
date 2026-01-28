@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>About Us – J&V’s Blue Universe</title>
+<title>About Us - J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -14,7 +14,6 @@ html, body {
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Canvas background */
 canvas {
   position: fixed;
   inset: 0;
@@ -46,6 +45,7 @@ canvas {
   transform: translateX(-50%);
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes jv-breathe {
@@ -69,6 +69,7 @@ canvas {
   transform: translateX(-50%);
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
+  pointer-events: none;
 }
 
 @keyframes blue-breathe {
@@ -115,64 +116,23 @@ canvas {
 }
 
 /* ===== INDIVIDUAL BUTTON SIZES ===== */
-#shop { width: 120px; height: 120px; }
-#downloads { width: 140px; height: 140px; }
-#affiliate { width: 160px; height: 160px; }
-#membership { width: 150px; height: 150px; }
-#about { width: 130px; height: 130px; }
+#home { width: 120px; height: 120px; }
+#about-text { width: 160px; height: 160px; }
 
-/* ===== DONATE + PAUSE SPLIT BUTTON ===== */
-#donate {
-  width: 120px;
-  height: 120px;
-  z-index: 10160;
-  position: absolute;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-#donate div {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-weight: bold;
-  color: #70c2ff;
-  border: 2px solid #70c2ff;
-  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
-  transition: all 0.3s ease-in-out;
-  background: rgba(0,0,0,0.25);
-}
-
-#donate div:hover {
-  background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
-}
-
-#donate .pause-half { border-bottom: none; }
-#donate .donate-half { border-top: none; }
-
-/* ===== ABOUT US TEXT ===== */
+/* ===== ABOUT TEXT BUTTON (static content) ===== */
 #about-text {
-  position: absolute;
-  top: 300px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  max-width: 900px;
-  text-align: center;
-  font-size: 28px;
-  line-height: 1.6;
-  color: #70c2ff;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
-  z-index: 10000;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.3);
+  font-size: 22px;
+  font-weight: normal;
+  text-align: left;
+  padding: 20px;
+  cursor: default;
+  box-shadow: 0 0 15px #70c2ff, 0 0 30px rgba(79,179,255,0.5);
 }
 </style>
 </head>
+
 <body>
 
 <canvas id="space"></canvas>
@@ -182,23 +142,15 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
-    <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
-    <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
-    <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
-    <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-    
-    <div class="cosmic-btn" id="donate">
-      <div class="pause-half">⏸</div>
-      <div class="donate-half">Donate</div>
+    <!-- Home Button -->
+    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
+
+    <!-- About Text Panel -->
+    <div class="cosmic-btn" id="about-text">
+      Welcome to J&V’s Blue Universe!<br><br>
+      Here, we explore cosmic creativity, innovation, and fun. Our universe is full of stars, planets, and cosmic surprises. Enjoy your journey!
     </div>
   </div>
-</div>
-
-<div id="about-text">
-  <p>Welcome to J&V’s Blue Universe! We are passionate creators exploring the cosmos of imagination, creativity, and technology. Our mission is to bring you unique digital experiences and tools while keeping the universe fun, magical, and engaging.</p>
-  <p>From exclusive downloads and affiliate insights to membership opportunities, we are dedicated to providing a vibrant space for everyone who loves to explore, create, and connect.</p>
-  <p>Thank you for visiting and being part of our Blue Universe. Together, we journey through stars, planets, and a little bit of cosmic magic.</p>
 </div>
 
 <script>
@@ -234,57 +186,13 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON EVENTS ===== */
+/* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
-});
-
-const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
-let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused=!paused; });
-
-/* ===== PLANETS ORBITS ===== */
-const buttonData=[
-  {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
-  {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
-  {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
-  {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
-  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
-];
-
-buttonData.forEach(data=>{
-  const btn=document.getElementById(data.id);
-  let angle=Math.random()*360;
-  btn.dataset.angle=angle;
-  btn.dataset.distance=data.distance;
-  btn.dataset.speed=data.speed;
-  btn.dataset.stretchX=data.stretchX;
-  btn.dataset.stretchY=data.stretchY;
-});
-
-function animateButtons(){
-  const centerX=0;
-  const centerY=0;
-  buttonData.forEach(data=>{
-    const btn=document.getElementById(data.id);
-    if(paused) return;
-    let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-    angle+=speed;
-    if(angle>360) angle-=360;
-    btn.dataset.angle=angle;
-    const rad=angle*Math.PI/180;
-    const distance=parseFloat(btn.dataset.distance);
-    const stretchX=parseFloat(btn.dataset.stretchX);
-    const stretchY=parseFloat(btn.dataset.stretchY);
-    const x=Math.cos(rad)*distance*stretchX;
-    const y=Math.sin(rad)*distance*stretchY;
-    btn.style.transform=`translate(${x}px, ${y}px)`;
+  btn.addEventListener('click',()=>{ 
+    const link = btn.getAttribute('data-link');
+    if(link) window.location.href = link;
   });
-  requestAnimationFrame(animateButtons);
-}
-animateButtons();
+});
 </script>
 
 </body>
