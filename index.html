@@ -93,7 +93,7 @@ canvas {
 /* ===== BUTTON CONTAINER ===== */
 #button-container {
   position: absolute;
-  top: 510px; /* moved up 90px from previous 600px */
+  top: 510px; /* previous adjustment */
   left: 50%;
   width: 0;
   height: 0;
@@ -135,19 +135,19 @@ canvas {
 #about { width: 130px; height: 130px; }
 #donate { width: 100px; height: 100px; z-index:10160; } /* center sun */
 
-/* ===== ORBIT ANIMATION ===== */
+/* ===== ORBIT ANIMATION WITH START ANGLES ===== */
 @keyframes orbit {
-  from { transform: rotate(0deg) translateX(var(--distance)) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(var(--distance)) rotate(-360deg); }
+  from { transform: rotate(var(--start-angle)) translateX(var(--distance)) rotate(calc(-1 * var(--start-angle))); }
+  to { transform: rotate(calc(360deg + var(--start-angle))) translateX(var(--distance)) rotate(calc(-360deg - var(--start-angle))); }
 }
 
-/* Assign each planet an orbit distance and animation duration */
-#shop { --distance: 220px; animation: orbit 20s linear infinite; transform-origin: 50% 50%; }
-#downloads { --distance: 260px; animation: orbit 25s linear infinite; transform-origin: 50% 50%; }
-#affiliate { --distance: 300px; animation: orbit 30s linear infinite; transform-origin: 50% 50%; }
-#membership { --distance: 180px; animation: orbit 22s linear infinite; transform-origin: 50% 50%; }
-#about { --distance: 240px; animation: orbit 28s linear infinite; transform-origin: 50% 50%; }
-#donate { top: 0; left: 0; transform: translate(0,0); } /* center */
+/* Assign each planet a start angle, keep distances and speeds same */
+#shop { --distance: 220px; --start-angle: 0deg; animation: orbit 20s linear infinite; transform-origin: 50% 50%; }
+#downloads { --distance: 260px; --start-angle: 45deg; animation: orbit 25s linear infinite; transform-origin: 50% 50%; }
+#affiliate { --distance: 300px; --start-angle: 90deg; animation: orbit 30s linear infinite; transform-origin: 50% 50%; }
+#membership { --distance: 180px; --start-angle: 135deg; animation: orbit 22s linear infinite; transform-origin: 50% 50%; }
+#about { --distance: 240px; --start-angle: 200deg; animation: orbit 28s linear infinite; transform-origin: 50% 50%; }
+#donate { top: 0; left: 0; transform: translate(0,0); } /* center sun */
 
 </style>
 </head>
