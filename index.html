@@ -123,13 +123,48 @@ canvas {
   transform: scale(1.05);
 }
 
-/* ===== BUTTON POSITIONS (Membership & Donate down 300px, Affiliate Links down 200px, About Us down 500px) ===== */
-#button-container .cosmic-btn:nth-child(1) { top: 0%; left: 50%; transform: translate(-50%, -50%); } /* Shop */
-#button-container .cosmic-btn:nth-child(2) { top: 25%; left: 85%; transform: translate(-50%, -50%); } /* Downloads */
-#button-container .cosmic-btn:nth-child(3) { top: calc(75% + 200px); left: 85%; transform: translate(-50%, -50%); } /* Affiliate Links moved down 200px */
-#button-container .cosmic-btn:nth-child(4) { top: calc(50% + 300px); left: 50%; transform: translate(-50%, -50%); } /* Membership moved down 300px */
-#button-container .cosmic-btn:nth-child(5) { top: calc(50% + 500px); left: 0%; transform: translate(-50%, -50%); } /* About Us moved down 500px */
-#button-container .cosmic-btn:nth-child(6) { top: calc(65% + 300px); left: 50%; transform: translate(-50%, -50%); } /* Donate directly under Membership, also down 300px */
+/* ===== BUTTON POSITIONS ===== */
+/* Shop left of Membership */
+#button-container .cosmic-btn:nth-child(1) { 
+  top: calc(50% + 300px); /* vertical same as Membership */
+  left: 25%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Downloads right of About Us */
+#button-container .cosmic-btn:nth-child(2) { 
+  top: calc(50% + 500px); /* vertical same as About Us */
+  left: 25%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Affiliate Links */
+#button-container .cosmic-btn:nth-child(3) { 
+  top: calc(75% + 200px); 
+  left: 85%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Membership */
+#button-container .cosmic-btn:nth-child(4) { 
+  top: calc(50% + 300px); 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* About Us */
+#button-container .cosmic-btn:nth-child(5) { 
+  top: calc(50% + 500px); 
+  left: 0%; 
+  transform: translate(-50%, -50%); 
+}
+
+/* Donate under Membership */
+#button-container .cosmic-btn:nth-child(6) { 
+  top: calc(65% + 300px); 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
 
 </style>
 </head>
