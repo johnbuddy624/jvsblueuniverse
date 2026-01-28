@@ -121,6 +121,7 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
+#home { width: 120px; height: 120px; }
 
 /* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
@@ -188,7 +189,8 @@ canvas {
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
-    
+    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
+
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
@@ -233,30 +235,6 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON EVENTS ===== */
-document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{
-    let target = btn.getAttribute('data-link');
-    if(btn.classList.contains('main-page')) target='index.html';
-    window.location.href=target;
-  });
-});
-
-// ===== DONATE BUTTON PAYPAL LINK =====
-const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{
-  window.open("https://www.paypal.me/JohnBender612", "_blank");
-});
-
-let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
-  paused = !paused;
-  buttonData.forEach((data,i)=>{
-    const btn=document.getElementById(data.id);
-    if(paused) btn.dataset.angle = (360/buttonData.length)*i;
-  });
-});
-
 /* ===== PLANETS ORBITS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
@@ -264,7 +242,7 @@ const buttonData=[
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
   {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
-  {id:'home', distance:160, speed:0.2, stretchX:1, stretchY:1} // home button orbit
+  {id:'home', distance:200, speed:0.15, stretchX:1.05, stretchY:0.95} // added home to orbit
 ];
 
 buttonData.forEach(data=>{
@@ -278,15 +256,18 @@ buttonData.forEach(data=>{
 });
 
 // Animate buttons
+let paused=false;
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
-    if(paused) return;
+    if(!btn) return;
     let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-    angle+=speed;
-    if(angle>360) angle-=360;
-    btn.dataset.angle=angle;
+    if(!paused){ // only move when not paused
+      const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
+      angle+=speed;
+      if(angle>360) angle-=360;
+      btn.dataset.angle=angle;
+    }
     const rad=angle*Math.PI/180;
     const distance=parseFloat(btn.dataset.distance);
     const stretchX=parseFloat(btn.dataset.stretchX);
@@ -298,6 +279,33 @@ function animateButtons(){
   requestAnimationFrame(animateButtons);
 }
 animateButtons();
+
+/* ===== BUTTON EVENTS ===== */
+document.querySelectorAll('.cosmic-btn').forEach(btn=>{
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{
+    window.location.href=btn.getAttribute('data-link');
+  });
+});
+
+// Donate button with PayPal
+const donateBtn = document.getElementById('donate');
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{
+  window.open('https://www.paypal.me/JohnBender612', '_blank');
+});
+
+// Pause half
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+
+  // freeze evenly when paused
+  if(paused){
+    buttonData.forEach((data,i)=>{
+      const btn=document.getElementById(data.id);
+      if(!btn) return;
+      btn.dataset.angle = (360/buttonData.length)*i;
+    });
+  }
+});
 </script>
 
 </body>
