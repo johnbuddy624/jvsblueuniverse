@@ -228,7 +228,7 @@ donateBtn.querySelector('.donate-half').addEventListener('click',()=>{
 let paused = false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
   paused = !paused; 
-  if(paused) spreadButtons(); // spread out when paused
+  if(paused) spreadButtonsDynamic(); // dynamic spread
 });
 
 /* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
@@ -251,8 +251,6 @@ buttonData.forEach(data=>{
 });
 
 function animateButtons(){
-  const centerX=0; 
-  const centerY=0;
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
     if(paused) return;
@@ -273,21 +271,26 @@ function animateButtons(){
 }
 animateButtons();
 
-/* ===== SPREAD BUTTONS TO AVOID COLLISION ===== */
-function spreadButtons(){
-  const spreadDistance = 180; // distance from each other
-  const centerX = 0;
-  const centerY = 0;
+/* ===== DYNAMIC SPREAD FUNCTION ===== */
+function spreadButtonsDynamic(){
+  const centerX=0;
+  const centerY=0;
   const angleStep = 360 / buttonData.length;
+  let safeDistance = 0;
+
+  // Calculate max radius required based on button sizes
+  buttonData.forEach(data=>{
+    const btn = document.getElementById(data.id);
+    const radius = Math.max(btn.offsetWidth, btn.offsetHeight)/2;
+    if(radius>safeDistance) safeDistance = radius;
+  });
+  safeDistance *= 2.5; // padding between buttons
+
   buttonData.forEach((data,index)=>{
     const btn = document.getElementById(data.id);
-    const angle = angleStep * index;
-    const rad = angle*Math.PI/180;
-    const distance = data.distance + 80; // push slightly out
-    const stretchX = parseFloat(data.stretchX);
-    const stretchY = parseFloat(data.stretchY);
-    const x = Math.cos(rad)*distance*stretchX;
-    const y = Math.sin(rad)*distance*stretchY;
+    const rad = (angleStep * index) * Math.PI/180;
+    const x = Math.cos(rad) * safeDistance;
+    const y = Math.sin(rad) * safeDistance;
     btn.style.transform = `translate(${x}px, ${y}px)`;
   });
 }
