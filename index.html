@@ -82,15 +82,17 @@ canvas {
   position: absolute;
   top: 510px;
   left: 50%;
-  width: 0;
-  height: 0;
+  transform: translateX(-50%);
   pointer-events: auto;
   z-index: 10150;
+  display: flex;
+  gap: 30px; /* spacing between buttons */
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* ===== BUTTON STYLES ===== */
 .cosmic-btn {
-  position: absolute;
   font-size: 20px;
   font-weight: bold;
   color: #70c2ff;
@@ -105,8 +107,7 @@ canvas {
   justify-content: center;
   align-items: center;
   padding: 0;
-  word-wrap: break-word;
-  pointer-events: auto; /* ensure buttons are clickable */
+  pointer-events: auto;
 }
 
 .cosmic-btn:hover {
@@ -127,9 +128,6 @@ canvas {
   width: 120px;
   height: 120px;
   z-index: 10160;
-  position: absolute;
-  border-radius: 50%;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -223,54 +221,8 @@ donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.lo
 let paused = false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
   paused = !paused;
-  // Snap planets to evenly spaced angles when paused
-  buttonData.forEach((data,i)=>{
-    const btn=document.getElementById(data.id);
-    if(paused){
-      btn.dataset.angle = (360/buttonData.length)*i;
-    }
-  });
+  // Pause logic can be extended if needed
 });
-
-/* ===== PLANETS ORBITS ===== */
-const buttonData=[
-  {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
-  {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
-  {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
-  {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
-  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
-];
-
-buttonData.forEach(data=>{
-  const btn=document.getElementById(data.id);
-  let angle=Math.random()*360;
-  btn.dataset.angle=angle;
-  btn.dataset.distance=data.distance;
-  btn.dataset.speed=data.speed;
-  btn.dataset.stretchX=data.stretchX;
-  btn.dataset.stretchY=data.stretchY;
-});
-
-function animateButtons(){
-  buttonData.forEach(data=>{
-    const btn=document.getElementById(data.id);
-    if(paused) return; // stop rotation
-    let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-    angle+=speed;
-    if(angle>360) angle-=360;
-    btn.dataset.angle=angle;
-    const rad=angle*Math.PI/180;
-    const distance=parseFloat(btn.dataset.distance);
-    const stretchX=parseFloat(btn.dataset.stretchX);
-    const stretchY=parseFloat(btn.dataset.stretchY);
-    const x=Math.cos(rad)*distance*stretchX;
-    const y=Math.sin(rad)*distance*stretchY;
-    btn.style.transform=`translate(${x}px, ${y}px)`;
-  });
-  requestAnimationFrame(animateButtons);
-}
-animateButtons();
 </script>
 
 </body>
