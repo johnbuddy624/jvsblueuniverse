@@ -26,14 +26,14 @@ canvas {
   position: fixed;       /* independent layer */
   top: 50%;
   left: 50%;
-  transform: translate(-50%, calc(-50% - 100px)); /* original vertical position */
+  transform: translate(-50%, -50%); /* center exactly */
   text-align: center;
   pointer-events: none;
   z-index: 9999;         /* above all background effects */
 }
 
 #jv {
-  font-size: 160px; /* unchanged */
+  font-size: 160px;
   font-weight: 900;
   margin-bottom: 20px; /* spacing between lines */
   color: rgba(79,179,255,0.45);
@@ -41,19 +41,19 @@ canvas {
     2px 2px 4px rgba(0,0,0,0.9),
     0 0 12px rgba(79,179,255,0.7),
     0 0 30px rgba(79,179,255,0.4);
-  position: relative; /* independent movement */
-  top: -20px;         /* move up 20px */
+  position: relative;   /* independent movement */
+  top: -20px;           /* move J&V’s up 20px */
 }
 
 #blue-universe {
-  font-size: 100px; /* unchanged */
+  font-size: 100px;
   font-weight: 500;
   color: #4fb3ff;
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 12px rgba(79,179,255,0.6),
     0 0 28px rgba(79,179,255,0.35);
-  white-space: nowrap; /* stay on one line */
+  white-space: nowrap;
 }
 </style>
 </head>
@@ -163,7 +163,6 @@ function draw() {
     n.x += n.dx;
     n.y += n.dy;
 
-    // glow halo
     const glowRadius = n.r * n.z * 1.2;
     const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowRadius);
     grad.addColorStop(0, `hsla(${n.hue},70%,70%,0.03)`);
@@ -173,7 +172,6 @@ function draw() {
     ctx.arc(n.x, n.y, glowRadius, 0, Math.PI*2);
     ctx.fill();
 
-    // cloud particles with depth scaling
     n.particles.forEach(p=>{
       const px = n.x + (p.x - n.x) * n.z + (Math.random()-0.5)*n.r*n.z;
       const py = n.y + (p.y - n.y) * n.z + (Math.random()-0.5)*n.r*n.z;
@@ -184,7 +182,6 @@ function draw() {
       ctx.fill();
     });
 
-    // nebula-bound stars orbiting center
     n.stars.forEach(s=>{
       s.angle += s.speed;
       const sx = n.x + Math.cos(s.angle)*s.radius*n.z;
