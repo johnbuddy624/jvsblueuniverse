@@ -80,23 +80,23 @@ canvas {
 /* ===== BUTTON CONTAINER ===== */
 #button-container {
   position: absolute;
-  top: 400px; /* Adjust as needed */
+  top: 510px;
   left: 50%;
-  transform: translateX(-50%);
+  width: 0;
+  height: 0;
   pointer-events: auto;
   z-index: 10150;
-  display: flex;
-  gap: 30px; /* spacing between buttons */
 }
 
 /* ===== BUTTON STYLES ===== */
 .cosmic-btn {
+  position: absolute;
   font-size: 20px;
   font-weight: bold;
   color: #70c2ff;
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
-  border-radius: 15px; /* slightly rounded corners */
+  border-radius: 20px; /* Updated corners */
   text-align: center;
   cursor: pointer;
   box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
@@ -104,7 +104,9 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 30px;
+  padding: 0;
+  word-wrap: break-word;
+  pointer-events: auto; /* ensure buttons are clickable */
 }
 
 .cosmic-btn:hover {
@@ -113,12 +115,23 @@ canvas {
   transform: scale(1.05);
 }
 
-/* ===== DONATE BUTTON ===== */
+/* ===== INDIVIDUAL BUTTON SIZES ===== */
+#shop { width: 120px; height: 120px; }
+#downloads { width: 140px; height: 140px; }
+#affiliate { width: 160px; height: 160px; }
+#membership { width: 150px; height: 150px; }
+#about { width: 130px; height: 130px; }
+
+/* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
+  width: 120px;
+  height: 120px;
+  z-index: 10160;
+  position: absolute;
+  border-radius: 20px; /* Keep corners rounded like others */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-radius: 15px; /* match rectangular style */
-  overflow: hidden;
 }
 
 #donate div {
@@ -210,7 +223,53 @@ donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.lo
 let paused = false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
   paused = !paused;
+  buttonData.forEach((data,i)=>{
+    const btn=document.getElementById(data.id);
+    if(paused){
+      btn.dataset.angle = (360/buttonData.length)*i;
+    }
+  });
 });
+
+/* ===== PLANETS ORBITS ===== */
+const buttonData=[
+  {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
+  {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
+  {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
+  {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
+  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
+];
+
+buttonData.forEach(data=>{
+  const btn=document.getElementById(data.id);
+  let angle=Math.random()*360;
+  btn.dataset.angle=angle;
+  btn.dataset.distance=data.distance;
+  btn.dataset.speed=data.speed;
+  btn.dataset.stretchX=data.stretchX;
+  btn.dataset.stretchY=data.stretchY;
+});
+
+function animateButtons(){
+  buttonData.forEach(data=>{
+    const btn=document.getElementById(data.id);
+    if(paused) return;
+    let angle=parseFloat(btn.dataset.angle);
+    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
+    angle+=speed;
+    if(angle>360) angle-=360;
+    btn.dataset.angle=angle;
+    const rad=angle*Math.PI/180;
+    const distance=parseFloat(btn.dataset.distance);
+    const stretchX=parseFloat(btn.dataset.stretchX);
+    const stretchY=parseFloat(btn.dataset.stretchY);
+    const x=Math.cos(rad)*distance*stretchX;
+    const y=Math.sin(rad)*distance*stretchY;
+    btn.style.transform=`translate(${x}px, ${y}px)`;
+  });
+  requestAnimationFrame(animateButtons);
+}
+animateButtons();
 </script>
 
 </body>
