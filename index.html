@@ -90,29 +90,29 @@ canvas {
   100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
 }
 
-/* ===== BUTTON CONTAINER ===== */
+/* ===== BUTTON CONTAINER (CIRCULAR) ===== */
 #button-container {
   position: absolute;
-  top: 350px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  z-index: 10150;
+  width: 400px;  /* diameter of circle */
+  height: 400px;
+  transform: translate(-50%, -50%);
   pointer-events: auto;
+  z-index: 10150;
 }
 
 .cosmic-btn {
-  padding: 15px 50px;
-  font-size: 24px;
+  position: absolute;
+  padding: 10px 30px; /* smaller */
+  font-size: 20px;
   font-weight: bold;
   color: #70c2ff;
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
-  border-radius: 15px;
-  cursor: pointer;
+  border-radius: 12px;
   text-align: center;
+  cursor: pointer;
   box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
   transition: all 0.3s ease-in-out;
 }
@@ -122,6 +122,13 @@ canvas {
   box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
   transform: scale(1.05);
 }
+
+/* POSITION BUTTONS IN CIRCLE */
+#button-container .cosmic-btn:nth-child(1) { top: 0%; left: 50%; transform: translate(-50%, -50%); }
+#button-container .cosmic-btn:nth-child(2) { top: 25%; left: 85%; transform: translate(-50%, -50%); }
+#button-container .cosmic-btn:nth-child(3) { top: 75%; left: 85%; transform: translate(-50%, -50%); }
+#button-container .cosmic-btn:nth-child(4) { top: 100%; left: 50%; transform: translate(-50%, -50%); }
+#button-container .cosmic-btn:nth-child(5) { top: 50%; left: 0%; transform: translate(-50%, -50%); }
 </style>
 </head>
 
