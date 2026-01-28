@@ -155,23 +155,12 @@ canvas {
 /* Optional: separate border between halves */
 #donate .pause-half { border-bottom: none; }
 #donate .donate-half { border-top: none; }
-
-/* ===== SUN FLAME CANVAS ===== */
-#flame-canvas {
-  position: absolute;
-  pointer-events: none;
-  z-index: 10170;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
 </style>
 </head>
 
 <body>
 
 <canvas id="space"></canvas>
-<canvas id="flame-canvas" width="200" height="200"></canvas>
 
 <div id="logo-wrapper">
   <div id="jv">J&V’s</div>
@@ -192,24 +181,24 @@ canvas {
 </div>
 
 <script>
-/* ===== SPACE CANVAS (unchanged) ===== */
+/* ===== SPACE CANVAS ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
-function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
-window.addEventListener("resize",resize);resize();
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+window.addEventListener("resize", resize); resize();
 let px=0, py=0;
-window.addEventListener("deviceorientation",e=>{px=(e.gamma||0)/45;py=(e.beta||0)/45;});
+window.addEventListener("deviceorientation", e=>{ px=(e.gamma||0)/45; py=(e.beta||0)/45; });
 
-const stars=Array.from({length:360},()=>({x:Math.random()*w,y:Math.random()*h,z:Math.random()*0.8+0.2,a:Math.random(),r:Math.random()*2+2}));
-const nebulae=Array.from({length:2},()=>{
+const stars = Array.from({length:360},()=>({x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2, a:Math.random(), r:Math.random()*2+2}));
+const nebulae = Array.from({length:2},()=>{
   const hue=210+Math.random()*60;
   const z=Math.random()+0.5;
   return { x: Math.random()*w, y: Math.random()*h, r: Math.random()*500+400, dx:(Math.random()-0.5)*0.04, dy:(Math.random()-0.5)*0.04, z, hue, color:`hsla(${hue},70%,50%,0.07)`, particles:Array.from({length:Math.floor(Math.random()*80)+150},()=>({x:Math.random()*4+1,y:Math.random()*4+1})), stars:Array.from({length:Math.floor(Math.random()*50)+50},()=>({angle:Math.random()*Math.PI*2, radius:Math.random()*180+80, size:Math.random()*1+0.2, alpha:Math.random()*0.5+0.1, speed:(Math.random()-0.5)*0.001})) };
 });
 
 let shootingStars=[];
-function spawnShootingStar(){ const z=Math.random()*0.8+0.2; const fireball=Math.random()<0.01; shootingStars.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()*10-5)*z,vy:(Math.random()*10-5)*z,z,fireball,width:fireball?Math.random()*2+4:Math.random()*1.2+1.4,color: fireball?"255,180,80":"255,255,255"}); }
+function spawnShootingStar(){ const z=Math.random()*0.8+0.2; const fireball=Math.random()<0.01; shootingStars.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()*10-5)*z, vy:(Math.random()*10-5)*z, z, fireball, width:fireball?Math.random()*2+4:Math.random()*1.2+1.4, color: fireball?"255,180,80":"255,255,255"}); }
 setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
 
 function draw(){
@@ -233,12 +222,9 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
 const donateBtn = document.getElementById('donate');
 donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
 let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
-  paused = !paused; 
-  if(paused) arrangeEvenly(); // when paused, planets spread evenly
-});
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused=!paused; arrangePlanetsOnPause(); });
 
-/* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
+/* ===== PLANET DATA ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
@@ -257,8 +243,9 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
+/* ===== PLANET ANIMATION ===== */
 function animateButtons(){
-  const centerX=0;
+  const centerX=0; 
   const centerY=0;
   buttonData.forEach((data,i)=>{
     const btn=document.getElementById(data.id);
@@ -280,16 +267,17 @@ function animateButtons(){
 }
 animateButtons();
 
-/* ===== EVENLY SPREAD PLANETS WHEN PAUSED ===== */
-function arrangeEvenly(){
-  const total = buttonData.length;
+/* ===== ARRANGE PLANETS EVENLY ON PAUSE ===== */
+function arrangePlanetsOnPause(){
+  if(!paused) return;
+  const step = 360 / buttonData.length;
   buttonData.forEach((data,i)=>{
     const btn=document.getElementById(data.id);
-    const angle = i * (360/total);
-    const rad = angle*Math.PI/180;
-    const distance = parseFloat(btn.dataset.distance);
-    const stretchX = parseFloat(btn.dataset.stretchX);
-    const stretchY = parseFloat(btn.dataset.stretchY);
+    const angle = step*i;
+    const rad=angle*Math.PI/180;
+    const distance=parseFloat(btn.dataset.distance);
+    const stretchX=parseFloat(btn.dataset.stretchX);
+    const stretchY=parseFloat(btn.dataset.stretchY);
     const x=Math.cos(rad)*distance*stretchX;
     const y=Math.sin(rad)*distance*stretchY;
     btn.style.transform=`translate(${x}px, ${y}px)`;
@@ -298,39 +286,50 @@ function arrangeEvenly(){
 }
 
 /* ===== SUN FLAMES ===== */
-const flameCanvas = document.getElementById('flame-canvas');
-const fCtx = flameCanvas.getContext('2d');
-const flames = Array.from({length:40}, ()=>({
+const flameCanvas=document.createElement('canvas');
+flameCanvas.style.position='fixed';
+flameCanvas.style.top='0';
+flameCanvas.style.left='0';
+flameCanvas.style.pointerEvents='none';
+flameCanvas.style.zIndex=10155;
+document.body.appendChild(flameCanvas);
+const fCtx=flameCanvas.getContext('2d');
+
+function resizeFlame(){ flameCanvas.width=window.innerWidth; flameCanvas.height=window.innerHeight; }
+window.addEventListener('resize', resizeFlame);
+resizeFlame();
+
+let flames=Array.from({length:50},()=>({
   angle: Math.random()*Math.PI*2,
-  length: 20+Math.random()*30,
-  curl: (Math.random()-0.5)*0.5,
-  speed: 0.01 + Math.random()*0.02,
-  offset: Math.random()*2*Math.PI,
-  color: `hsla(${30+Math.random()*40},100%,50%,${0.6+Math.random()*0.4})`
+  radius: 60 + Math.random()*30,
+  length: 15 + Math.random()*15,
+  speed: (Math.random()-0.5)*0.02,
+  curl: Math.random()*0.5
 }));
 
 function drawFlames(){
-  const rect = donateBtn.getBoundingClientRect();
-  const cx = rect.left + rect.width/2;
-  const cy = rect.top + rect.height/2;
-  flameCanvas.width = flameCanvas.width; // clear
-  fCtx.translate(cx, cy);
+  fCtx.clearRect(0,0,flameCanvas.width,flameCanvas.height);
+  const donateRect=donateBtn.getBoundingClientRect();
+  const centerX=donateRect.left + donateRect.width/2;
+  const centerY=donateRect.top + donateRect.height/2;
   flames.forEach(f=>{
-    f.angle += f.speed;
+    f.angle+=f.speed;
+    const x=centerX + Math.cos(f.angle)*f.radius;
+    const y=centerY + Math.sin(f.angle)*f.radius;
+    const curlX=Math.cos(f.angle*f.curl)*f.length;
+    const curlY=Math.sin(f.angle*f.curl)*f.length;
+    const grad=fCtx.createRadialGradient(x+curlX,y+curlY,1,x+curlX,y+curlY,f.length);
+    grad.addColorStop(0,'rgba(255,255,100,1)');
+    grad.addColorStop(0.5,'rgba(255,150,0,0.7)');
+    grad.addColorStop(1,'rgba(255,50,0,0)');
+    fCtx.fillStyle=grad;
     fCtx.beginPath();
-    const x = Math.cos(f.angle+f.offset)*(rect.width/2);
-    const y = Math.sin(f.angle+f.offset)*(rect.height/2);
-    fCtx.moveTo(x,y);
-    fCtx.lineTo(x + f.curl*15, y - f.length);
-    fCtx.strokeStyle = f.color;
-    fCtx.lineWidth = 2;
-    fCtx.stroke();
+    fCtx.arc(x+curlX,y+curlY,4,0,Math.PI*2);
+    fCtx.fill();
   });
-  fCtx.setTransform(1,0,0,1,0,0);
   requestAnimationFrame(drawFlames);
 }
 drawFlames();
-
 </script>
 
 </body>
