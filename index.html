@@ -34,7 +34,7 @@ canvas {
 #jv {
   font-size: 160px;
   font-weight: 900;
-  color: rgba(79,179,255,0.45);
+  color: rgba(79,179,255,1);
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 10px rgba(79,179,255,0.6),
@@ -46,12 +46,13 @@ canvas {
   transform: translateX(-50%);
   z-index: 10100;
 
-  /* ===== PULSING DEPTH EFFECT ===== */
+  /* ===== FULL SURFACE PULSE (opacity + glow + scale) ===== */
   animation: jv-breathe 3s ease-in-out infinite;
 }
 
 @keyframes jv-breathe {
-  0%,100% {
+  0%, 100% {
+    opacity: 0.2; /* almost transparent */
     transform: translateX(-50%) scale(1);
     text-shadow:
       2px 2px 4px rgba(0,0,0,0.85),
@@ -59,7 +60,8 @@ canvas {
       0 0 25px rgba(79,179,255,0.35);
   }
   50% {
-    transform: translateX(-50%) scale(1.03); /* slightly smaller max scale */
+    opacity: 1; /* fully visible */
+    transform: translateX(-50%) scale(1.03); /* subtle forward pulse */
     text-shadow:
       2.5px 2.5px 5px rgba(0,0,0,0.9),
       0 0 15px rgba(79,179,255,0.7),
@@ -67,11 +69,11 @@ canvas {
   }
 }
 
-/* ===== BLUE UNIVERSE TEXT ===== */
+/* ===== BLUE UNIVERSE TEXT (unchanged) ===== */
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
-  color: #70c2ff; /* slightly brighter */
+  color: #70c2ff;
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
     0 0 12px rgba(79,179,255,0.65),
@@ -84,7 +86,6 @@ canvas {
   transform: translateX(-50%);
   z-index: 9000;
 
-  /* ===== SUBTLE GLOW PULSE ===== */
   animation: blue-breathe 3s ease-in-out infinite alternate;
 }
 
