@@ -152,13 +152,8 @@ canvas {
   box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
 }
 
-/* Optional: separate border between halves */
-#donate .pause-half {
-  border-bottom: none;
-}
-#donate .donate-half {
-  border-top: none;
-}
+#donate .pause-half { border-bottom: none; }
+#donate .donate-half { border-top: none; }
 
 </style>
 </head>
@@ -233,6 +228,7 @@ donateBtn.querySelector('.donate-half').addEventListener('click',()=>{
 let paused = false;
 donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
   paused = !paused; 
+  if(paused) spreadButtons(); // spread out when paused
 });
 
 /* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
@@ -276,6 +272,25 @@ function animateButtons(){
   requestAnimationFrame(animateButtons);
 }
 animateButtons();
+
+/* ===== SPREAD BUTTONS TO AVOID COLLISION ===== */
+function spreadButtons(){
+  const spreadDistance = 180; // distance from each other
+  const centerX = 0;
+  const centerY = 0;
+  const angleStep = 360 / buttonData.length;
+  buttonData.forEach((data,index)=>{
+    const btn = document.getElementById(data.id);
+    const angle = angleStep * index;
+    const rad = angle*Math.PI/180;
+    const distance = data.distance + 80; // push slightly out
+    const stretchX = parseFloat(data.stretchX);
+    const stretchY = parseFloat(data.stretchY);
+    const x = Math.cos(rad)*distance*stretchX;
+    const y = Math.sin(rad)*distance*stretchY;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+  });
+}
 </script>
 
 </body>
