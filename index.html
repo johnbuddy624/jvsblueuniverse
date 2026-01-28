@@ -2,7 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe</title>
+<title>J&V’s Blue Universe | Explore Opportunity Without Pressure</title>
+
+<!-- META TAGS FOR GOOGLE -->
+<meta name="description" content="A calm place to explore opportunity without hype or pressure. Discover clarity, direction, and a smarter way to start at your own pace.">
+
+<!-- OPEN GRAPH / SOCIAL SHARING -->
+<meta property="og:title" content="J&V’s Blue Universe">
+<meta property="og:description" content="Explore opportunity without pressure or hype.">
+<meta property="og:type" content="website">
+
 <style>
 html, body {
   margin: 0;
@@ -14,6 +23,7 @@ html, body {
   font-family: "Segoe UI", sans-serif;
 }
 
+/* Canvas background */
 canvas {
   position: fixed;
   inset: 0;
@@ -45,9 +55,6 @@ canvas {
   transform: translateX(-50%);
   z-index: 10100;
   animation: jv-breathe 3s ease-in-out infinite;
-
-  /* ✅ Fix for clickable buttons behind text */
-  pointer-events: none;
 }
 
 @keyframes jv-breathe {
@@ -71,9 +78,6 @@ canvas {
   transform: translateX(-50%);
   z-index: 9000;
   animation: blue-breathe 3s ease-in-out infinite alternate;
-
-  /* ✅ Fix for clickable buttons behind text */
-  pointer-events: none;
 }
 
 @keyframes blue-breathe {
@@ -111,6 +115,7 @@ canvas {
   align-items: center;
   padding: 0;
   word-wrap: break-word;
+  pointer-events: auto;
 }
 
 .cosmic-btn:hover {
@@ -125,6 +130,7 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
+#home { width: 120px; height: 120px; }
 
 /* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
@@ -158,16 +164,26 @@ canvas {
   box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
 }
 
-/* Optional: separate border between halves */
-#donate .pause-half {
-  border-bottom: none;
-}
-#donate .donate-half {
-  border-top: none;
+#donate .pause-half { border-bottom: none; }
+#donate .donate-half { border-top: none; }
+
+/* ===== PAGE CONTENT ===== */
+#page-content {
+  position: absolute;
+  top: 240px; /* moved up 60px */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 900px;
+  text-align: center;
+  font-size: 28px;
+  line-height: 1.6;
+  color: #70c2ff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
+  z-index: 10000;
 }
 </style>
 </head>
-
 <body>
 
 <canvas id="space"></canvas>
@@ -177,6 +193,7 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
+    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
     <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
     <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
@@ -190,12 +207,16 @@ canvas {
   </div>
 </div>
 
+<div id="page-content">
+  <p>[PAGE CONTENT GOES HERE]</p>
+</div>
+
 <script>
 /* ===== SPACE CANVAS ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w, h;
-function resize() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+let w,h;
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
 window.addEventListener("resize", resize); resize();
 let px=0, py=0;
 window.addEventListener("deviceorientation", e=>{ px=(e.gamma||0)/45; py=(e.beta||0)/45; });
@@ -223,25 +244,29 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON CLICK EVENTS ===== */
+/* ===== BUTTON EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') {
-    btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
-  }
+  if(btn.id!=='donate') btn.addEventListener('click',()=>{
+    let target = btn.getAttribute('data-link');
+    if(btn.classList.contains('main-page')) target='index.html';
+    window.location.href=target;
+  });
 });
 
-/* ===== DONATE + PAUSE SPLIT FUNCTION ===== */
 const donateBtn = document.getElementById('donate');
-donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ 
-  window.location.href='donate.html'; 
-});
+donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='https://www.paypal.me/JohnBender612'; });
 let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ 
-  paused = !paused; 
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
+  paused = !paused;
+  buttonData.forEach((data,i)=>{
+    const btn=document.getElementById(data.id);
+    if(paused) btn.dataset.angle = (360/buttonData.length)*i;
+  });
 });
 
-/* ===== RANDOM SPAWN ANGLES + ELLIPTICAL ORBITS ===== */
+/* ===== PLANETS ORBITS ===== */
 const buttonData=[
+  {id:'home', distance:140, speed:0.2, stretchX:1.1, stretchY:0.9},
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
@@ -260,8 +285,6 @@ buttonData.forEach(data=>{
 });
 
 function animateButtons(){
-  const centerX=0; 
-  const centerY=0;
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
     if(paused) return;
