@@ -36,9 +36,9 @@ canvas {
   font-weight: 900;
   color: rgba(79,179,255,0.45);
   text-shadow:
-    2px 2px 4px rgba(0,0,0,0.9),
-    0 0 12px rgba(79,179,255,0.7),
-    0 0 30px rgba(79,179,255,0.4);
+    2px 2px 4px rgba(0,0,0,0.85),
+    0 0 10px rgba(79,179,255,0.6),
+    0 0 25px rgba(79,179,255,0.35);
 
   position: absolute;
   top: 20px;
@@ -54,16 +54,16 @@ canvas {
   0%,100% {
     transform: translateX(-50%) scale(1);
     text-shadow:
-      2px 2px 4px rgba(0,0,0,0.9),
-      0 0 12px rgba(79,179,255,0.7),
-      0 0 30px rgba(79,179,255,0.4);
+      2px 2px 4px rgba(0,0,0,0.85),
+      0 0 10px rgba(79,179,255,0.6),
+      0 0 25px rgba(79,179,255,0.35);
   }
   50% {
-    transform: translateX(-50%) scale(1.05); /* pulsing forward */
+    transform: translateX(-50%) scale(1.03); /* slightly smaller max scale */
     text-shadow:
-      3px 3px 6px rgba(0,0,0,1),
-      0 0 18px rgba(79,179,255,0.9),
-      0 0 45px rgba(79,179,255,0.6);
+      2.5px 2.5px 5px rgba(0,0,0,0.9),
+      0 0 15px rgba(79,179,255,0.7),
+      0 0 35px rgba(79,179,255,0.45);
   }
 }
 
@@ -71,11 +71,11 @@ canvas {
 #blue-universe {
   font-size: 100px;
   font-weight: 500;
-  color: #4fb3ff;
+  color: #70c2ff; /* slightly brighter */
   text-shadow:
     2px 2px 4px rgba(0,0,0,0.85),
-    0 0 12px rgba(79,179,255,0.6),
-    0 0 28px rgba(79,179,255,0.35);
+    0 0 12px rgba(79,179,255,0.65),
+    0 0 28px rgba(79,179,255,0.4);
   white-space: nowrap;
 
   position: absolute;
@@ -90,27 +90,27 @@ canvas {
 
 @keyframes blue-breathe {
   0% {
-    opacity: 0.7;
+    opacity: 0.85;
     text-shadow:
       2px 2px 4px rgba(0,0,0,0.85),
-      0 0 12px rgba(79,179,255,0.6),
-      0 0 28px rgba(79,179,255,0.35);
+      0 0 12px rgba(79,179,255,0.65),
+      0 0 28px rgba(79,179,255,0.4);
     transform: translateX(-50%) scale(1);
   }
   50% {
     opacity: 1;
     text-shadow:
-      3px 3px 6px rgba(0,0,0,0.9),
-      0 0 18px rgba(79,179,255,0.8),
-      0 0 40px rgba(79,179,255,0.5);
+      3px 3px 5px rgba(0,0,0,0.9),
+      0 0 18px rgba(79,179,255,0.85),
+      0 0 38px rgba(79,179,255,0.5);
     transform: translateX(-50%) scale(1.02);
   }
   100% {
-    opacity: 0.7;
+    opacity: 0.85;
     text-shadow:
       2px 2px 4px rgba(0,0,0,0.85),
-      0 0 12px rgba(79,179,255,0.6),
-      0 0 28px rgba(79,179,255,0.35);
+      0 0 12px rgba(79,179,255,0.65),
+      0 0 28px rgba(79,179,255,0.4);
     transform: translateX(-50%) scale(1);
   }
 }
