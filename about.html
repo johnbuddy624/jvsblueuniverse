@@ -106,6 +106,7 @@ canvas {
   align-items: center;
   padding: 0;
   word-wrap: break-word;
+  pointer-events: auto; /* Ensure buttons are clickable even with text over them */
 }
 
 .cosmic-btn:hover {
@@ -159,7 +160,7 @@ canvas {
 /* ===== ABOUT US TEXT ===== */
 #about-text {
   position: absolute;
-  top: 300px;
+  top: 315px; /* Moved down 15px */
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -170,7 +171,7 @@ canvas {
   color: #70c2ff;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
   z-index: 10000;
-  pointer-events: none; /* <-- allows clicks to pass through text */
+  pointer-events: none; /* Ensure text does NOT block button clicks */
 }
 </style>
 </head>
@@ -187,7 +188,7 @@ canvas {
     <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
     <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate Links</div>
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
-    <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
+    <div class="cosmic-btn" id="about" data-link="index.html">Home</div>
     
     <div class="cosmic-btn" id="donate">
       <div class="pause-half">⏸</div>
