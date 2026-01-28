@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe</title>
+<title>About – J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -106,7 +106,7 @@ canvas {
   align-items: center;
   padding: 0;
   word-wrap: break-word;
-  pointer-events: auto; /* ensure buttons are clickable */
+  pointer-events: auto;
 }
 
 .cosmic-btn:hover {
@@ -121,6 +121,7 @@ canvas {
 #affiliate { width: 160px; height: 160px; }
 #membership { width: 150px; height: 150px; }
 #about { width: 130px; height: 130px; }
+#home { width: 130px; height: 130px; }
 
 /* ===== DONATE + PAUSE SPLIT BUTTON ===== */
 #donate {
@@ -156,6 +157,22 @@ canvas {
 
 #donate .pause-half { border-bottom: none; }
 #donate .donate-half { border-top: none; }
+
+/* ===== PAGE CONTENT ===== */
+#page-content {
+  position: absolute;
+  top: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 900px;
+  text-align: center;
+  font-size: 28px;
+  line-height: 1.6;
+  color: #70c2ff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.85);
+  z-index: 10000;
+}
 </style>
 </head>
 <body>
@@ -177,15 +194,21 @@ canvas {
       <div class="pause-half">⏸</div>
       <div class="donate-half">Donate</div>
     </div>
+    
+    <div class="cosmic-btn" id="home" data-link="index.html">Home</div>
   </div>
+</div>
+
+<div id="page-content">
+  <p>Welcome to J&V’s Blue Universe! We’re a team of passionate cosmic explorers dedicated to bringing you the magic of the universe. Here you can learn about our journey, our mission, and how we strive to create a world filled with wonder and discovery. Thank you for joining us among the stars!</p>
 </div>
 
 <script>
 /* ===== SPACE CANVAS ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w, h;
-function resize() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+let w,h;
+function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
 window.addEventListener("resize", resize); resize();
 let px=0, py=0;
 window.addEventListener("deviceorientation", e=>{ px=(e.gamma||0)/45; py=(e.beta||0)/45; });
@@ -215,22 +238,13 @@ draw();
 
 /* ===== BUTTON EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(btn.id!=='donate') btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
+  btn.addEventListener('click',()=>{ window.location.href=btn.getAttribute('data-link'); });
 });
 
 const donateBtn = document.getElementById('donate');
 donateBtn.querySelector('.donate-half').addEventListener('click',()=>{ window.location.href='donate.html'; });
 let paused = false;
-donateBtn.querySelector('.pause-half').addEventListener('click',()=>{
-  paused = !paused;
-  // Snap planets to evenly spaced angles when paused
-  buttonData.forEach((data,i)=>{
-    const btn=document.getElementById(data.id);
-    if(paused){
-      btn.dataset.angle = (360/buttonData.length)*i;
-    }
-  });
-});
+donateBtn.querySelector('.pause-half').addEventListener('click',()=>{ paused = !paused; });
 
 /* ===== PLANETS ORBITS ===== */
 const buttonData=[
@@ -238,7 +252,8 @@ const buttonData=[
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
   {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
   {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
-  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
+  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85},
+  {id:'home', distance:380, speed:0.07, stretchX:1.1, stretchY:0.9}
 ];
 
 buttonData.forEach(data=>{
@@ -254,7 +269,7 @@ buttonData.forEach(data=>{
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
-    if(paused) return; // stop rotation
+    if(paused) return;
     let angle=parseFloat(btn.dataset.angle);
     const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
     angle+=speed;
