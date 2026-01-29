@@ -1,257 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>J&V’s Blue Universe</title>
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  background: black;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  font-family: "Segoe UI", sans-serif;
-}
+Here is our official communication rules:
 
-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
-
-#logo-wrapper {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 9999;
-}
-
-#jv {
-  font-size: 160px;
-  font-weight: 900;
-  color: rgba(79,179,255,1);
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.85),
-               0 0 10px rgba(79,179,255,0.6),
-               0 0 25px rgba(79,179,255,0.35);
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: jv-breathe 3s ease-in-out infinite;
-}
-
-@keyframes jv-breathe {
-  0%,100% { opacity: 0.3; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
-}
-
-#blue-universe {
-  font-size: 100px;
-  color: #70c2ff;
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: blue-breathe 3s ease-in-out infinite alternate;
-}
-
-@keyframes blue-breathe {
-  0% { opacity: 0.85; }
-  50% { opacity: 1; }
-  100% { opacity: 0.85; }
-}
-
-#button-container {
-  position: absolute;
-  top: 510px;
-  left: 50%;
-  width: 0;
-  height: 0;
-  pointer-events: auto;
-}
-
-.cosmic-btn {
-  position: absolute;
-  width: 130px;
-  height: 130px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #70c2ff;
-  background: rgba(0,0,0,0.25);
-  border: 2px solid #70c2ff;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 0 10px #70c2ff;
-}
-
-.cosmic-btn:hover {
-  transform: scale(1.05);
-}
-
-#donate {
-  width: 120px;
-  height: 120px;
-  display: flex;
-  flex-direction: column;
-}
-#donate div {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
-</head>
-
-<body>
-<canvas id="space"></canvas>
-
-<div id="logo-wrapper">
-  <div id="jv">J&V’s</div>
-  <div id="blue-universe">Blue Universe</div>
-
-  <div id="button-container">
-    <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
-    <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
-    <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate</div>
-    <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
-    <div class="cosmic-btn" id="about" data-link="about.html">About</div>
-    <div class="cosmic-btn" id="donate">
-      <div>⏸</div>
-      <div>Donate</div>
-    </div>
-  </div>
-</div>
-
-<script>
-const canvas = document.getElementById("space");
-const ctx = canvas.getContext("2d");
-let w, h;
-
-function resize(){
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resize);
-resize();
-
-/* ===== STARS ===== */
-const stars = Array.from({length:360},()=>({
-  x:Math.random()*w,
-  y:Math.random()*h,
-  z:Math.random()*0.8+0.2,
-  r:Math.random()*2+1,
-  a:Math.random()
-}));
-
-/* ===== SHOOTING STARS ===== */
-let shootingStars=[];
-function spawnShootingStar(){
-  shootingStars.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
-    vx:(Math.random()*6-3),
-    vy:(Math.random()*6-3),
-    life:60
-  });
-}
-setInterval(()=>Math.random()<0.3&&spawnShootingStar(),4000);
-
-/* ===== COSMIC WORM ===== */
-const worm = {
-  x: Math.random()*w,
-  y: Math.random()*h,
-  angle: Math.random()*Math.PI*2,
-  speed: 0.6,
-  segments: Array.from({length:20},(_,i)=>({
-    x:0,y:0,r:6-i*0.25
-  }))
-};
-
-function drawWorm(){
-  worm.angle += (Math.random()-0.5)*0.05;
-  worm.x += Math.cos(worm.angle)*worm.speed;
-  worm.y += Math.sin(worm.angle)*worm.speed;
-
-  if(worm.x<-50)worm.x=w+50;
-  if(worm.x>w+50)worm.x=-50;
-  if(worm.y<-50)worm.y=h+50;
-  if(worm.y>h+50)worm.y=-50;
-
-  let px=worm.x, py=worm.y;
-  worm.segments.forEach((s,i)=>{
-    s.x += (px-s.x)*0.25;
-    s.y += (py-s.y)*0.25;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(120,200,255,${0.9-i*0.03})`;
-    ctx.fill();
-    px=s.x; py=s.y;
-  });
-}
-
-function draw(){
-  ctx.clearRect(0,0,w,h);
-
-  stars.forEach(s=>{
-    ctx.globalAlpha=s.a*s.z;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
-    ctx.fillStyle="white";
-    ctx.fill();
-  });
-  ctx.globalAlpha=1;
-
-  drawWorm();
-
-  shootingStars.forEach((s,i)=>{
-    ctx.strokeStyle="rgba(255,255,255,0.8)";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(s.x,s.y);
-    ctx.lineTo(s.x-s.vx*10,s.y-s.vy*10);
-    ctx.stroke();
-    s.x+=s.vx;
-    s.y+=s.vy;
-    if(--s.life<=0) shootingStars.splice(i,1);
-  });
-
-  requestAnimationFrame(draw);
-}
-draw();
-
-/* ===== BUTTON ORBITS ===== */
-const buttons=[
-  {id:"shop",d:180,s:0.18},
-  {id:"downloads",d:220,s:0.14},
-  {id:"affiliate",d:260,s:0.12},
-  {id:"membership",d:300,s:0.1},
-  {id:"about",d:340,s:0.08}
-];
-
-buttons.forEach(b=>{
-  const el=document.getElementById(b.id);
-  let a=Math.random()*360;
-  function orbit(){
-    a+=b.s;
-    const r=a*Math.PI/180;
-    el.style.transform=`translate(${Math.cos(r)*b.d}px,${Math.sin(r)*b.d}px)`;
-    requestAnimationFrame(orbit);
-  }
-  orbit();
-});
-
-document.querySelectorAll(".cosmic-btn").forEach(btn=>{
-  if(btn.dataset.link){
-    btn.onclick=()=>location.href=btn.dataset.link;
-  }
-});
-</script>
-</body>
-</html>
+🔒 Our New Rule Set (so nothing good gets lost)
+Rule 1: One Change = One Action
+We only change one clearly named thing at a time. No bundles. No “while you’re in there.”
+Example:
+“Change: Move J&V’s down slightly.”
+That’s it. Nothing else moves.
+Rule 2: We Declare “Locked” Elements
+Anything you like stays frozen unless you explicitly unlock it.
+You say:
+“LOCK: Blue Universe position & animation”
+I will treat that as hands off.
+Rule 3: Before Coding, I Repeat Back
+Before I touch code, I’ll respond with:
+✔️ What stays exactly the same
+🔧 What will change (one item)
+🚫 What I will NOT touch
+Only after you say “Proceed” do I send code.
+This prevents accidental upgrades turning into regressions.
+Rule 4: Visual Direction, Not Vibes
+Instead of “a little / more / less,” we use directional intent:
+“Down by a noticeable amount”
+“Visually centered behind”
+“Spawn only from edges”
+“Rare = once every ~30–60 seconds”
+That gives me precision without guesswork.
+Rule 5: Version Mindset
+Every step is an upgrade branch, not a replacement.
+If something feels worse, we don’t panic—we say:
+“Revert X to previous behavior”
+No ego. No loss. Just evolution.
+Rule 6: FULL CODE — ALWAYS
+🔥 No partials. Ever.
+Every time I send code:
+Full HTML
+Full CSS
+Full JS (if used)
+Even if only one line changed — you still get everything.
