@@ -89,36 +89,88 @@ canvas {
 </div>
 
 <script>
-/* ===== SPACE BACKGROUND ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
+let w = window.innerWidth;
+let h = window.innerHeight;
+canvas.width = w;
+canvas.height = h;
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
+window.addEventListener("resize", () => {
+  w = window.innerWidth;
+  h = window.innerHeight;
+  canvas.width = w;
+  canvas.height = h;
+});
 
-const stars = Array.from({length:360}, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
-  r: Math.random()*2+2,
+// ===== STARFIELD =====
+const stars = Array.from({length:400}, () => ({
+  x: Math.random()*w,
+  y: Math.random()*h,
+  r: Math.random()*2+1,
   a: Math.random()
 }));
 
+// ===== SHOOTING STARS =====
+const shootingStars = [];
+function createShootingStar() {
+  shootingStars.push({
+    x: Math.random()*w,
+    y: Math.random()*h/2,
+    len: Math.random()*150+50,
+    speed: Math.random()*15+5,
+    angle: Math.PI/4
+  });
+}
+setInterval(createShootingStar, 2000); // spawn every 2 seconds
+
+// ===== COSMIC WORM =====
+let wormTime = 0;
+
+// ===== DRAW LOOP =====
 function draw() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  stars.forEach(s=>{
+  ctx.clearRect(0,0,w,h);
+
+  // stars
+  stars.forEach(s => {
     ctx.globalAlpha = s.a;
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
     ctx.fillStyle = "white";
     ctx.fill();
   });
+
+  // shooting stars
+  shootingStars.forEach((s, i) => {
+    ctx.strokeStyle = "rgba(255,255,255,0.8)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(s.x, s.y);
+    ctx.lineTo(s.x - Math.cos(s.angle)*s.len, s.y - Math.sin(s.angle)*s.len);
+    ctx.stroke();
+    s.x += s.speed;
+    s.y += s.speed;
+    if(s.x > w || s.y > h) shootingStars.splice(i,1);
+  });
+
+  // cosmic worm (simple swirling line)
+  wormTime += 0.01;
+  for(let i=0; i<5; i++){
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(79,179,255,${0.2 + 0.15*Math.sin(wormTime + i)})`;
+    ctx.lineWidth = 2;
+    for(let t=0; t<Math.PI*2; t+=0.1){
+      let x = w/2 + Math.sin(t*3 + wormTime + i) * 200;
+      let y = h/2 + Math.cos(t*4 + wormTime + i) * 150;
+      if(t===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+
   ctx.globalAlpha = 1;
   requestAnimationFrame(draw);
 }
+
 draw();
 </script>
 
