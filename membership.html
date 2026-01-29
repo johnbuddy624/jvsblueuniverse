@@ -20,6 +20,49 @@ canvas {
   z-index: 1;
 }
 
+/* ===== BUTTON CONTAINER ===== */
+#button-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+/* ===== COSMIC BUTTON STYLE ===== */
+.cosmic-btn {
+  width: 130px;
+  height: 130px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #70c2ff;
+  background: rgba(0,0,0,0.25);
+  border: 2px solid #70c2ff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
+  transition: all 0.3s ease-in-out;
+}
+
+.cosmic-btn:hover {
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<canvas id="space"></canvas>
+
+<div id="button-container">
+  <div class="cosmic-btn" id="home">Home</div>
+</div>
+
 <script>
 // ===== CANVAS SETUP =====
 const canvas = document.getElementById("space");
@@ -28,17 +71,9 @@ let w = canvas.width = window.innerWidth;
 let h = canvas.height = window.innerHeight;
 window.addEventListener("resize", () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
 
-
-
-
-<!-- **********************************************************************
-========================= BEGIN PLAYGROUND FIREBALL =========================
-********************************************************************** -->
-<script>
-// Fireball Array
+// ===== FIREBALLS =====
 let fireballs = [];
 
-// Spawn Fireball Function
 function spawnFireball() {
   const z = Math.random()*0.8 + 0.2;
   fireballs.push({
@@ -48,80 +83,38 @@ function spawnFireball() {
     vy: (Math.random()*12 - 6) * z,
     z: z,
     width: Math.random()*2 + 2,
-    color: "255,100,30" // bright orange-red fireball
+    color: "255,100,30"
   });
 }
 
-// Spawn fireballs every interval with guaranteed spawn
-const fireballQuantity = 5; // adjust how many fireballs spawn each interval
+// 100% chance, multiple fireballs
+const fireballQuantity = 5;
 setInterval(() => {
-  for(let i=0; i<fireballQuantity; i++) spawnFireball();
-}, 2000); // adjust interval (ms) to control frequency
+  for(let i=0;i<fireballQuantity;i++) spawnFireball();
+}, 1000);
 
 // Draw Fireballs
 function drawFireballs() {
-  fireballs.forEach((f, i) => {
-    const tailLength = 40 * f.z;
-    const grad = ctx.createLinearGradient(f.x, f.y, f.x - f.vx*tailLength, f.y - f.vy*tailLength);
-    grad.addColorStop(0, `rgba(${f.color}, ${0.9*f.z})`);
-    grad.addColorStop(0.3, `rgba(${f.color}, ${0.5*f.z})`);
-    grad.addColorStop(1, `rgba(${f.color}, 0)`);
+  fireballs.forEach((f,i) => {
+    const tailLength = 40*f.z;
+    const grad = ctx.createLinearGradient(f.x,f.y,f.x - f.vx*tailLength,f.y - f.vy*tailLength);
+    grad.addColorStop(0, `rgba(${f.color},${0.9*f.z})`);
+    grad.addColorStop(0.3, `rgba(${f.color},${0.5*f.z})`);
+    grad.addColorStop(1, `rgba(${f.color},0)`);
     ctx.strokeStyle = grad;
-    ctx.lineWidth = f.width * f.z;
+    ctx.lineWidth = f.width*f.z;
     ctx.lineCap = "round";
     ctx.beginPath();
     ctx.moveTo(f.x,f.y);
-    ctx.lineTo(f.x - f.vx*tailLength, f.y - f.vy*tailLength);
+    ctx.lineTo(f.x - f.vx*tailLength,f.y - f.vy*tailLength);
     ctx.stroke();
 
-    // Move fireball
     f.x += f.vx;
     f.y += f.vy;
 
-    // Remove if off screen
     if(f.x < -200 || f.x > w+200 || f.y < -200 || f.y > h+200) fireballs.splice(i,1);
   });
 }
-
-// Integrate into main draw loop
-const originalDraw = draw;
-draw = function() {
-  originalDraw();
-  drawFireballs();
-}
-</script>
-<!-- **********************************************************************
-========================= END PLAYGROUND FIREBALL =========================
-********************************************************************** -->
-
-
-
-
-
-
-/**********************************************************************
-========================= BEGIN AUTO REFRESH =========================
-========================= PLAYGROUND ONLY ===========================
-**********************************************************************/
-
-// Auto-refresh playground every 5 seconds (adjust as needed)
-setInterval(() => {
-  console.log("Playground auto-refresh triggered");
-  location.reload();
-}, 5000); // 5000ms = 5 seconds
-
-/**********************************************************************
-========================= END AUTO REFRESH ===========================
-**********************************************************************/
-
-
-
-
-
-
-
-
-
 
 // ===== MAIN DRAW LOOP =====
 function draw() {
