@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Cosmic Playground</title>
+<title>J&V’s Approved Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -31,53 +31,32 @@ function resize() {
 resize();
 addEventListener("resize", resize);
 
-/* ================= STARS ================= */
-const stars = Array.from({ length: 400 }, () => ({
-  x: Math.random() * canvas.width,
-  y: Math.random() * canvas.height,
-  r: Math.random() * 1.8 + 0.3
-}));
+/* ================= FIXED STARS ================= */
+const stars = [
+  { x: 100, y: 80, r: 1.5 },
+  { x: 250, y: 120, r: 1.2 },
+  { x: 400, y: 60, r: 1.8 },
+  { x: 600, y: 200, r: 1.3 },
+  { x: 800, y: 150, r: 1.6 },
+  { x: 950, y: 90, r: 1.4 }
+];
 
-/* ================= SHOOTING STARS ================= */
-const shootingStars = [];
+/* ================= FIXED SHOOTING STARS ================= */
+const shootingStars = [
+  { x: 0, y: 50, vx: 8, vy: 4, life: 60 }
+];
 
-/* ================= FIREBALLS ================= */
-const fireballs = [];
+/* ================= FIXED FIREBALLS ================= */
+const fireballs = [
+  { x: 300, y: 0, vy: 5, r: 12, life: 120 }
+];
 
-/* ================= UFOS ================= */
-const ufos = [];
+/* ================= FIXED UFOs ================= */
+const ufos = [
+  { x: -150, y: 100, vx: 2, size: 120 }
+];
 
-/* ================= SPAWNERS ================= */
-function spawnShootingStar() {
-  shootingStars.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height * 0.4,
-    vx: 8,
-    vy: 4,
-    life: 60
-  });
-}
-
-function spawnFireball() {
-  fireballs.push({
-    x: Math.random() * canvas.width,
-    y: -50,
-    vy: 6,
-    r: 10,
-    life: 120
-  });
-}
-
-function spawnUFO() {
-  ufos.push({
-    x: -150,
-    y: Math.random() * canvas.height * 0.6 + 50,
-    vx: 2,
-    size: 120
-  });
-}
-
-/* ================= DRAW ================= */
+/* ================= DRAW FUNCTIONS ================= */
 function drawStars() {
   ctx.fillStyle = "white";
   stars.forEach(s => {
@@ -99,9 +78,6 @@ function drawShootingStars() {
     s.y += s.vy;
     s.life--;
   });
-  for (let i = shootingStars.length - 1; i >= 0; i--) {
-    if (shootingStars[i].life <= 0) shootingStars.splice(i, 1);
-  }
 }
 
 function drawFireballs() {
@@ -113,9 +89,6 @@ function drawFireballs() {
     f.y += f.vy;
     f.life--;
   });
-  for (let i = fireballs.length - 1; i >= 0; i--) {
-    if (fireballs[i].life <= 0) fireballs.splice(i, 1);
-  }
 }
 
 function drawUFOs() {
@@ -132,26 +105,18 @@ function drawUFOs() {
 
     u.x += u.vx;
   });
-  for (let i = ufos.length - 1; i >= 0; i--) {
-    if (ufos[i].x > canvas.width + 200) ufos.splice(i, 1);
-  }
 }
 
-/* ================= ANIMATE ================= */
+/* ================= ANIMATION LOOP ================= */
 function animate() {
-  // Background fade (NOT a hard clear)
-  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  // Background fade
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   drawStars();
   drawShootingStars();
   drawFireballs();
   drawUFOs();
-
-  // Spawns
-  if (Math.random() < 0.01) spawnShootingStar();
-  if (Math.random() < 0.008) spawnFireball();
-  if (Math.random() < 0.0025) spawnUFO(); // ~15% feel
 
   requestAnimationFrame(animate);
 }
