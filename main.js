@@ -1,9 +1,9 @@
 /* ================================================== */
-/*                BLUE UNIVERSE MAIN.JS             */
+/*           BLUE UNIVERSE - ENGINEER MODE          */
 /* ================================================== */
 
 /* ===== 1️⃣ CANVAS SETUP ===== */
-// Grab the canvas from HTML
+// Grab canvas from HTML
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
@@ -15,72 +15,58 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-
-// Current mouse position
-const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-
-// Update mouse coordinates on movement
-window.addEventListener("mousemove", (e) => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-});
-
-
-/* ===== 2️⃣ STAR COMPONENT ===== */
-// Array to store star properties
+/* ===== 2️⃣ STAR SYSTEM ===== */
+// Stars array
 const stars = Array.from({ length: 300 }, () => ({
-  x: Math.random() * canvas.width,   // X position
-  y: Math.random() * canvas.height,  // Y position
-  r: Math.random() * 1.5 + 0.5,      // radius (size)
-  a: Math.random() * 0.8 + 0.2       // alpha (opacity)
+  x: Math.random() * canvas.width, // X position
+  y: Math.random() * canvas.height, // Y position
+  r: Math.random() * 1.5 + 0.5,     // radius
+  a: Math.random() * 0.8 + 0.2      // opacity
 }));
 
-// Function to draw all stars
+// Draw stars
 function drawStars() {
-  stars.forEach(s => {
-    ctx.globalAlpha = s.a;
+  stars.forEach(star => {
+    ctx.globalAlpha = star.a;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
     ctx.fillStyle = "white";
     ctx.fill();
   });
-  ctx.globalAlpha = 1; // Reset alpha
-
-
-const target = { x: canvas.width/2, y: canvas.height/2 }; // old
-const target = { x: mouse.x, y: mouse.y }; // new: follow mouse
-
-
+  ctx.globalAlpha = 1; // reset alpha
 }
 
-
-
-
-
-
-/* ===== 3️⃣ WORM COMPONENT ===== */
+/* ===== 3️⃣ COSMIC WORM SYSTEM ===== */
 // Worm settings
 const worm = {
-  segments: 25,                // Number of segments
-  length: 15,                  // Distance between segments
-  positions: [],               // Stores segment positions
-  color: "rgba(79,179,255,0.8)" // Worm color
+  segments: 25,                   // number of segments
+  length: 15,                     // distance between segments
+  positions: [],                  // array to store positions
+  color: "rgba(79,179,255,0.8)"  // worm color
 };
 
-// Initialize worm segments in center of canvas
+// Initialize worm segments in the center
 for (let i = 0; i < worm.segments; i++) {
   worm.positions.push({ x: canvas.width/2, y: canvas.height/2 });
 }
 
-// Function to update worm positions
+// Mouse tracking (engineer-friendly)
+const mouse = { x: canvas.width/2, y: canvas.height/2 };
+window.addEventListener("mousemove", e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+// Update worm positions
 function updateWorm() {
   const head = worm.positions[0];
-  const target = { x: canvas.width/2, y: canvas.height/2 }; // Change later for mouse-following
+  const target = { x: mouse.x, y: mouse.y }; // head follows mouse
   const dx = target.x - head.x;
   const dy = target.y - head.y;
-  head.x += dx * 0.02 * 2; // 2 = speed multiplier
+  head.x += dx * 0.02 * 2; // speed multiplier
   head.y += dy * 0.02 * 2;
 
+  // Each segment follows the one before it
   for (let i = 1; i < worm.segments; i++) {
     const prev = worm.positions[i-1];
     const curr = worm.positions[i];
@@ -90,7 +76,7 @@ function updateWorm() {
   }
 }
 
-// Function to draw the worm
+// Draw worm
 function drawWorm() {
   for (let i = worm.segments-1; i > 0; i--) {
     const p = worm.positions[i];
@@ -99,41 +85,31 @@ function drawWorm() {
     ctx.moveTo(p.x, p.y);
     ctx.lineTo(next.x, next.y);
     ctx.strokeStyle = worm.color;
-    ctx.lineWidth = 4 * (i / worm.segments); // Taper effect
+    ctx.lineWidth = 4 * (i / worm.segments); // taper effect
     ctx.lineCap = "round";
     ctx.stroke();
   }
 }
 
-
-
-
-
-
-
-/* ===== 4️⃣ MAIN DRAW LOOP ===== */
-// This function runs every frame
+/* ===== 4️⃣ MAIN LOOP ===== */
 function draw() {
-  // Clear the canvas each frame
+  // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw stars first
+  // 1. Draw stars
   drawStars();
 
-  // Update and draw worm on top of stars
+  // 2. Update worm positions
   updateWorm();
+
+  // 3. Draw worm on top of stars
   drawWorm();
 
-  // Add more components here later (nebulae, shooting stars, planets, etc.)
+  // Future components: add here (nebulae, shooting stars, planets, etc.)
 
-  // Call draw again on next frame
+  // Loop
   requestAnimationFrame(draw);
 }
-
-
-
-
-
 
 /* ===== 5️⃣ START ANIMATION ===== */
 draw();
