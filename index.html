@@ -52,6 +52,43 @@ let ufo = { x:-200, y:Math.random()*canvas.height*0.6+50, speed:1.5, size:1.0 };
 const worms = [];
 for(let i=0;i<3;i++){
   worms.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, angle:Math.random()*Math.PI*2, speed:Math.random()*0.8+0.2, size:35, phase:Math.random()*Math.PI*2 });
+});
+
+/* ===== SHOOTING STARS ===== */
+const shootingStars = [];
+for(let i=0;i<10;i++){
+  shootingStars.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    vx:(Math.random()*10-5),
+    vy:(Math.random()*10-5),
+    width:Math.random()*2+1,
+    color:"255,255,255"
+  });
+}
+function spawnShootingStar(){
+  shootingStars.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    vx:(Math.random()*10-5),
+    vy:(Math.random()*10-5),
+    width:Math.random()*2+1,
+    color:"255,255,255"
+  });
+}
+setInterval(spawnShootingStar,1000);
+
+/* ===== FIREBALLS ===== */
+const fireballs = [];
+for(let i=0;i<3;i++){
+  fireballs.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    vx:(Math.random()*3+1),
+    vy:(Math.random()*-1),
+    size:Math.random()*10+8,
+    color:`hsl(${Math.random()*50+20},100%,60%)`
+  });
 }
 
 /* ===== ANIMATION LOOP ===== */
@@ -69,7 +106,7 @@ function animate(){
     ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
   });
 
-  /* stars (static, twinkle) */
+  /* stars */
   stars.forEach(s=>{
     s.a += (Math.random()-0.5)*0.02; 
     if(s.a<0.2) s.a=0.2; if(s.a>1)s.a=1;
@@ -117,6 +154,25 @@ function animate(){
       ctx.fill();
     }
     ctx.restore();
+  });
+
+  /* shooting stars */
+  shootingStars.forEach((s,i)=>{
+    ctx.strokeStyle=`rgba(${s.color},1)`;
+    ctx.lineWidth=s.width;
+    ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.vx*10,s.y-s.vy*10); ctx.stroke();
+    s.x+=s.vx; s.y+=s.vy;
+    if(s.x<0||s.x>canvas.width||s.y<0||s.y>canvas.height) shootingStars.splice(i,1);
+  });
+
+  /* fireballs */
+  fireballs.forEach((f,i)=>{
+    ctx.fillStyle=f.color;
+    ctx.beginPath();
+    ctx.arc(f.x,f.y,f.size,0,Math.PI*2);
+    ctx.fill();
+    f.x+=f.vx; f.y+=f.vy;
+    if(f.x>canvas.width||f.y<0) fireballs.splice(i,1);
   });
 
   requestAnimationFrame(animate);
