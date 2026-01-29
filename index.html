@@ -152,7 +152,7 @@ canvas {
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
 
-/* Gentle, non-pressuring text under Donate, now evenly positioned */
+/* Gentle, non-pressuring text under Donate, evenly positioned */
 #donate-note {
   position: absolute;
   top: 355px; /* evenly below the Donate button */
@@ -221,18 +221,6 @@ canvas {
 #feedback-form button {
   margin-top: 4px;
 }
-
-/* ===== PAGE VIEW COUNTER ===== */
-#page-counter {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(160, 200, 235,0.85);
-  font-size: 14px;
-  text-shadow: 0 0 4px rgba(80, 140, 200,0.25);
-  z-index: 10260;
-}
 </style>
 </head>
 <body>
@@ -281,12 +269,6 @@ canvas {
       <button type="submit" class="cosmic-btn">Send Feedback</button>
     </form>
   </div>
-
-  <!-- Page view counter -->
-  <div id="page-counter">
-    You’re visitor <span id="visitor-count">1</span> to this page
-  </div>
-
 </div>
 
 <script>
@@ -322,14 +304,6 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
     });
   }
 });
-
-/* ===== PAGE VIEW COUNTER ===== */
-let count = localStorage.getItem('visitorCount') || 0;
-count++;
-localStorage.setItem('visitorCount', count);
-document.getElementById('visitor-count').textContent = count;
-
-/* ===== ORBIT REMOVED ===== */
 </script>
 
 </body>
