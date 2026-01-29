@@ -64,10 +64,11 @@ canvas {
     0 0 28px rgba(79,179,255,0.4);
   white-space: nowrap;
   position: absolute;
-  top: 50px;
+  top: 80px; /* visually behind J&V’s */
   left: 50%;
   transform: translateX(-50%);
   z-index: 9000;
+  text-align: center;
   animation: blue-breathe 3s ease-in-out infinite alternate;
 }
 
@@ -77,35 +78,31 @@ canvas {
   100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
 }
 
-/* ===== BUTTON CONTAINER ===== */
+/* ===== BUTTONS ===== */
 #button-container {
   position: absolute;
-  top: 510px;
-  left: 50%;
-  width: 0;
-  height: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: auto;
   z-index: 10150;
 }
 
-/* ===== BUTTON STYLES ===== */
 .cosmic-btn {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 20px;
   font-weight: bold;
   color: #70c2ff;
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
-  border-radius: 20px; /* rectangular with corners */
-  text-align: center;
+  border-radius: 20px; /* corner radius */
+  padding: 10px 20px;
   cursor: pointer;
   box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
   transition: all 0.3s ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  pointer-events: auto;
+  text-align: center;
 }
 
 .cosmic-btn:hover {
@@ -114,15 +111,13 @@ canvas {
   transform: scale(1.05);
 }
 
-/* ===== INDIVIDUAL BUTTON SIZES ===== */
-#shop { width: 120px; height: 120px; }
-#downloads { width: 140px; height: 140px; }
-#affiliate { width: 160px; height: 160px; }
-#membership { width: 150px; height: 150px; }
-#about { width: 130px; height: 130px; }
+/* Individual button sizes */
+#shop { width: 120px; height: 120px; border-radius: 50%; }
+#downloads { width: 140px; height: 140px; border-radius: 50%; }
+#affiliate { width: 160px; height: 160px; border-radius: 50%; }
+#membership { width: 150px; height: 150px; border-radius: 50%; }
+#about { width: 130px; height: 130px; border-radius: 50%; }
 #donate { width: 160px; height: 160px; border-radius: 50%; }
-
-/* ===== DONATE BUTTON SPLIT REMOVED ===== */
 </style>
 </head>
 <body>
@@ -144,36 +139,35 @@ canvas {
 </div>
 
 <script>
-/* ===== SPACE CANVAS ===== */
+/* ===== SPACE BACKGROUND ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w,h;
+let w, h;
 function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
 window.addEventListener("resize", resize); resize();
 
-const stars = Array.from({length:360},()=>({x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2, a:Math.random(), r:Math.random()*2+2}));
+const stars = Array.from({length:360},()=>({x:Math.random()*w, y:Math.random()*h, r:Math.random()*2+2, a:Math.random()}));
 
 function draw(){
   ctx.clearRect(0,0,w,h);
-  ctx.globalCompositeOperation="screen";
   stars.forEach(s=>{
-    ctx.globalAlpha=s.a*s.z;
+    ctx.globalAlpha = s.a;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r*s.z, 0, Math.PI*2);
-    ctx.fillStyle="white";
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = "white";
     ctx.fill();
   });
-  ctx.globalAlpha=1;
+  ctx.globalAlpha = 1;
   requestAnimationFrame(draw);
 }
 draw();
 
-/* ===== BUTTON EVENTS ===== */
+/* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{ window.location.href = btn.getAttribute('data-link'); });
+  btn.addEventListener('click', ()=>{ window.location.href = btn.getAttribute('data-link'); });
 });
 
-/* ===== PLANETS ORBITS ===== */
+/* ===== ORBITING BUTTONS ===== */
 const buttonData=[
   {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
   {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
@@ -192,11 +186,9 @@ buttonData.forEach(data=>{
   btn.dataset.stretchY=data.stretchY;
 });
 
-let paused=false;
 function animateButtons(){
   buttonData.forEach(data=>{
     const btn=document.getElementById(data.id);
-    if(paused) return;
     let angle=parseFloat(btn.dataset.angle);
     const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
     angle+=speed;
