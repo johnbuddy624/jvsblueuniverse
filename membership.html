@@ -48,6 +48,23 @@ canvas {
   animation: jv-breathe 3s ease-in-out infinite;
 }
 
+<!-- **********************************************************************
+========================= BEGIN HOME BUTTON =========================
+********************************************************************** -->
+<div class="cosmic-btn" id="home" style="width:130px; height:130px; position:absolute; top:10px; left:50%; transform:translateX(-50%); z-index:10200;">
+  Home
+</div>
+
+<script>
+// Home button functionality
+document.getElementById('home').addEventListener('click', ()=>{
+  window.location.href = 'index.html'; // adjust if your home page file name is different
+});
+</script>
+<!-- **********************************************************************
+========================= END HOME BUTTON =========================
+********************************************************************** -->
+
 @keyframes jv-breathe {
   0%, 100% { opacity: 0.2; transform: translateX(-50%) scale(1); }
   50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
