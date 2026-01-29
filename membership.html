@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Membership Playground</title>
+<title>UFO Playground</title>
 
 <style>
 html, body {
@@ -22,52 +22,47 @@ canvas {
   z-index: 1;
 }
 
-/* ================= REFRESHER PANEL ================= */
+/**********************************************************************
+======================= REFRESHER CONTROL BOX =========================
+**********************************************************************/
 #refresher-panel {
   position: fixed;
-  top: 30px;
-  right: 30px;
+  top: 20px;
+  right: 20px;
   z-index: 9999;
 
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0,0,0,0.8);
   border: 3px solid #70c2ff;
   border-radius: 16px;
+  padding: 18px;
 
-  padding: 20px;
   box-shadow:
     0 0 15px rgba(112,194,255,0.6),
     0 0 30px rgba(112,194,255,0.4);
 }
 
-/* ================= LABEL ================= */
 #refresher-panel label {
   display: block;
   font-size: 22px;
   font-weight: bold;
   color: #70c2ff;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-/* ================= INPUT BOX ================= */
 #refresh-input {
   width: 220px;
-  font-size: 26px;        /* 👈 BIG TEXT */
-  padding: 12px;
-  border-radius: 10px;
-  border: 2px solid #70c2ff;
-  outline: none;
+  height: 50px;
+  font-size: 26px;
+  text-align: center;
 
   background: black;
   color: #70c2ff;
-  text-align: center;
+  border: 2px solid #70c2ff;
+  border-radius: 10px;
+  outline: none;
 }
 
-/* Remove ugly number arrows */
-#refresh-input::-webkit-inner-spin-button,
-#refresh-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+/**********************************************************************/
 </style>
 </head>
 
@@ -75,15 +70,14 @@ canvas {
 
 <canvas id="space"></canvas>
 
-<!-- ================= REFRESHER CONTROL ================= -->
 <div id="refresher-panel">
-  <label for="refresh-input">Auto Refresh (seconds)</label>
-  <input id="refresh-input" type="number" value="10" min="1">
+  <label for="refresh-input">Auto Refresh (sec)</label>
+  <input id="refresh-input" type="number" value="15" min="1">
 </div>
 
 <script>
 /**********************************************************************
-========================= CANVAS SAFE LOOP ============================
+========================= CANVAS SETUP ================================
 **********************************************************************/
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
@@ -95,29 +89,92 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+/**********************************************************************
+=========================== UFO SYSTEM ================================
+**********************************************************************/
+const ufos = [];
+const UFO_COUNT = 3;        // 👈 CHANGE THIS FOR MORE UFOs
+const UFO_SIZE = 90;        // 👈 BIG UFO SIZE
+
+for (let i = 0; i < UFO_COUNT; i++) {
+  ufos.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() * 0.6 + 0.3),
+    vy: Math.sin(Math.random()) * 0.4,
+    phase: Math.random() * Math.PI * 2
+  });
+}
+
+function drawUFO(ufo) {
+  ctx.save();
+  ctx.translate(ufo.x, ufo.y);
+
+  // glow
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = "rgba(120,200,255,0.8)";
+
+  // body
+  ctx.fillStyle = "#9fdcff";
+  ctx.beginPath();
+  ctx.ellipse(0, 0, UFO_SIZE, UFO_SIZE * 0.35, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // dome
+  ctx.fillStyle = "rgba(180,220,255,0.9)";
+  ctx.beginPath();
+  ctx.ellipse(0, -UFO_SIZE * 0.2, UFO_SIZE * 0.4, UFO_SIZE * 0.3, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // lights
+  for (let i = -2; i <= 2; i++) {
+    ctx.fillStyle = `rgba(255,255,200,${0.6 + Math.random() * 0.4})`;
+    ctx.beginPath();
+    ctx.arc(i * (UFO_SIZE * 0.3), UFO_SIZE * 0.15, 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+/**********************************************************************
+=========================== DRAW LOOP ================================
+**********************************************************************/
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // IMPORTANT
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ufos.forEach(ufo => {
+    ufo.phase += 0.02;
+    ufo.x += ufo.vx;
+    ufo.y += Math.sin(ufo.phase) * 0.6;
+
+    if (ufo.x > canvas.width + UFO_SIZE) {
+      ufo.x = -UFO_SIZE;
+      ufo.y = Math.random() * canvas.height;
+    }
+
+    drawUFO(ufo);
+  });
+
   requestAnimationFrame(draw);
 }
 draw();
 
 /**********************************************************************
-========================= AUTO REFRESH LOGIC ==========================
+========================= AUTO REFRESH ================================
 **********************************************************************/
 let refreshTimer = null;
 
 function startRefresher(seconds) {
   if (refreshTimer) clearInterval(refreshTimer);
-  refreshTimer = setInterval(() => {
-    location.reload();
-  }, seconds * 1000);
+  refreshTimer = setInterval(() => location.reload(), seconds * 1000);
 }
 
-const input = document.getElementById("refresh-input");
-startRefresher(parseInt(input.value, 10));
+const refreshInput = document.getElementById("refresh-input");
+startRefresher(parseInt(refreshInput.value, 10));
 
-input.addEventListener("change", () => {
-  startRefresher(parseInt(input.value, 10));
+refreshInput.addEventListener("change", () => {
+  startRefresher(parseInt(refreshInput.value, 10));
 });
 </script>
 
