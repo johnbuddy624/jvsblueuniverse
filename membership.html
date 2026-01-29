@@ -78,7 +78,7 @@ html, body {
 
 
 <!-- **********************************************************************
-========================= BEGIN FIREBALL FEATURE =========================
+========================= BEGIN PLAYGROUND FIREBALL =========================
 ********************************************************************** -->
 <script>
 // Fireball Array
@@ -98,10 +98,11 @@ function spawnFireball() {
   });
 }
 
-// Spawn fireball occasionally
+// Spawn fireballs every interval with guaranteed spawn
+const fireballQuantity = 5; // adjust how many fireballs spawn each interval
 setInterval(() => {
-  if(Math.random() < 100) spawnFireball(); // rare spawn
-}, 2000);
+  for(let i=0; i<fireballQuantity; i++) spawnFireball();
+}, 2000); // adjust interval (ms) to control frequency
 
 // Draw Fireballs
 function drawFireballs() {
@@ -115,7 +116,7 @@ function drawFireballs() {
     ctx.lineWidth = f.width * f.z;
     ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.moveTo(f.x, f.y);
+    ctx.moveTo(f.x,f.y);
     ctx.lineTo(f.x - f.vx*tailLength, f.y - f.vy*tailLength);
     ctx.stroke();
 
@@ -136,7 +137,7 @@ draw = function() {
 }
 </script>
 <!-- **********************************************************************
-========================= END FIREBALL FEATURE =========================
+========================= END PLAYGROUND FIREBALL =========================
 ********************************************************************** -->
 
 
