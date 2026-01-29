@@ -152,12 +152,13 @@ canvas {
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
 }
 
-/* Gentle, non-pressuring text under Donate, evenly positioned */
+/* Gentle, non-pressuring text under Donate, right side extended 10px */
 #donate-note {
   position: absolute;
   top: 355px; /* evenly below the Donate button */
   left: calc(50% + 400px);
   transform: translateX(-50%);
+  width: calc(100% + 10px); /* moves right side 10px outward */
   font-size: 15px;
   color: rgba(160,200,235,0.85);
   text-align: center;
