@@ -77,110 +77,6 @@ canvas {
   50% { opacity: 1; transform: translateX(-50%) scale(1.02); }
   100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
 }
-
-/* ===== BUTTONS ===== */
-#button-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: auto;
-  z-index: 10150;
-}
-
-/* Group container to center under-construction buttons */
-#under-construction-group {
-  position: absolute;
-  top: 300px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 20px;
-}
-
-/* Under construction buttons */
-.under-construction {
-  cursor: not-allowed;
-  opacity: 0.6;
-  pointer-events: none;
-  position: relative;
-}
-
-/* Tooltips for under-construction buttons */
-.under-construction::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.75);
-  color: #70c2ff;
-  padding: 5px 10px;
-  font-size: 14px;
-  border-radius: 8px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  white-space: nowrap;
-}
-
-.under-construction:hover::after {
-  opacity: 1;
-}
-
-/* ===== ORIGINAL RECTANGLE DONATE BUTTON ===== */
-#donate {
-  position: absolute;
-  top: 300px;
-  left: calc(50% + 400px);
-  width: 120px;  /* increased width */
-  height: 50px;  /* increased height */
-  background: linear-gradient(135deg, rgba(220,70,100,1), rgba(180,30,70,1));
-  cursor: pointer;
-  z-index: 10200;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-}
-
-/* Donate text */
-#donate span {
-  color: #fff;
-  font-weight: bold;
-  font-size: 16px; /* slightly larger */
-  text-align: center;
-  text-shadow: 0 0 6px rgba(255,255,255,0.4);
-}
-
-/* Gentle, non-pressuring text under Donate, original placement */
-#donate-note {
-  position: absolute;
-  top: 360px; /* slightly lower for bigger button */
-  left: calc(50% + 400px);
-  transform: translateX(-50%);
-  font-size: 16px;
-  color: rgba(160,200,235,0.85);
-  text-align: center;
-  font-style: italic;
-  text-shadow: 0 0 6px rgba(80,140,200,0.25);
-}
-
-/* ===== UNDER CONSTRUCTION MESSAGE ===== */
-#under-construction-message {
-  position: absolute;
-  top: 380px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  color: #70c2ff;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1.5;
-  text-align: center;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(79,179,255,0.4);
-  z-index: 10200;
-  pointer-events: none;
-}
 </style>
 </head>
 <body>
@@ -190,48 +86,29 @@ canvas {
 <div id="logo-wrapper">
   <div id="jv">J&V’s</div>
   <div id="blue-universe">Blue Universe</div>
-
-  <div id="button-container">
-    <!-- Under construction buttons -->
-    <div id="under-construction-group">
-      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Shop page update!">Shop</div>
-      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Downloads page update!">Downloads</div>
-      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Affiliate page update!">Affiliate</div>
-      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Membership page update!">Membership</div>
-      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: About Us page update!">About Us</div>
-    </div>
-
-    <!-- Original rectangle Donate button -->
-    <a href="https://www.paypal.me/JohnBender612" id="donate" target="_blank" rel="noopener noreferrer">
-      <span>Donate</span>
-    </a>
-
-    <div id="donate-note">
-      If you’d like to support what we’re building, we truly appreciate it.
-    </div>
-  </div>
-
-  <!-- Under construction message -->
-  <div id="under-construction-message">
-    We’re building something amazing for you! 🚀 <br>
-    The pages above are currently under construction, but exciting updates are on the way.
-  </div>
-
-  <!-- Feedback form completely removed -->
 </div>
 
 <script>
 /* ===== SPACE BACKGROUND ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w, h;
-function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
-window.addEventListener("resize", resize); resize();
 
-const stars = Array.from({length:360},()=>({x:Math.random()*w, y:Math.random()*h, r:Math.random()*2+2, a:Math.random()}));
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
-function draw(){
-  ctx.clearRect(0,0,w,h);
+const stars = Array.from({length:360}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random()*2+2,
+  a: Math.random()
+}));
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   stars.forEach(s=>{
     ctx.globalAlpha = s.a;
     ctx.beginPath();
@@ -243,16 +120,6 @@ function draw(){
   requestAnimationFrame(draw);
 }
 draw();
-
-/* ===== BUTTON CLICK EVENTS ===== */
-document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  if(!btn.classList.contains('under-construction')){
-    btn.addEventListener('click', ()=>{
-      const link = btn.getAttribute('href') || btn.getAttribute('data-link');
-      if(link) window.open(link, '_blank', 'noopener,noreferrer');
-    });
-  }
-});
 </script>
 
 </body>
