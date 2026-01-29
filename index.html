@@ -97,7 +97,7 @@ canvas {
   color: #70c2ff;
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
-  border-radius: 20px; /* corner radius */
+  border-radius: 20px; /* rectangular with rounded corners */
   padding: 10px 20px;
   cursor: pointer;
   box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
@@ -111,13 +111,14 @@ canvas {
   transform: scale(1.05);
 }
 
-/* Individual button sizes */
-#shop { width: 120px; height: 120px; border-radius: 50%; }
-#downloads { width: 140px; height: 140px; border-radius: 50%; }
-#affiliate { width: 160px; height: 160px; border-radius: 50%; }
-#membership { width: 150px; height: 150px; border-radius: 50%; }
-#about { width: 130px; height: 130px; border-radius: 50%; }
-#donate { width: 160px; height: 160px; border-radius: 50%; }
+/* ===== BUTTON POSITIONS ===== */
+/* Manually position buttons (static) */
+#shop { top: 300px; left: 100px; width: 120px; height: 60px; }
+#downloads { top: 300px; left: 250px; width: 140px; height: 70px; }
+#affiliate { top: 300px; left: 420px; width: 160px; height: 60px; }
+#membership { top: 300px; left: 610px; width: 150px; height: 65px; }
+#about { top: 300px; left: 800px; width: 130px; height: 60px; }
+#donate { top: 300px; left: 1000px; width: 160px; height: 70px; }
 </style>
 </head>
 <body>
@@ -167,44 +168,8 @@ document.querySelectorAll('.cosmic-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ window.location.href = btn.getAttribute('data-link'); });
 });
 
-/* ===== ORBITING BUTTONS ===== */
-const buttonData=[
-  {id:'shop', distance:180, speed:0.18, stretchX:1.1, stretchY:0.9},
-  {id:'downloads', distance:220, speed:0.14, stretchX:1.08, stretchY:0.92},
-  {id:'affiliate', distance:260, speed:0.12, stretchX:1.12, stretchY:0.88},
-  {id:'membership', distance:300, speed:0.10, stretchX:1.05, stretchY:0.95},
-  {id:'about', distance:340, speed:0.08, stretchX:1.15, stretchY:0.85}
-];
-
-buttonData.forEach(data=>{
-  const btn=document.getElementById(data.id);
-  let angle=Math.random()*360;
-  btn.dataset.angle=angle;
-  btn.dataset.distance=data.distance;
-  btn.dataset.speed=data.speed;
-  btn.dataset.stretchX=data.stretchX;
-  btn.dataset.stretchY=data.stretchY;
-});
-
-function animateButtons(){
-  buttonData.forEach(data=>{
-    const btn=document.getElementById(data.id);
-    let angle=parseFloat(btn.dataset.angle);
-    const speed=parseFloat(btn.dataset.speed)*(0.95+Math.random()*0.1);
-    angle+=speed;
-    if(angle>360) angle-=360;
-    btn.dataset.angle=angle;
-    const rad=angle*Math.PI/180;
-    const distance=parseFloat(btn.dataset.distance);
-    const stretchX=parseFloat(btn.dataset.stretchX);
-    const stretchY=parseFloat(btn.dataset.stretchY);
-    const x=Math.cos(rad)*distance*stretchX;
-    const y=Math.sin(rad)*distance*stretchY;
-    btn.style.transform=`translate(${x}px, ${y}px)`;
-  });
-  requestAnimationFrame(animateButtons);
-}
-animateButtons();
+/* ===== ORBIT REMOVED ===== */
+// All buttons are static now; positions handled in CSS
 </script>
 
 </body>
