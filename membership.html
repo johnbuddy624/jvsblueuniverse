@@ -123,36 +123,36 @@ function drawFireballs() {
 
 /**********************************************************************
 ========================= BEGIN UFO FEATURE =========================
+========================= PLAYGROUND BIG UFO VERSION =================
 **********************************************************************/
 
 // Array to hold UFOs
 let ufos = [];
 
-// UFO spawn function
+// UFO spawn function (100% chance)
 function spawnUFO() {
-  // Create a UFO object with random start position and speed
   const z = Math.random() * 0.5 + 0.5; // depth effect (0.5-1)
   ufos.push({
-    x: Math.random() * w,           // random horizontal start
-    y: Math.random() * h * 0.5,     // upper half of screen
+    x: Math.random() * w,               // random horizontal start
+    y: Math.random() * h * 0.5,         // upper half of screen
     vx: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1), // horizontal speed
-    vy: (Math.random() * 0.5 - 0.25), // slight vertical drift
+    vy: (Math.random() * 0.5 - 0.25),   // slight vertical drift
     z: z,
-    size: 20 + Math.random() * 10,   // base size
+    size: 80 + Math.random() * 40,      // BIG size for playground
     alpha: 0.9
   });
 }
 
-// For testing, spawn a UFO every 2 seconds
-setInterval(spawnUFO, 2000); // adjust interval if you want more frequent spawns
+// Spawn a UFO every 1 second for playground visibility
+setInterval(spawnUFO, 1000); // adjust as needed
 
-// UFO draw function (call inside your main draw loop)
+// UFO draw function (call inside main draw loop)
 function drawUFOs() {
   ufos.forEach((ufo, i) => {
     const scale = ufo.z;
     ctx.globalAlpha = ufo.alpha * scale;
 
-    // Draw UFO body (simple ellipse with a dome)
+    // Draw UFO body (big ellipse with dome)
     ctx.fillStyle = `rgba(180, 255, 255, ${0.8 * scale})`;
     ctx.beginPath();
     ctx.ellipse(ufo.x, ufo.y, ufo.size * scale, ufo.size * 0.4 * scale, 0, 0, Math.PI * 2);
@@ -169,7 +169,7 @@ function drawUFOs() {
     ufo.y += ufo.vy;
 
     // Remove if offscreen
-    if (ufo.x < -50 || ufo.x > w + 50 || ufo.y < -50 || ufo.y > h + 50) {
+    if (ufo.x < -100 || ufo.x > w + 100 || ufo.y < -100 || ufo.y > h + 100) {
       ufos.splice(i, 1);
     }
   });
