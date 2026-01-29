@@ -10,7 +10,6 @@ html, body {
   background: black;
   overflow: hidden;
 }
-
 canvas {
   position: fixed;
   inset: 0;
@@ -56,40 +55,33 @@ for(let i=0;i<3;i++){
 
 /* ===== SHOOTING STARS ===== */
 const shootingStars = [];
-for(let i=0;i<10;i++){
-  shootingStars.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    vx:(Math.random()*10-5),
-    vy:(Math.random()*10-5),
-    width:Math.random()*2+1,
-    color:"255,255,255"
-  });
-}
 function spawnShootingStar(){
   shootingStars.push({
     x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    vx:(Math.random()*10-5),
-    vy:(Math.random()*10-5),
+    y:Math.random()*canvas.height*0.5, // spawn in top half
+    vx:Math.random()*4+2,
+    vy:Math.random()*2+1,
     width:Math.random()*2+1,
     color:"255,255,255"
   });
 }
-setInterval(spawnShootingStar,1000);
+for(let i=0;i<5;i++) spawnShootingStar(); // initial
+setInterval(spawnShootingStar,1200);
 
 /* ===== FIREBALLS ===== */
 const fireballs = [];
-for(let i=0;i<3;i++){
+function spawnFireball(){
   fireballs.push({
     x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    vx:(Math.random()*3+1),
-    vy:(Math.random()*-1),
-    size:Math.random()*10+8,
+    y:canvas.height+20, // start slightly below
+    vx:(Math.random()*2-1),
+    vy:-(Math.random()*3+1),
+    size:Math.random()*12+8,
     color:`hsl(${Math.random()*50+20},100%,60%)`
   });
 }
+for(let i=0;i<3;i++) spawnFireball(); // initial
+setInterval(spawnFireball,2000);
 
 /* ===== ANIMATION LOOP ===== */
 function animate(){
@@ -162,7 +154,7 @@ function animate(){
     ctx.lineWidth=s.width;
     ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.vx*10,s.y-s.vy*10); ctx.stroke();
     s.x+=s.vx; s.y+=s.vy;
-    if(s.x<0||s.x>canvas.width||s.y<0||s.y>canvas.height) shootingStars.splice(i,1);
+    if(s.x>canvas.width || s.y>canvas.height) shootingStars.splice(i,1);
   });
 
   /* fireballs */
@@ -172,7 +164,7 @@ function animate(){
     ctx.arc(f.x,f.y,f.size,0,Math.PI*2);
     ctx.fill();
     f.x+=f.vx; f.y+=f.vy;
-    if(f.x>canvas.width||f.y<0) fireballs.splice(i,1);
+    if(f.y<0 || f.x<0 || f.x>canvas.width) fireballs.splice(i,1);
   });
 
   requestAnimationFrame(animate);
