@@ -181,6 +181,52 @@ canvas {
 </div>
 
 <script>
+
+
+ /* ===== COSMIC WORM ===== */
+const worm = {
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  angle: Math.random() * Math.PI * 2,
+  speed: 0.6,
+  segments: Array.from({ length: 20 }, (_, i) => ({
+    x: 0,
+    y: 0,
+    r: 6 - i * 0.25 // gradually smaller segments
+  }))
+};
+
+function drawWorm() {
+  // wiggle direction slightly
+  worm.angle += (Math.random() - 0.5) * 0.05;
+
+  // move head
+  worm.x += Math.cos(worm.angle) * worm.speed;
+  worm.y += Math.sin(worm.angle) * worm.speed;
+
+  // wrap edges
+  if (worm.x < -50) worm.x = canvas.width + 50;
+  if (worm.x > canvas.width + 50) worm.x = -50;
+  if (worm.y < -50) worm.y = canvas.height + 50;
+  if (worm.y > canvas.height + 50) worm.y = -50;
+
+  // draw segments
+  let px = worm.x, py = worm.y;
+  worm.segments.forEach((s, i) => {
+    s.x += (px - s.x) * 0.25; // smooth trailing
+    s.y += (py - s.y) * 0.25;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(120,200,255,${0.9 - i * 0.03})`;
+    ctx.fill();
+    px = s.x;
+    py = s.y;
+  });
+}
+
+
+
+
 /* ===== SPACE CANVAS ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
@@ -204,7 +250,9 @@ setInterval(()=>{ if(Math.random()<0.35) spawnShootingStar(); },4000);
 function draw(){
   ctx.clearRect(0,0,w,h);
   ctx.globalCompositeOperation="screen";
-  nebulae.forEach(n=>{ n.x+=n.dx; n.y+=n.dy; const glowRadius=n.r*n.z*1.2; const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius); grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`); grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill(); n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); }); n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); }); });
+  nebulae.forEach(n=>{ n.x+=n.dx; n.y+=n.dy; const glowRadius=n.r*n.z*1.2; const grad=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,glowRadius); grad.addColorStop(0,`hsla(${n.hue},70%,70%,0.03)`); grad.addColorStop(1,`hsla(${n.hue},70%,70%,0)`); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(n.x,n.y,glowRadius,0,Math.PI*2); ctx.fill(); n.particles.forEach(p=>{ const px=n.x+(p.x-n.x)*n.z+(Math.random()-0.5)*n.r*n.z; const py=n.y+(p.y-n.y)*n.z+(Math.random()-0.5)*n.r*n.z; ctx.globalAlpha=0.07; ctx.beginPath(); ctx.arc(px,py,p.x,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill(); }); n.stars.forEach(s=>{ s.angle+=s.speed; const sx=n.x+Math.cos(s.angle)*s.radius*n.z; const sy=n.y+Math.sin(s.angle)*s.radius*n.z; ctx.globalAlpha=s.alpha*n.z; ctx.beginPath(); 
+drawWorm();
+ctx.arc(sx,sy,s.size*n.z,0,Math.PI*2); ctx.fillStyle=`hsla(${n.hue},80%,85%,1)`; ctx.fill(); }); });
   ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
   stars.forEach(s=>{ ctx.globalAlpha=s.a*s.z; ctx.beginPath(); ctx.arc(s.x+px*s.z*10,s.y+py*s.z*10,s.r*s.z,0,Math.PI*2); ctx.fillStyle="white"; ctx.fill(); });
   ctx.globalAlpha=1;
