@@ -111,6 +111,13 @@ canvas {
   transform: scale(1.05);
 }
 
+/* ===== UNDER CONSTRUCTION ===== */
+.under-construction {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 /* ===== BUTTON POSITIONS ===== */
 #shop { top: 300px; left: 100px; width: 120px; height: 60px; }
 #downloads { top: 300px; left: 250px; width: 140px; height: 70px; }
@@ -119,10 +126,10 @@ canvas {
 #about { top: 300px; left: 800px; width: 130px; height: 60px; }
 #donate { top: 300px; left: 1000px; width: 160px; height: 70px; }
 
-/* ===== UPDATE MESSAGE ===== */
-#update-message {
+/* ===== UNDER CONSTRUCTION MESSAGE ===== */
+#under-construction-message {
   position: absolute;
-  top: 400px; /* adjust to sit nicely under buttons */
+  top: 400px;
   left: 50%;
   transform: translateX(-50%);
   color: #70c2ff;
@@ -144,18 +151,21 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <div class="cosmic-btn" id="shop" data-link="shop.html">Shop</div>
-    <div class="cosmic-btn" id="downloads" data-link="downloads.html">Downloads</div>
-    <div class="cosmic-btn" id="affiliate" data-link="affiliate.html">Affiliate</div>
-    <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
-    <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
+    <!-- Under construction buttons -->
+    <div class="cosmic-btn under-construction" id="shop">Shop</div>
+    <div class="cosmic-btn under-construction" id="downloads">Downloads</div>
+    <div class="cosmic-btn under-construction" id="affiliate">Affiliate</div>
+    <div class="cosmic-btn under-construction" id="membership">Membership</div>
+    <div class="cosmic-btn under-construction" id="about">About Us</div>
+
+    <!-- Fully functional Donate button -->
     <div class="cosmic-btn" id="donate" data-link="donate.html">Donate</div>
   </div>
 
-  <!-- Update message -->
-  <div id="update-message">
-    We’re currently enhancing your experience. <br>
-    Exciting updates are on the way — thank you for your patience!
+  <!-- Under construction message -->
+  <div id="under-construction-message">
+    The pages above are currently under construction. <br>
+    Thank you for your patience while we prepare exciting updates!
   </div>
 </div>
 
@@ -185,7 +195,12 @@ draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ window.location.href = btn.getAttribute('data-link'); });
+  // Only Donate button is clickable
+  if(!btn.classList.contains('under-construction')){
+    btn.addEventListener('click', ()=>{
+      window.location.href = btn.getAttribute('data-link');
+    });
+  }
 });
 
 /* ===== ORBIT REMOVED ===== */
