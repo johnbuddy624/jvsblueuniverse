@@ -158,15 +158,17 @@ canvas {
   transform: scale(1.05);
 }
 
-/* ===== UNDER CONSTRUCTION MESSAGE ===== */
+/* ===== UNDER CONSTRUCTION MESSAGE (ADJUSTED POSITION) ===== */
 #under-construction-message {
   position: absolute;
-  top: 400px; /* adjust to sit below buttons */
+  top: 380px; /* visually under buttons */
   left: 50%;
   transform: translateX(-50%);
+  width: 600px; /* keeps text centered nicely */
   color: #70c2ff;
   font-size: 22px;
   font-weight: 500;
+  line-height: 1.5; /* improves readability */
   text-align: center;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(79,179,255,0.4);
   z-index: 10200;
