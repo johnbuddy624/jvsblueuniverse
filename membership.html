@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Membership Playground - Home Button Only</title>
+<title>Membership Playground - Fireballs</title>
 <style>
 html, body {
   margin: 0;
   padding: 0;
-  background: black;
-  overflow: hidden;
   width: 100%;
   height: 100%;
+  background: black;
+  overflow: hidden;
   font-family: "Segoe UI", sans-serif;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
 }
 
 /* ===== BUTTON CONTAINER ===== */
@@ -20,7 +26,6 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  pointer-events: auto;
   z-index: 1000;
 }
 
@@ -34,12 +39,12 @@ html, body {
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
   border-radius: 20px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
   transition: all 0.3s ease-in-out;
 }
 
@@ -52,39 +57,23 @@ html, body {
 </head>
 <body>
 
+<canvas id="space"></canvas>
 
-
-
-
-
-
-<!-- **********************************************************************
-========================= BEGIN BUTTON CONTAINER =========================
-********************************************************************** -->
 <div id="button-container">
-  <!-- HOME BUTTON -->
-  <div class="cosmic-btn" id="home">
-    Home
-  </div>
+  <div class="cosmic-btn" id="home">Home</div>
 </div>
-<!-- **********************************************************************
-========================= END BUTTON CONTAINER =========================
-********************************************************************** -->
 
-
-
-
-
-
-
-<!-- **********************************************************************
-========================= BEGIN PLAYGROUND FIREBALL =========================
-********************************************************************** -->
 <script>
-// Fireball Array
+// ===== CANVAS SETUP =====
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
+window.addEventListener("resize", () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
+
+// ===== FIREBALLS =====
 let fireballs = [];
 
-// Spawn Fireball Function
 function spawnFireball() {
   const z = Math.random()*0.8 + 0.2;
   fireballs.push({
@@ -94,64 +83,50 @@ function spawnFireball() {
     vy: (Math.random()*12 - 6) * z,
     z: z,
     width: Math.random()*2 + 2,
-    color: "255,100,30" // bright orange-red fireball
+    color: "255,100,30"
   });
 }
 
-// Spawn fireballs every interval with guaranteed spawn
-const fireballQuantity = 5; // adjust how many fireballs spawn each interval
+// 100% chance, multiple fireballs
+const fireballQuantity = 5;
 setInterval(() => {
-  for(let i=0; i<fireballQuantity; i++) spawnFireball();
-}, 2000); // adjust interval (ms) to control frequency
+  for(let i=0;i<fireballQuantity;i++) spawnFireball();
+}, 1000);
 
 // Draw Fireballs
 function drawFireballs() {
-  fireballs.forEach((f, i) => {
-    const tailLength = 40 * f.z;
-    const grad = ctx.createLinearGradient(f.x, f.y, f.x - f.vx*tailLength, f.y - f.vy*tailLength);
-    grad.addColorStop(0, `rgba(${f.color}, ${0.9*f.z})`);
-    grad.addColorStop(0.3, `rgba(${f.color}, ${0.5*f.z})`);
-    grad.addColorStop(1, `rgba(${f.color}, 0)`);
+  fireballs.forEach((f,i) => {
+    const tailLength = 40*f.z;
+    const grad = ctx.createLinearGradient(f.x,f.y,f.x - f.vx*tailLength,f.y - f.vy*tailLength);
+    grad.addColorStop(0, `rgba(${f.color},${0.9*f.z})`);
+    grad.addColorStop(0.3, `rgba(${f.color},${0.5*f.z})`);
+    grad.addColorStop(1, `rgba(${f.color},0)`);
     ctx.strokeStyle = grad;
-    ctx.lineWidth = f.width * f.z;
+    ctx.lineWidth = f.width*f.z;
     ctx.lineCap = "round";
     ctx.beginPath();
     ctx.moveTo(f.x,f.y);
-    ctx.lineTo(f.x - f.vx*tailLength, f.y - f.vy*tailLength);
+    ctx.lineTo(f.x - f.vx*tailLength,f.y - f.vy*tailLength);
     ctx.stroke();
 
-    // Move fireball
     f.x += f.vx;
     f.y += f.vy;
 
-    // Remove if off screen
     if(f.x < -200 || f.x > w+200 || f.y < -200 || f.y > h+200) fireballs.splice(i,1);
   });
 }
 
-// Integrate into main draw loop
-const originalDraw = draw;
-draw = function() {
-  originalDraw();
+// ===== MAIN DRAW LOOP =====
+function draw() {
+  ctx.clearRect(0,0,w,h);
   drawFireballs();
+  requestAnimationFrame(draw);
 }
-</script>
-<!-- **********************************************************************
-========================= END PLAYGROUND FIREBALL =========================
-********************************************************************** -->
+draw();
 
-
-
-
-
-
-
-
-
-<script>
-// Home button functionality
-document.getElementById('home').addEventListener('click', ()=>{
-  window.location.href = 'index.html'; // adjust to your home page file
+// ===== HOME BUTTON =====
+document.getElementById('home').addEventListener('click', () => {
+  window.location.href = 'index.html';
 });
 </script>
 
