@@ -1,122 +1,80 @@
 /* ========================================== */
-/*        BLUE UNIVERSE MAIN.JS              */
+/*        J&V’s BLUE UNIVERSE STARFIELD      */
 /* ========================================== */
 
 /* ===== 1️⃣ CANVAS SETUP ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
+let width, height;
 function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1; // High-DPI support
-  canvas.width = window.innerWidth * dpr;
-  canvas.height = window.innerHeight * dpr;
+  const dpr = window.devicePixelRatio || 1;
+  width = canvas.width = window.innerWidth * dpr;
+  height = canvas.height = window.innerHeight * dpr;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
-function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = window.innerWidth * dpr;
-  canvas.height = window.innerHeight * dpr;
-  ctx.setTransform(1,0,0,1,0,0);
-  ctx.scale(dpr,dpr);
-}
 
-// Run resize after slight delay for mobile
-setTimeout(resizeCanvas, 50);
+/* ===== 2️⃣ STARFIELD SETUP ===== */
+const numStars = 800; // density of stars
+const stars = [];
 
-window.addEventListener("resize", resizeCanvas);
-
-/* ===== 2️⃣ STARS SETUP ===== */
-const stars = Array.from({ length: 300 }, () => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
-  r: Math.random() * 1.5 + 0.5,
-  a: Math.random() * 0.8 + 0.2
-}));
-
-function drawStars() {
-  stars.forEach(star => {
-    ctx.globalAlpha = star.a;
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-    ctx.fillStyle = "white";
-    ctx.fill();
+for (let i = 0; i < numStars; i++) {
+  stars.push({
+    x: Math.random() * width - width / 2,
+    y: Math.random() * height - height / 2,
+    z: Math.random() * width,
+    size: Math.random() * 1.5 + 0.5
   });
-  ctx.globalAlpha = 1;
-}
-window.addEventListener("touchmove", e => {
-  e.preventDefault(); // stops scrolling
-  pointer.x = e.touches[0].clientX;
-  pointer.y = e.touches[0].clientY;
-}, { passive: false });
-
-
-/* ===== 3️⃣ WORM SETUP ===== */
-const worm = {
-  segments: 25,
-  length: 15,
-  positions: [],
-  color: "rgba(79,179,255,0.8)"
-};
-
-// Initialize worm segments at center
-for (let i = 0; i < worm.segments; i++) {
-  worm.positions.push({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 }
 
-// Mouse / Touch tracking
-const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
+/* ===== 3️⃣ POINTER / INTERACTION ===== */
+const pointer = { x: 0, y: 0 };
 window.addEventListener("mousemove", e => {
-  pointer.x = e.clientX;
-  pointer.y = e.clientY;
+  pointer.x = (e.clientX - width/2) / width * 2; // normalized
+  pointer.y = (e.clientY - height/2) / height * 2;
 });
 
 window.addEventListener("touchmove", e => {
-  pointer.x = e.touches[0].clientX;
-  pointer.y = e.touches[0].clientY;
+  e.preventDefault();
+  pointer.x = (e.touches[0].clientX - width/2) / width * 2;
+  pointer.y = (e.touches[0].clientY - height/2) / height * 2;
 }, { passive: false });
 
-function updateWorm() {
-  const head = worm.positions[0];
-  const dx = pointer.x - head.x;
-  const dy = pointer.y - head.y;
-  head.x += dx * 0.1; // speed multiplier
-  head.y += dy * 0.1;
+/* ===== 4️⃣ STARFIELD ANIMATION ===== */
+function drawStars() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, width, height);
 
-  for (let i = 1; i < worm.segments; i++) {
-    const prev = worm.positions[i - 1];
-    const curr = worm.positions[i];
-    const angle = Math.atan2(prev.y - curr.y, prev.x - curr.x);
-    curr.x = prev.x - Math.cos(angle) * worm.length;
-    curr.y = prev.y - Math.sin(angle) * worm.length;
-  }
-}
+  const focalLength = width / 2; // perspective
 
-function drawWorm() {
-  for (let i = worm.segments - 1; i > 0; i--) {
-    const p = worm.positions[i];
-    const next = worm.positions[i - 1];
+  stars.forEach(star => {
+    // move star toward camera
+    star.z -= 4;
+    if (star.z <= 0) {
+      star.z = width;
+      star.x = Math.random() * width - width / 2;
+      star.y = Math.random() * height - height / 2;
+    }
+
+    // 3D projection
+    const sx = (star.x + pointer.x * 300) * (focalLength / star.z) + width / 2;
+    const sy = (star.y + pointer.y * 300) * (focalLength / star.z) + height / 2;
+
+    const radius = star.size * (focalLength / star.z);
+
     ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
-    ctx.lineTo(next.x, next.y);
-    ctx.strokeStyle = worm.color;
-    ctx.lineWidth = 4 * (i / worm.segments); // taper effect
-    ctx.lineCap = "round";
-    ctx.stroke();
-  }
+    ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${1 - star.z/width})`; // fade with distance
+    ctx.fill();
+  });
 }
 
-/* ===== 4️⃣ MAIN DRAW LOOP ===== */
-function draw() {
-  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  drawStars();      // draw background stars
-  updateWorm();     // update worm position
-  drawWorm();       // draw worm on top
-  requestAnimationFrame(draw);
+/* ===== 5️⃣ MAIN LOOP ===== */
+function animate() {
+  drawStars();
+  requestAnimationFrame(animate);
 }
-
-/* ===== 5️⃣ START ANIMATION ===== */
-draw();
+animate();
