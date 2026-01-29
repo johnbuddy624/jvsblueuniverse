@@ -87,8 +87,55 @@ canvas {
   z-index: 10150;
 }
 
-.cosmic-btn {
+/* Group container to center under-construction buttons */
+#under-construction-group {
   position: absolute;
+  top: 300px; /* vertical placement under logo */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px; /* spacing between buttons */
+}
+
+/* Under construction buttons */
+.under-construction {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+/* Tooltips for under-construction buttons */
+.under-construction::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: #70c2ff;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+
+.under-construction:hover::after {
+  opacity: 1;
+}
+
+/* Donate button separate on right */
+#donate {
+  position: absolute;
+  top: 300px;
+  left: calc(50% + 400px); /* adjust offset to your layout */
+}
+
+/* Common button styling */
+.cosmic-btn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,25 +158,10 @@ canvas {
   transform: scale(1.05);
 }
 
-/* ===== UNDER CONSTRUCTION ===== */
-.under-construction {
-  cursor: not-allowed;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* ===== BUTTON POSITIONS ===== */
-#shop { top: 300px; left: 100px; width: 120px; height: 60px; }
-#downloads { top: 300px; left: 250px; width: 140px; height: 70px; }
-#affiliate { top: 300px; left: 420px; width: 160px; height: 60px; }
-#membership { top: 300px; left: 610px; width: 150px; height: 65px; }
-#about { top: 300px; left: 800px; width: 130px; height: 60px; }
-#donate { top: 300px; left: 1000px; width: 160px; height: 70px; }
-
 /* ===== UNDER CONSTRUCTION MESSAGE ===== */
 #under-construction-message {
   position: absolute;
-  top: 400px;
+  top: 400px; /* adjust to sit below buttons */
   left: 50%;
   transform: translateX(-50%);
   color: #70c2ff;
@@ -151,12 +183,14 @@ canvas {
   <div id="blue-universe">Blue Universe</div>
 
   <div id="button-container">
-    <!-- Under construction buttons -->
-    <div class="cosmic-btn under-construction" id="shop">Shop</div>
-    <div class="cosmic-btn under-construction" id="downloads">Downloads</div>
-    <div class="cosmic-btn under-construction" id="affiliate">Affiliate</div>
-    <div class="cosmic-btn under-construction" id="membership">Membership</div>
-    <div class="cosmic-btn under-construction" id="about">About Us</div>
+    <!-- Under construction group -->
+    <div id="under-construction-group">
+      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Shop page update!">Shop</div>
+      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Downloads page update!">Downloads</div>
+      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Affiliate page update!">Affiliate</div>
+      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: Membership page update!">Membership</div>
+      <div class="cosmic-btn under-construction" data-tooltip="Coming soon: About Us page update!">About Us</div>
+    </div>
 
     <!-- Fully functional Donate button -->
     <div class="cosmic-btn" id="donate" data-link="donate.html">Donate</div>
@@ -164,8 +198,9 @@ canvas {
 
   <!-- Under construction message -->
   <div id="under-construction-message">
-    The pages above are currently under construction. <br>
-    Thank you for your patience while we prepare exciting updates!
+    We’re building something amazing for you! 🚀 <br>
+    The pages above are currently under construction, but exciting updates are on the way. <br>
+    Thank you for being part of our journey!
   </div>
 </div>
 
@@ -195,7 +230,6 @@ draw();
 
 /* ===== BUTTON CLICK EVENTS ===== */
 document.querySelectorAll('.cosmic-btn').forEach(btn=>{
-  // Only Donate button is clickable
   if(!btn.classList.contains('under-construction')){
     btn.addEventListener('click', ()=>{
       window.location.href = btn.getAttribute('data-link');
