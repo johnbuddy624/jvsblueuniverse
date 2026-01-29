@@ -2,226 +2,157 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Membership Playground - Fireballs</title>
+<title>Playground Universe</title>
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  overflow: hidden;
-  font-family: "Segoe UI", sans-serif;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+    background: black; /* optional behind canvas */
+  }
 
-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
+  /* Canvas layer */
+  canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: transparent; /* see-through */
+  }
 
-/* ===== BUTTON CONTAINER ===== */
-#button-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
+  /* Refresh input box */
+  #refresh-controller {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: #70c2ff;
+    padding: 10px;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    z-index: 10000; /* sits above canvas */
+    user-select: none;
+  }
 
-/* ===== COSMIC BUTTON STYLE ===== */
-.cosmic-btn {
-  width: 130px;
-  height: 130px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #70c2ff;
-  background: rgba(0,0,0,0.25);
-  border: 2px solid #70c2ff;
-  border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
-  transition: all 0.3s ease-in-out;
-}
-
-.cosmic-btn:hover {
-  background: rgba(0,0,0,0.5);
-  box-shadow: 0 0 20px #70c2ff, 0 0 40px rgba(79,179,255,0.7), 0 0 60px rgba(79,179,255,0.5);
-  transform: scale(1.05);
-}
+  #refresh-input {
+    width: 70px;
+    background: rgba(0,0,0,0.25);
+    border: 2px solid #70c2ff;
+    border-radius: 5px;
+    color: #70c2ff;
+    font-weight: bold;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
 
 <canvas id="space"></canvas>
 
-<div id="button-container">
-  <div class="cosmic-btn" id="home">Home</div>
+<!-- Refresh Input Box -->
+<div id="refresh-controller">
+  <label for="refresh-input" style="font-weight:bold; margin-right:5px;">Refresh (ms):</label>
+  <input id="refresh-input" type="number" value="5000">
 </div>
 
 <script>
-// ===== CANVAS SETUP =====
+/**********************************************************************
+========================= PLAYGROUND CANVAS + REFRESH =========================
+**********************************************************************/
+
+// ----- Canvas Setup -----
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w = canvas.width = window.innerWidth;
-let h = canvas.height = window.innerHeight;
-window.addEventListener("resize", () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
+let w, h;
+function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+window.addEventListener("resize", resize);
+resize();
 
-// ===== FIREBALLS =====
+// ----- Stars array -----
+const stars = Array.from({length:100}, ()=>({
+  x: Math.random()*w,
+  y: Math.random()*h,
+  r: Math.random()*2+1,
+  a: Math.random()
+}));
+
+// ----- Fireballs array (example) -----
 let fireballs = [];
-
 function spawnFireball() {
-  const z = Math.random()*0.8 + 0.2;
   fireballs.push({
     x: Math.random()*w,
     y: Math.random()*h,
-    vx: (Math.random()*12 - 6) * z,
-    vy: (Math.random()*12 - 6) * z,
-    z: z,
-    width: Math.random()*2 + 2,
-    color: "255,100,30"
+    vx: (Math.random()*10-5),
+    vy: (Math.random()*10-5),
+    r: Math.random()*10+5,
+    color: "255,180,80"
   });
 }
+// For testing, 100% chance spawn each frame
+setInterval(spawnFireball, 1000);
 
-// 100% chance, multiple fireballs
-const fireballQuantity = 5;
-setInterval(() => {
-  for(let i=0;i<fireballQuantity;i++) spawnFireball();
-}, 1000);
+// ----- Draw Loop -----
+function draw() {
+  // Clear canvas each frame
+  ctx.clearRect(0, 0, w, h);
 
-// Draw Fireballs
-function drawFireballs() {
-  fireballs.forEach((f,i) => {
-    const tailLength = 40*f.z;
-    const grad = ctx.createLinearGradient(f.x,f.y,f.x - f.vx*tailLength,f.y - f.vy*tailLength);
-    grad.addColorStop(0, `rgba(${f.color},${0.9*f.z})`);
-    grad.addColorStop(0.3, `rgba(${f.color},${0.5*f.z})`);
+  // Draw stars
+  stars.forEach(s=>{
+    ctx.globalAlpha = s.a;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  });
+
+  // Draw fireballs
+  fireballs.forEach((f,i)=>{
+    const tail = f.r*2;
+    const grad = ctx.createLinearGradient(f.x, f.y, f.x-f.vx*tail, f.y-f.vy*tail);
+    grad.addColorStop(0, `rgba(${f.color},1)`);
+    grad.addColorStop(0.3, `rgba(${f.color},0.5)`);
     grad.addColorStop(1, `rgba(${f.color},0)`);
     ctx.strokeStyle = grad;
-    ctx.lineWidth = f.width*f.z;
+    ctx.lineWidth = f.r;
     ctx.lineCap = "round";
     ctx.beginPath();
     ctx.moveTo(f.x,f.y);
-    ctx.lineTo(f.x - f.vx*tailLength,f.y - f.vy*tailLength);
+    ctx.lineTo(f.x-f.vx*tail,f.y-f.vy*tail);
     ctx.stroke();
 
+    // Update position
     f.x += f.vx;
     f.y += f.vy;
 
-    if(f.x < -200 || f.x > w+200 || f.y < -200 || f.y > h+200) fireballs.splice(i,1);
+    // Remove if off screen
+    if(f.x<-200 || f.x>w+200 || f.y<-200 || f.y>h+200) fireballs.splice(i,1);
   });
-}
 
-
-
-
-
-
-
-/**********************************************************************
-========================= BEGIN UFO FEATURE =========================
-**********************************************************************/
-
-// Array to hold UFOs
-let ufos = [];
-
-// UFO spawn function
-function spawnUFO() {
-  // Create a UFO object with random start position and speed
-  const z = Math.random() * 0.5 + 0.5; // depth effect (0.5-1)
-  ufos.push({
-    x: Math.random() * w,           // random horizontal start
-    y: Math.random() * h * 0.5,     // upper half of screen
-    vx: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1), // horizontal speed
-    vy: (Math.random() * 0.5 - 0.25), // slight vertical drift
-    z: z,
-    size: 20 + Math.random() * 10,   // base size
-    alpha: 0.9
-  });
-}
-
-// For testing, spawn a UFO every 2 seconds
-setInterval(spawnUFO, 2000); // adjust interval if you want more frequent spawns
-
-// UFO draw function (call inside your main draw loop)
-function drawUFOs() {
-  ufos.forEach((ufo, i) => {
-    const scale = ufo.z;
-    ctx.globalAlpha = ufo.alpha * scale;
-
-    // Draw UFO body (simple ellipse with a dome)
-    ctx.fillStyle = `rgba(180, 255, 255, ${0.8 * scale})`;
-    ctx.beginPath();
-    ctx.ellipse(ufo.x, ufo.y, ufo.size * scale, ufo.size * 0.4 * scale, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Draw dome
-    ctx.fillStyle = `rgba(200, 255, 255, ${0.6 * scale})`;
-    ctx.beginPath();
-    ctx.ellipse(ufo.x, ufo.y - ufo.size * 0.15 * scale, ufo.size * 0.6 * scale, ufo.size * 0.2 * scale, 0, 0, Math.PI);
-    ctx.fill();
-
-    // Update position
-    ufo.x += ufo.vx;
-    ufo.y += ufo.vy;
-
-    // Remove if offscreen
-    if (ufo.x < -50 || ufo.x > w + 50 || ufo.y < -50 || ufo.y > h + 50) {
-      ufos.splice(i, 1);
-    }
-  });
-  ctx.globalAlpha = 1; // reset alpha after drawing
-}
-
-/**********************************************************************
-========================= END UFO FEATURE =========================
-**********************************************************************/
-
-
-
-
-
-#refresh-controller {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 10000; /* higher than canvas */
-  background: rgba(0,0,0,0.6); /* semi-transparent for visibility */
-  color: #70c2ff;
-  padding: 10px;
-  border-radius: 10px;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ===== MAIN DRAW LOOP =====
-function draw() {
-  ctx.clearRect(0,0,w,h);
-  drawFireballs();
   requestAnimationFrame(draw);
 }
 draw();
 
-// ===== HOME BUTTON =====
-document.getElementById('home').addEventListener('click', () => {
-  window.location.href = 'index.html';
+// ----- Refresh Box -----
+let refreshInterval = 5000;
+let refreshTimer = setInterval(() => {
+  console.log("Playground auto-refresh triggered");
+  location.reload();
+}, refreshInterval);
+
+const refreshInput = document.getElementById('refresh-input');
+refreshInput.addEventListener('input', ()=>{
+  const val = parseInt(refreshInput.value);
+  if(!isNaN(val) && val>0){
+    clearInterval(refreshTimer);
+    refreshInterval = val;
+    refreshTimer = setInterval(()=>{
+      console.log("Playground auto-refresh triggered");
+      location.reload();
+    }, refreshInterval);
+    console.log(`Refresh interval updated: ${refreshInterval}ms`);
+  }
 });
 </script>
 
