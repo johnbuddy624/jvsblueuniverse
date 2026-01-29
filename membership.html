@@ -52,6 +52,12 @@ html, body {
 </head>
 <body>
 
+
+
+
+
+
+
 <!-- **********************************************************************
 ========================= BEGIN BUTTON CONTAINER =========================
 ********************************************************************** -->
@@ -64,6 +70,82 @@ html, body {
 <!-- **********************************************************************
 ========================= END BUTTON CONTAINER =========================
 ********************************************************************** -->
+
+
+
+
+
+
+
+<!-- **********************************************************************
+========================= BEGIN FIREBALL FEATURE =========================
+********************************************************************** -->
+<script>
+// Fireball Array
+let fireballs = [];
+
+// Spawn Fireball Function
+function spawnFireball() {
+  const z = Math.random()*0.8 + 0.2;
+  fireballs.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    vx: (Math.random()*12 - 6) * z,
+    vy: (Math.random()*12 - 6) * z,
+    z: z,
+    width: Math.random()*2 + 2,
+    color: "255,100,30" // bright orange-red fireball
+  });
+}
+
+// Spawn fireball occasionally
+setInterval(() => {
+  if(Math.random() < 0.05) spawnFireball(); // rare spawn
+}, 2000);
+
+// Draw Fireballs
+function drawFireballs() {
+  fireballs.forEach((f, i) => {
+    const tailLength = 40 * f.z;
+    const grad = ctx.createLinearGradient(f.x, f.y, f.x - f.vx*tailLength, f.y - f.vy*tailLength);
+    grad.addColorStop(0, `rgba(${f.color}, ${0.9*f.z})`);
+    grad.addColorStop(0.3, `rgba(${f.color}, ${0.5*f.z})`);
+    grad.addColorStop(1, `rgba(${f.color}, 0)`);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = f.width * f.z;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(f.x, f.y);
+    ctx.lineTo(f.x - f.vx*tailLength, f.y - f.vy*tailLength);
+    ctx.stroke();
+
+    // Move fireball
+    f.x += f.vx;
+    f.y += f.vy;
+
+    // Remove if off screen
+    if(f.x < -200 || f.x > w+200 || f.y < -200 || f.y > h+200) fireballs.splice(i,1);
+  });
+}
+
+// Integrate into main draw loop
+const originalDraw = draw;
+draw = function() {
+  originalDraw();
+  drawFireballs();
+}
+</script>
+<!-- **********************************************************************
+========================= END FIREBALL FEATURE =========================
+********************************************************************** -->
+
+
+
+
+
+
+
+
 
 <script>
 // Home button functionality
