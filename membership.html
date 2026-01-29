@@ -116,6 +116,144 @@ function drawFireballs() {
   });
 }
 
+
+
+
+
+
+
+/**********************************************************************
+========================= BEGIN UFO FEATURE =========================
+**********************************************************************/
+
+// Array to hold UFOs
+let ufos = [];
+
+// UFO spawn function
+function spawnUFO() {
+  // Create a UFO object with random start position and speed
+  const z = Math.random() * 0.5 + 0.5; // depth effect (0.5-1)
+  ufos.push({
+    x: Math.random() * w,           // random horizontal start
+    y: Math.random() * h * 0.5,     // upper half of screen
+    vx: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1), // horizontal speed
+    vy: (Math.random() * 0.5 - 0.25), // slight vertical drift
+    z: z,
+    size: 20 + Math.random() * 10,   // base size
+    alpha: 0.9
+  });
+}
+
+// For testing, spawn a UFO every 2 seconds
+setInterval(spawnUFO, 2000); // adjust interval if you want more frequent spawns
+
+// UFO draw function (call inside your main draw loop)
+function drawUFOs() {
+  ufos.forEach((ufo, i) => {
+    const scale = ufo.z;
+    ctx.globalAlpha = ufo.alpha * scale;
+
+    // Draw UFO body (simple ellipse with a dome)
+    ctx.fillStyle = `rgba(180, 255, 255, ${0.8 * scale})`;
+    ctx.beginPath();
+    ctx.ellipse(ufo.x, ufo.y, ufo.size * scale, ufo.size * 0.4 * scale, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw dome
+    ctx.fillStyle = `rgba(200, 255, 255, ${0.6 * scale})`;
+    ctx.beginPath();
+    ctx.ellipse(ufo.x, ufo.y - ufo.size * 0.15 * scale, ufo.size * 0.6 * scale, ufo.size * 0.2 * scale, 0, 0, Math.PI);
+    ctx.fill();
+
+    // Update position
+    ufo.x += ufo.vx;
+    ufo.y += ufo.vy;
+
+    // Remove if offscreen
+    if (ufo.x < -50 || ufo.x > w + 50 || ufo.y < -50 || ufo.y > h + 50) {
+      ufos.splice(i, 1);
+    }
+  });
+  ctx.globalAlpha = 1; // reset alpha after drawing
+}
+
+/**********************************************************************
+========================= END UFO FEATURE =========================
+**********************************************************************/
+
+
+
+
+
+<!-- ========================= PLAYGROUND AUTO-REFRESH + INPUT BOX ========================= -->
+<div id="refresh-controller" style="
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.6);
+  color: #70c2ff;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  z-index: 9999;
+  user-select: none;
+">
+  <label for="refresh-input" style="font-weight:bold; margin-right:5px;">Refresh (ms):</label>
+  <input id="refresh-input" type="number" value="5000" style="
+    width: 70px;
+    background: rgba(0,0,0,0.25);
+    border: 2px solid #70c2ff;
+    border-radius: 5px;
+    color: #70c2ff;
+    font-weight: bold;
+    text-align: center;
+  ">
+</div>
+
+<script>
+/**********************************************************************
+========================= PLAYGROUND AUTO-REFRESH =========================
+**********************************************************************/
+
+// Default refresh interval
+let refreshInterval = 5000; // 5 seconds
+let refreshTimer = setInterval(() => {
+  console.log("Playground auto-refresh triggered");
+  location.reload();
+}, refreshInterval);
+
+// Grab input element
+const refreshInput = document.getElementById('refresh-input');
+
+// Update refresh interval on the fly
+refreshInput.addEventListener('input', () => {
+  const val = parseInt(refreshInput.value);
+  if (!isNaN(val) && val > 0) {
+    // Clear previous timer
+    clearInterval(refreshTimer);
+    refreshInterval = val;
+    // Set new timer
+    refreshTimer = setInterval(() => {
+      console.log("Playground auto-refresh triggered");
+      location.reload();
+    }, refreshInterval);
+    console.log(`Refresh interval updated: ${refreshInterval}ms`);
+  }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ===== MAIN DRAW LOOP =====
 function draw() {
   ctx.clearRect(0,0,w,h);
