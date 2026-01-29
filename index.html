@@ -127,42 +127,52 @@ canvas {
   opacity: 1;
 }
 
-/* Fully functional Donate button (finalized) */
+/* ===== HEART-SHAPED DONATE BUTTON ===== */
 #donate {
   position: absolute;
   top: 300px;
   left: calc(50% + 400px);
-  background: linear-gradient(
-    135deg,
-    rgba(70, 140, 200, 0.9),
-    rgba(40, 95, 160, 0.9)
-  );
-  box-shadow:
-    0 0 10px rgba(90, 160, 220, 0.45),
-    inset 0 0 6px rgba(255, 255, 255, 0.18);
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: #ffffff;
-  text-align: center;
-  padding: 10px 20px;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 90px;
+  background: linear-gradient(135deg, rgba(220,70,100,0.9), rgba(180,30,70,0.9));
   cursor: pointer;
+  text-indent: -9999px; /* hides text in center */
+  z-index: 10150;
 }
 
-/* Gentle, non-pressuring text below Donate */
+/* Create heart shape with pseudo-elements */
+#donate::before,
+#donate::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 90px;
+  background: linear-gradient(135deg, rgba(220,70,100,0.9), rgba(180,30,70,0.9));
+  border-radius: 50%;
+}
+
+#donate::before {
+  top: -50px;
+  left: 0;
+}
+
+#donate::after {
+  left: 50px;
+  top: 0;
+}
+
+/* Gentle, non-pressuring text near Donate */
 #donate-note {
   position: absolute;
-  top: 360px;
+  top: 400px;
   left: calc(50% + 400px);
   transform: translateX(-50%);
   font-size: 15px;
-  color: rgba(160, 200, 235, 0.85);
+  color: rgba(160,200,235,0.85);
   text-align: center;
   font-style: italic;
-  text-shadow: 0 0 6px rgba(80, 140, 200, 0.25);
+  text-shadow: 0 0 6px rgba(80,140,200,0.25);
 }
 
 /* ===== UNDER CONSTRUCTION MESSAGE ===== */
@@ -232,7 +242,6 @@ canvas {
   text-shadow: 0 0 4px rgba(80, 140, 200, 0.25);
   z-index: 10260;
 }
-
 </style>
 </head>
 <body>
@@ -253,7 +262,7 @@ canvas {
       <div class="cosmic-btn under-construction" data-tooltip="Coming soon: About Us page update!">About Us</div>
     </div>
 
-    <!-- Fully functional Donate button (finalized) -->
+    <!-- Fully functional heart-shaped Donate button -->
     <a
       href="https://www.paypal.me/JohnBender612"
       class="cosmic-btn"
@@ -264,7 +273,7 @@ canvas {
       Donate
     </a>
 
-    <!-- Gentle, non-pressuring text below Donate -->
+    <!-- Gentle, non-pressuring text near Donate -->
     <div id="donate-note">
       If you’d like to support what we’re building, we truly appreciate it.
     </div>
