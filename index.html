@@ -64,7 +64,7 @@ canvas {
     0 0 28px rgba(79,179,255,0.4);
   white-space: nowrap;
   position: absolute;
-  top: 80px; /* visually behind J&V’s */
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9000;
@@ -97,7 +97,7 @@ canvas {
   color: #70c2ff;
   background: rgba(0,0,0,0.25);
   border: 2px solid #70c2ff;
-  border-radius: 20px; /* rectangular with rounded corners */
+  border-radius: 20px;
   padding: 10px 20px;
   cursor: pointer;
   box-shadow: 0 0 10px #70c2ff, 0 0 20px rgba(79,179,255,0.5), 0 0 40px rgba(79,179,255,0.3);
@@ -118,6 +118,21 @@ canvas {
 #membership { top: 300px; left: 610px; width: 150px; height: 65px; }
 #about { top: 300px; left: 800px; width: 130px; height: 60px; }
 #donate { top: 300px; left: 1000px; width: 160px; height: 70px; }
+
+/* ===== UPDATE MESSAGE ===== */
+#update-message {
+  position: absolute;
+  top: 400px; /* adjust to sit nicely under buttons */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #70c2ff;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(79,179,255,0.4);
+  z-index: 10200;
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -135,6 +150,12 @@ canvas {
     <div class="cosmic-btn" id="membership" data-link="membership.html">Membership</div>
     <div class="cosmic-btn" id="about" data-link="about.html">About Us</div>
     <div class="cosmic-btn" id="donate" data-link="donate.html">Donate</div>
+  </div>
+
+  <!-- Update message -->
+  <div id="update-message">
+    We’re currently enhancing your experience. <br>
+    Exciting updates are on the way — thank you for your patience!
   </div>
 </div>
 
