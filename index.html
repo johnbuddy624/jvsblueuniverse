@@ -2,30 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe - Starfield with Wormhole Button</title>
+<title>J&V’s Blue Universe - Wormhole Button</title>
 <style>
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   width: 100%;
   height: 100%;
   background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: sans-serif;
-}
-
-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* Wormhole button styling */
 #wormholeButton {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   width: 120px;
   height: 120px;
   border-radius: 50%;
@@ -36,89 +28,19 @@ canvas {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* Hover effect for more 3D feel */
+/* Hover effect for 3D feel */
 #wormholeButton:hover {
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: scale(1.1);
   box-shadow: 0 0 80px #0ff, 0 0 150px #00f inset;
 }
 </style>
 </head>
 <body>
 
-<canvas id="space"></canvas>
-
 <!-- Wormhole button -->
 <div id="wormholeButton"></div>
 
 <script>
-const canvas = document.getElementById("space");
-const ctx = canvas.getContext("2d");
-
-let width = window.innerWidth;
-let height = window.innerHeight;
-
-function resizeCanvas() {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-
-const numStars = 500;
-const stars = [];
-
-for (let i = 0; i < numStars; i++) {
-  stars.push({
-    x: Math.random() * width - width/2,
-    y: Math.random() * height - height/2,
-    z: Math.random() * width,
-    size: Math.random() * 1.5 + 0.5
-  });
-}
-
-const pointer = { x: 0, y: 0 };
-let tilt = { x: 0, y: 0 };
-
-window.addEventListener("mousemove", e => {
-  pointer.x = (e.clientX - width/2) / width * 2;
-  pointer.y = (e.clientY - height/2) / height * 2;
-});
-
-window.addEventListener("deviceorientation", e => {
-  tilt.x = e.gamma ? e.gamma / 30 : 0;
-  tilt.y = e.beta ? e.beta / 30 : 0;
-});
-
-function drawStars() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, width, height);
-
-  const focalLength = width / 2;
-
-  stars.forEach(star => {
-    // Star speed is 0
-    if (star.z <= 0) {
-      star.z = width;
-      star.x = Math.random() * width - width/2;
-      star.y = Math.random() * height - height/2;
-    }
-
-    // Mouse influence 12.5, tilt 25
-    const sx = (star.x + pointer.x*12.5 + tilt.x*25) * (focalLength / star.z) + width/2;
-    const sy = (star.y + pointer.y*12.5 + tilt.y*25) * (focalLength / star.z) + height/2;
-    const radius = star.size * (focalLength / star.z);
-
-    ctx.beginPath();
-    ctx.arc(sx, sy, radius, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,255,255,${1 - star.z/width})`;
-    ctx.fill();
-  });
-
-  requestAnimationFrame(drawStars);
-}
-
-drawStars();
-
 // Wormhole button click event
 const wormhole = document.getElementById("wormholeButton");
 wormhole.addEventListener("click", () => {
