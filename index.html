@@ -2,17 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>J&V’s Blue Universe</title>
 <style>
-  /* Fullscreen black canvas */
   html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     background: black;
-    width: 100%;
-    height: 100%;
   }
   canvas {
     display: block;
@@ -21,137 +17,125 @@
 </head>
 <body>
 <canvas id="space"></canvas>
-
 <script>
 const canvas = document.getElementById('space');
 const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
 
-window.addEventListener('resize', () => {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-});
-
-/* -------------------
-   STARFIELD SETTINGS
-------------------- */
-const starCount = 500;
-const stars = [];
-
-for(let i=0; i<starCount; i++){
+// Stars
+let starCount = 500;
+let stars = [];
+for(let i=0;i<starCount;i++){
   stars.push({
     x: Math.random()*width,
     y: Math.random()*height,
     z: Math.random(),
-    radius: Math.random()*1.5+0.5
+    size: Math.random()*1.5+0.5
   });
 }
 
-/* -------------------
-   COSMIC WORM SETTINGS
-------------------- */
-const wormSegments = 25;
-const worm = {
-  segments: [],
-  vx: (Math.random()*1-0.5)*0.5,
-  vy: (Math.random()*1-0.5)*0.5,
-  head: {x: Math.random()*width, y: Math.random()*height, radius: 40}
-};
-for(let i=0;i<wormSegments;i++){
-  worm.segments.push({x: worm.head.x, y: worm.head.y, alpha: 1 - i/wormSegments});
+// Shooting stars
+let shootingStars = [];
+function addShootingStar(){
+  if(Math.random()<0.01){
+    shootingStars.push({
+      x: Math.random()*width,
+      y: 0,
+      len: Math.random()*30+10,
+      speed: Math.random()*4+4
+    });
+  }
 }
 
-/* -------------------
-   TEXT OBJECTS
-------------------- */
-const texts = [
-  {
-    content: "J&V's",
-    font: "80px Arial",
-    alpha: 0,
-    alphaDir: 0.01,
-    x: width/2,
-    y: height*0.2,
-    color: "rgba(0,150,255,ALPHA)"
-  },
-  {
-    content: "Blue Universe",
-    font: "50px Arial",
-    alpha: 0,
-    alphaDir: 0.008,
-    x: width/2,
-    y: height*0.3,
-    color: "rgba(100,150,255,ALPHA)"
-  }
+// Cosmic Worm
+let worm = [];
+let wormSegments = 25;
+let wormHead = {x: width/2, y: height/2, vx:2, vy:2};
+for(let i=0;i<wormSegments;i++){
+  worm.push({x: wormHead.x, y: wormHead.y});
+}
+
+// Text Objects
+let texts = [
+  {content: "J&V's", x: width/2, y: 100, font:"48px Arial", color:"rgba(255,255,255,ALPHA)", alpha:1, alphaDir:0.02}
 ];
 
-/* -------------------
-   MAIN ANIMATION LOOP
-------------------- */
+// Mouse / Tilt
+let mouse = {x: width/2, y: height/2};
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+window.addEventListener('deviceorientation', e => {
+  mouse.x = width/2 + e.gamma*10;
+  mouse.y = height/2 + e.beta*10;
+});
+
 function animate(){
   ctx.fillStyle = "rgba(0,0,0,0.3)";
   ctx.fillRect(0,0,width,height);
 
   // Draw stars
-  stars.forEach(star => {
-    const sx = star.x + (mouse.x||0)*0.05;
-    const sy = star.y + (mouse.y||0)*0.05;
-    ctx.beginPath();
-    ctx.arc(sx, sy, star.radius, 0, Math.PI*2);
+  stars.forEach(s => {
+    let sx = s.x + (mouse.x - width/2)*0.05*s.z;
+    let sy = s.y + (mouse.y - height/2)*0.05*s.z;
     ctx.fillStyle = "white";
-    ctx.fill();
+    ctx.fillRect(sx,sy,s.size,s.size);
   });
 
-  // Animate cosmic worm
-  worm.head.x += worm.vx;
-  worm.head.y += worm.vy;
-  if(worm.head.x <0 || worm.head.x>width) worm.vx*=-1;
-  if(worm.head.y <0 || worm.head.y>height) worm.vy*=-1;
-
-  worm.segments.unshift({x: worm.head.x, y: worm.head.y, alpha:1});
-  if(worm.segments.length>wormSegments) worm.segments.pop();
-
-  for(let i=0;i<worm.segments.length;i++){
-    const seg = worm.segments[i];
-    const nextSeg = worm.segments[i+1];
-    const alpha = seg.alpha*0.5;
-    const radius = 30*(1-i/wormSegments);
-    const grad = ctx.createRadialGradient(seg.x,seg.y,radius*0.2,seg.x,seg.y,radius);
-    grad.addColorStop(0,"rgba(0,150,255,"+alpha+")");
-    grad.addColorStop(1,"rgba(255,255,100,"+(alpha*0.3)+")");
-    ctx.fillStyle = grad;
+  // Draw shooting stars
+  shootingStars.forEach((sh,i)=>{
+    ctx.strokeStyle = "white";
     ctx.beginPath();
-    ctx.arc(seg.x, seg.y, radius,0,Math.PI*2);
+    ctx.moveTo(sh.x, sh.y);
+    ctx.lineTo(sh.x-sh.len, sh.y+sh.len);
+    ctx.stroke();
+    sh.x += sh.speed;
+    sh.y += sh.speed;
+    if(sh.x>width || sh.y>height) shootingStars.splice(i,1);
+  });
+  addShootingStar();
+
+  // Animate cosmic worm
+  wormHead.x += wormHead.vx;
+  wormHead.y += wormHead.vy;
+  if(wormHead.x<0 || wormHead.x>width) wormHead.vx*=-1;
+  if(wormHead.y<0 || wormHead.y>height) wormHead.vy*=-1;
+  worm[0].x = wormHead.x;
+  worm[0].y = wormHead.y;
+  for(let i=1;i<wormSegments;i++){
+    worm[i].x += (worm[i-1].x - worm[i].x)*0.3;
+    worm[i].y += (worm[i-1].y - worm[i].y)*0.3;
+  }
+  for(let i=0;i<wormSegments;i++){
+    let grd = ctx.createRadialGradient(worm[i].x,worm[i].y,0,worm[i].x,worm[i].y,30-i);
+    grd.addColorStop(0,"rgba(0,150,255,0.9)");
+    grd.addColorStop(1,"rgba(255,255,100,0.25)");
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(worm[i].x,worm[i].y,10-i*0.4,0,Math.PI*2);
     ctx.fill();
   }
 
-  // Animate text
-  texts.forEach(t=>{
+  // Draw texts
+  texts.forEach(t => {
     t.alpha += t.alphaDir;
     if(t.alpha>=1 || t.alpha<=0) t.alphaDir*=-1;
     ctx.fillStyle = t.color.replace("ALPHA", t.alpha);
     ctx.font = t.font;
     ctx.textAlign = "center";
-    ctx.fillText(t.content, t.x, t.y);
+    ctx.fillText(t.content,t.x,t.y);
   });
 
   requestAnimationFrame(animate);
 }
-
 animate();
 
-/* -------------------
-   MOUSE / TOUCH INTERACTION
-------------------- */
-const mouse = {x:0,y:0};
-window.addEventListener('mousemove', e => {
-  mouse.x = e.clientX - width/2;
-  mouse.y = e.clientY - height/2;
-});
-window.addEventListener('deviceorientation', e=>{
-  mouse.x = (e.gamma/45)*100;
-  mouse.y = (e.beta/45)*100;
+window.addEventListener('resize',()=>{
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
 });
 </script>
 </body>
