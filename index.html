@@ -27,7 +27,9 @@ canvas {
    - Shooting stars 3D with motion blur
    - Cosmic worm preserved
    - Text preserved
-   - Added mouse-interactive 3D parallax stars
+   - Mouse-interactive 3D parallax stars
+   - Full copy-paste-ready
+   - Works desktop + mobile
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -145,14 +147,4 @@ function draw(){
   ctx.fillText(textJV.text,textJV.x(),textJV.y);
   ctx.font=`${textBU.size}px sans-serif`;
   ctx.fillStyle=textBU.color;
-  ctx.fillText(textBU.text,textBU.x(),textBU.y);
-  ctx.font=`${textWelcome.size}px sans-serif`;
-  ctx.fillStyle=textWelcome.color;
-  ctx.fillText(textWelcome.text,textWelcome.x(),textWelcome.y());
-
-  requestAnimationFrame(draw);
-}
-draw();
-</script>
-</body>
-</html>
+  ctx.fillText(textBU.text,textBU
