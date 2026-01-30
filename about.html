@@ -89,25 +89,14 @@ function resize(){
 window.addEventListener("resize",resize);
 resize();
 
-/* ===== MOUSE TRACKING ===== */
-let mouseX = 0;
-let mouseY = 0;
-window.addEventListener("mousemove",(e)=>{
-  mouseX = e.clientX - w/2;
-  mouseY = e.clientY - h/2;
-});
-
 /* ===== STARS ===== */
 const stars = Array.from({length:600},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
   a:Math.random()*0.8+0.2,
-  r:Math.random()*1.5+0.5,
-  baseX:0,
-  baseY:0
+  r:Math.random()*1.5+0.5
 }));
-stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -139,14 +128,14 @@ const worm={
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars with parallax
+  // Stars drifting left to right with depth
   stars.forEach(s=>{
-    let offsetX = mouseX * 0.05 * s.z;
-    let offsetY = mouseY * 0.05 * s.z;
+    s.x += 0.2 * s.z; // speed proportional to depth
+    if(s.x > w) s.x = 0; // wrap around
     ctx.globalAlpha = s.a * s.z;
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.arc(s.baseX + offsetX, s.baseY + offsetY, s.r*s.z,0,Math.PI*2);
+    ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
 
