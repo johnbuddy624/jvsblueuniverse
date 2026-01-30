@@ -1,9 +1,8 @@
-<!-- Current Blueprint -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe – Starfield Home</title>
+<title>J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -16,7 +15,6 @@ html, body {
 canvas {
   position: fixed;
   inset: 0;
-  z-index: 1;
 }
 </style>
 </head>
@@ -25,38 +23,20 @@ canvas {
 <canvas id="space"></canvas>
 
 <script>
-/* =========================
-  META / INFO / DEBUG NOTES
-  =========================
-  Stars: 800, size 0.5-2px, z-depth 0.2-1, alpha 0.2-1
-  Shooting Stars: spawn chance 0.01 per frame, trail 30px, RGB "255,255,255"
-  Cosmic Worm:
-    - Head radius: 15px
-    - Segments: 25 for flowing length
-    - Body: rgba(0,150,255,0.9)
-    - Mist trail: rgba(255,255,100,0.25)
-    - Wiggle via segment-following
-    - Tail follows head, fading in alpha & radius
-    - Head clamped to canvas edges
-    - Works on desktop + mobile
-  New Text Object: "J&V's"
-    - Top-center
-    - Size: 80px
-    - Color: cloudy blue
-    - Static, full opacity
-  Locked: Stars, shooting stars, canvas background remain untouched
-========================= */
+/* ===== CURRENT BLUEPRINT =====
+   Text alpha stabilized
+   New text objects added
+================================ */
 
-/* ===== CANVAS SETUP ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
-let w, h;
-function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
-window.addEventListener("resize", resize);
+let w,h;
+function resize(){ w=canvas.width=innerWidth; h=canvas.height=innerHeight; }
+window.addEventListener("resize",resize);
 resize();
 
-/* ===== STARFIELD ===== */
-const stars = Array.from({length:800},() => ({
+/* ===== STARS ===== */
+const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
@@ -64,140 +44,108 @@ const stars = Array.from({length:800},() => ({
   r:Math.random()*1.5+0.5
 }));
 
-let px=0, py=0;
-window.addEventListener("mousemove", e => { px=(e.clientX-w/2)/100; py=(e.clientY-h/2)/100; });
-window.addEventListener("deviceorientation", e => { px=(e.gamma||0)/45*100; py=(e.beta||0)/45*100; });
-
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
-function spawnShootingStar(){
-  shootingStars.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
-    vx:(Math.random()*6-3),
-    vy:(Math.random()*6-3),
-    width:Math.random()*1.5+1,
-    trail:30,
-    color:"255,255,255"
-  });
-}
-setInterval(()=>{if(Math.random()<0.01) spawnShootingStar();},50);
+setInterval(()=>{
+  if(Math.random()<0.01){
+    shootingStars.push({
+      x:Math.random()*w,
+      y:Math.random()*h,
+      vx:(Math.random()*6-3),
+      vy:(Math.random()*6-3)
+    });
+  }
+},50);
 
 /* ===== COSMIC WORM ===== */
-const worm = {
-  segments:25,           // long flowing body
-  positions:[],           // segment positions
-  size:15,                // head/thin body radius
+const worm={
+  segments:25,
+  size:15,
   color:"rgba(0,150,255,0.9)",
-  mistColor:"rgba(255,255,100,0.25)",
+  pos:Array.from({length:25},()=>({x:w/2,y:h/2})),
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
-for(let i=0;i<worm.segments;i++){ worm.positions.push({x:w/2,y:h/2}); }
 
-/* ===== 3D TEXT OBJECT ("J&V's") ===== */
-const textObj = {
+/* ===== TEXT OBJECTS ===== */
+const textJV = {
   text:"J&V's",
-  size:80,
-  x:w/2,
+  x:()=>w/2,
   y:100,
-  alpha:1,           // static full opacity
-  color:"rgba(100,150,255,ALPHA)" // cloudy blue, ALPHA replaced per frame
+  size:80,
+  color:"rgba(100,150,255,1)"
 };
 
-/* ===== DRAW FUNCTIONS ===== */
-function drawStars(){
+const textBU = {
+  text:"Blue Universe",
+  x:()=>w/2,
+  y:160,
+  size:50,
+  color:"rgba(120,170,255,0.85)"
+};
+
+const textWelcome = {
+  text:"Welcome — you belong here",
+  x:()=>w/2,
+  y:()=>h/2,
+  size:30,
+  color:"rgba(120,170,255,0.8)"
+};
+
+function draw(){
+  ctx.clearRect(0,0,w,h);
+
   stars.forEach(s=>{
     ctx.globalAlpha=s.a*s.z;
-    ctx.beginPath();
-    ctx.arc(s.x+px*s.z,s.y+py*s.z,s.r*s.z,0,Math.PI*2);
     ctx.fillStyle="white";
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
-}
 
-function drawShootingStars(){
   shootingStars.forEach((s,i)=>{
-    const tail=s.trail;
-    const grad=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail);
-    grad.addColorStop(0,`rgba(${s.color},0.9)`);
-    grad.addColorStop(0.3,`rgba(${s.color},0.5)`);
-    grad.addColorStop(1,`rgba(${s.color},0)`);
-    ctx.strokeStyle=grad;
-    ctx.lineWidth=s.width;
-    ctx.lineCap="round";
+    ctx.strokeStyle="rgba(255,255,255,0.8)";
     ctx.beginPath();
     ctx.moveTo(s.x,s.y);
-    ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail);
+    ctx.lineTo(s.x-s.vx*30,s.y-s.vy*30);
     ctx.stroke();
-    s.x+=s.vx;
-    s.y+=s.vy;
-    if(s.x<-100||s.x>w+100||s.y<-100||s.y>h+100) shootingStars.splice(i,1);
+    s.x+=s.vx; s.y+=s.vy;
   });
-}
 
-function drawWorm(){
-  for(let i=0;i<worm.segments;i++){
-    const pos=worm.positions[i];
-    const radius=worm.size*(1-i*0.04);
-    const alpha=1-i*0.04;
-    const grad=ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,radius*2);
-    grad.addColorStop(0,worm.color);
-    grad.addColorStop(0.5,worm.mistColor);
-    grad.addColorStop(1,"rgba(0,0,0,0)");
-    ctx.beginPath();
-    ctx.arc(pos.x,pos.y,radius*2,0,Math.PI*2);
-    ctx.fillStyle=grad;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(pos.x,pos.y,radius,0,Math.PI*2);
-    ctx.fillStyle=worm.color;
-    ctx.fill();
-  }
-}
-
-function updateWorm(){
-  let head=worm.positions[0];
-  worm.vx+=(Math.random()-0.5)*0.3;
-  worm.vy+=(Math.random()-0.5)*0.3;
-  worm.vx=Math.max(Math.min(worm.vx,1.5),-1.5);
-  worm.vy=Math.max(Math.min(worm.vy,1.5),-1.5);
-  head.x+=worm.vx;
-  head.y+=worm.vy;
-  if(head.x<0){head.x=0;worm.vx*=-1;}
-  if(head.x>w){head.x=w;worm.vx*=-1;}
-  if(head.y<0){head.y=0;worm.vy*=-1;}
-  if(head.y>h){head.y=h;worm.vy*=-1;}
-  
+  let hpos=worm.pos[0];
+  hpos.x+=worm.vx; hpos.y+=worm.vy;
+  if(hpos.x<0||hpos.x>w) worm.vx*=-1;
+  if(hpos.y<0||hpos.y>h) worm.vy*=-1;
   for(let i=1;i<worm.segments;i++){
-    const prev=worm.positions[i-1];
-    const cur=worm.positions[i];
-    cur.x+=(prev.x-cur.x)*0.2;
-    cur.y+=(prev.y-cur.y)*0.2;
+    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.2;
+    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.2;
   }
-}
+  worm.pos.forEach((p,i)=>{
+    ctx.globalAlpha=1-i*0.04;
+    ctx.fillStyle=worm.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,worm.size*(1-i*0.04),0,Math.PI*2);
+    ctx.fill();
+  });
 
-function drawTextObj(){
-  const color=textObj.color.replace("ALPHA",textObj.alpha);
-  ctx.font=`bold ${textObj.size}px sans-serif`;
+  ctx.globalAlpha=1;
   ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillStyle=color;
-  ctx.fillText(textObj.text,textObj.x,textObj.y);
-}
 
-/* ===== ANIMATION LOOP ===== */
-function animate(){
-  ctx.clearRect(0,0,w,h);
-  drawStars();
-  drawShootingStars();
-  updateWorm();
-  drawWorm();
-  drawTextObj();
-  requestAnimationFrame(animate);
-}
+  ctx.font=`bold ${textJV.size}px sans-serif`;
+  ctx.fillStyle=textJV.color;
+  ctx.fillText(textJV.text,textJV.x(),textJV.y);
 
-animate();
+  ctx.font=`${textBU.size}px sans-serif`;
+  ctx.fillStyle=textBU.color;
+  ctx.fillText(textBU.text,textBU.x(),textBU.y);
+
+  ctx.font=`${textWelcome.size}px sans-serif`;
+  ctx.fillStyle=textWelcome.color;
+  ctx.fillText(textWelcome.text,textWelcome.x(),textWelcome.y());
+
+  requestAnimationFrame(draw);
+}
+draw();
 </script>
 </body>
 </html>
