@@ -53,6 +53,7 @@ canvas {
    - Added Donate button above welcome text
    - Button clickable to PayPal.me link
    - Press animation added
+   - Donate button moved up 100px
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -64,7 +65,7 @@ function resize(){
 
   // Update donate button vertical position
   const donateBtn = document.getElementById("donateBtn");
-  donateBtn.style.top = (h/2 - 50) + "px"; // 50px above welcome text
+  donateBtn.style.top = (h/2 - 150) + "px"; // moved 100px up from previous
 }
 window.addEventListener("resize",resize);
 resize();
