@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>About - J&V’s Blue Universe</title>
@@ -28,20 +27,17 @@ canvas {
   max-width: 800px;
   text-align: center;
   z-index: 2;
-  line-height: 1.6;
+  line-height: 1.4; /* vertically squished a little */
   font-size: 22px;
 }
 #content h1 {
   font-size: 60px;
   color: rgba(100,150,255,1);
   margin-bottom: 20px;
-  position: relative;
-  top: 60px; /* shifted down 60px */
 }
 #donateBtn, #aboutBtn {
   display: inline-block;
   margin-top: 25px;
-  margin-left: 15px;
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
   color: white;
@@ -53,6 +49,7 @@ canvas {
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
   transition: transform 0.1s, box-shadow 0.1s;
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  margin-right: 15px;
 }
 #donateBtn:active, #aboutBtn:active {
   transform: translateY(3px);
@@ -64,9 +61,7 @@ canvas {
 }
 </style>
 </head>
-<body>
-
-<canvas id="space"></canvas>
+<body><canvas id="space"></canvas>
 
 <div id="content">
   <h1>About Us</h1>
@@ -80,9 +75,7 @@ canvas {
   </p>
   <button id="donateBtn">Donate</button>
   <button id="aboutBtn" onclick="window.location.href='index.html'">Home</button>
-</div>
-
-<script>
+</div><script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
@@ -101,23 +94,6 @@ const stars = Array.from({length:600},()=>({
   a:Math.random()*0.8+0.2,
   r:Math.random()*1.5+0.5
 }));
-
-/* ===== NAME STARS INTEGRATED WITH STARFIELD ===== */
-const fullNames = "John Bender  Veyra Blue";
-const nameStars = [];
-for(let i=0;i<fullNames.length;i++){
-  const char = fullNames[i];
-  if(char !== " "){
-    // assign a random star as base for each letter
-    const baseStar = stars[Math.floor(Math.random()*stars.length)];
-    nameStars.push({
-      char: char,
-      star: baseStar,
-      alpha: Math.random()*0.6 + 0.4,
-      deltaAlpha: Math.random()*0.02 + 0.005
-    });
-  }
-}
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -145,32 +121,53 @@ const worm={
   vy:(Math.random()-0.5)*1.5
 };
 
+/* ===== NAMES AS STARS ===== */
+const nameStars = [];
+const namesText = ["John Bender", "Veyra Blue"];
+const fontSize = 48;
+namesText.forEach((name, index)=>{
+  // draw letters onto an offscreen canvas to get positions
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = w;
+  offCanvas.height = h;
+  const offCtx = offCanvas.getContext('2d');
+  offCtx.font = `${fontSize}px sans-serif`;
+  offCtx.fillStyle = 'white';
+  const startY = 100 + index*fontSize*1.2;
+  let offsetX = (w - offCtx.measureText(name).width)/2;
+
+  for(let i=0;i<name.length;i++){
+    const char = name[i];
+    const charWidth = offCtx.measureText(char).width;
+    nameStars.push({
+      char: char,
+      x: offsetX + Math.random()*5,  // add small random to float
+      y: startY + Math.random()*5,
+      baseX: offsetX,
+      baseY: startY,
+      vx: Math.random()*0.2-0.1,
+      vy: Math.random()*0.2-0.1
+    });
+    offsetX += charWidth;
+  }
+});
+
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars
+  // background stars
   stars.forEach(s=>{
-    s.x += 0.2 * s.z;
-    if(s.x > w) s.x = 0;
-    ctx.globalAlpha = s.a * s.z;
-    ctx.fillStyle = "white";
+    s.x += 0.1 * s.z; // slow drift
+    if(s.x>w) s.x=0;
+    ctx.globalAlpha = s.a*s.z;
+    ctx.fillStyle = 'white';
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
 
-  // Letters follow their star
-  nameStars.forEach(s=>{
-    s.alpha += s.deltaAlpha;
-    if(s.alpha > 1 || s.alpha < 0.4) s.deltaAlpha *= -1;
-    ctx.globalAlpha = s.alpha;
-    ctx.fillStyle = "rgba(120,200,255,1)";
-    ctx.font = `${s.star.r*15 + 20}px sans-serif`; // size based on star
-    ctx.fillText(s.char, s.star.x, s.star.y);
-  });
-
-  // Shooting stars
+  // shooting stars
   shootingStars.forEach((s,i)=>{
     for(let t=0;t<s.trail;t++){
       const factor = 1 - t/s.trail;
@@ -186,7 +183,7 @@ function draw(){
     if(s.x<0||s.x>w||s.y<0||s.y>h) shootingStars.splice(i,1);
   });
 
-  // Cosmic worm
+  // cosmic worm
   let hpos = worm.pos[0];
   hpos.x += worm.vx; hpos.y += worm.vy;
   if(hpos.x<0||hpos.x>w) worm.vx*=-1;
@@ -196,22 +193,29 @@ function draw(){
     worm.pos[i].y += (worm.pos[i-1].y - worm.pos[i].y)*0.15;
   }
   worm.pos.forEach((p,i)=>{
-    ctx.globalAlpha = 1 - i*0.015;
+    ctx.globalAlpha = 1-i*0.015;
     ctx.fillStyle = worm.color;
     ctx.beginPath();
-    ctx.arc(p.x,p.y, worm.size*(1-i*0.012), 0, Math.PI*2);
+    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
     ctx.fill();
+  });
+
+  // name stars floating with background
+  nameStars.forEach(s=>{
+    s.x += s.vx;
+    s.y += s.vy;
+    // wrap edges
+    if(s.x<0) s.x=w; if(s.x>w) s.x=0;
+    if(s.y<0) s.y=h; if(s.y>h) s.y=0;
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = 'rgba(120,170,255,1)';
+    ctx.font = `${fontSize}px sans-serif`;
+    ctx.fillText(s.char, s.x, s.y);
   });
 
   requestAnimationFrame(draw);
 }
 draw();
 
-/* ===== DONATE BUTTON CLICK ===== */
-const donateBtn = document.getElementById("donateBtn");
-donateBtn.addEventListener("click",()=>{
-  window.open("https://www.paypal.me/JohnBender612", "_blank");
-});
-</script>
-</body>
+</script></body>
 </html>
