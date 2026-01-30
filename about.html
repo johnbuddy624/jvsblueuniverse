@@ -18,9 +18,8 @@ canvas {
   inset: 0;
   z-index: 0;
 }
-
-/* ===== DONATE & ABOUT BUTTONS ===== */
-.button-common {
+/* ===== BUTTON STYLES ===== */
+.button {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -33,52 +32,41 @@ canvas {
   font-size: 28px;
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
-  transition: transform 0.1s, box-shadow 0.1s;
+  transition: transform 0.1s, box-shadow 0.1s, box-shadow 0.5s;
   z-index: 2;
   text-shadow: 0 0 8px rgba(100, 149, 237, 0.8);
 }
-.button-common:active {
+.button:active {
   transform: translateX(-50%) translateY(3px);
-  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+  box-shadow: 0 2px 8px rgba(100, 149, 237, 0.3);
 }
-.button-common:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-  text-shadow: 0 0 12px rgba(100,149,237,1);
-}
-
-/* ===== CONTENT STYLES ===== */
-#content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 800px;
-  text-align: center;
-  z-index: 2;
-  line-height: 1.25; /* more squished vertically */
-  font-size: 22px;
+.button:hover {
+  box-shadow: 0 0 20px rgba(100, 149, 237, 0.8), 0 0 40px rgba(100, 149, 237, 0.4);
+  text-shadow: 0 0 12px rgba(100, 149, 237, 1);
 }
 </style>
 </head>
 <body>
+
 <canvas id="space"></canvas>
 
 <!-- ===== BUTTONS ===== -->
-<button id="donateBtn" class="button-common">Donate</button>
-<button id="aboutBtn" class="button-common">About Us</button>
+<button id="donateBtn" class="button">Donate</button>
+<button id="homeBtn" class="button">Home</button>
 
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
-
 function resize(){ 
   w = canvas.width = window.innerWidth; 
   h = canvas.height = window.innerHeight; 
 
-  // Position buttons
-  document.getElementById("donateBtn").style.top = (h/2 + 180) + "px";
-  document.getElementById("aboutBtn").style.top = (h/2 + 260) + "px";
+  // Update button vertical positions
+  const donateBtn = document.getElementById("donateBtn");
+  const homeBtn = document.getElementById("homeBtn");
+  donateBtn.style.top = (h/2 - 70) + "px"; // moved down 80px from before
+  homeBtn.style.top = (h/2 - 70 + 60) + "px"; // 60px below donate
 }
 window.addEventListener("resize",resize);
 resize();
@@ -121,34 +109,28 @@ const worm={
   vy:(Math.random()-0.5)*1.5
 };
 
-/* ===== FLOATING NAMES ===== */
-const floatingNames = [
-  { text:"John Bender", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2 },
-  { text:"Veyra Blue", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2 }
-];
-
 /* ===== TEXT OBJECTS ===== */
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
 const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };
 const textWelcome = { 
   text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙", 
   x:()=>w/2, 
-  y:()=>h/2-60, 
-  size:30, 
+  y:()=>h/2 + 100, 
+  size:28, 
   color:"rgba(120,170,255,0.8)",
-  maxWidth:()=>w * 0.7
+  maxWidth:()=>w * 0.7 // wrap at 70% of screen width
 };
 
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars drifting left to right with 3D depth
+  // Stars with slow left-right motion
   stars.forEach(s=>{
-    s.x += 0.15 * s.z; // slow movement
+    s.x += 0.2*s.z;
     if(s.x > w) s.x = 0;
-    ctx.globalAlpha = s.a * s.z;
-    ctx.fillStyle = "white";
+    ctx.globalAlpha = s.a*s.z;
+    ctx.fillStyle="white";
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
@@ -165,8 +147,8 @@ function draw(){
       ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
       ctx.stroke();
     }
-    s.x += s.vx * s.z;
-    s.y += s.vy * s.z;
+    s.x += s.vx*s.z;
+    s.y += s.vy*s.z;
     if(s.x<0 || s.x>w || s.y<0 || s.y>h){
       shootingStars.splice(i,1);
     }
@@ -189,17 +171,7 @@ function draw(){
     ctx.fill();
   });
 
-  // Floating Names
-  floatingNames.forEach(f=>{
-    f.x += 0.1 * f.z; // drift with stars
-    if(f.x > w) f.x = 0;
-    ctx.globalAlpha = f.z;
-    ctx.fillStyle = "rgba(180,220,255,0.85)";
-    ctx.font = `${30*f.z}px sans-serif`;
-    ctx.fillText(f.text,f.x,f.y);
-  });
-
-  // Main Text
+  // Text
   ctx.globalAlpha=1;
   ctx.textAlign="center";
   ctx.font=`bold ${textJV.size}px sans-serif`;
@@ -214,7 +186,7 @@ function draw(){
   ctx.fillStyle=textWelcome.color;
   const words = textWelcome.text.split(" ");
   let line = "";
-  let lineHeight = textWelcome.size * 1.15; // slightly tighter
+  let lineHeight = textWelcome.size * 1.2;
   let startY = textWelcome.y();
   let maxWidth = textWelcome.maxWidth();
   for(let i=0; i<words.length; i++){
@@ -238,8 +210,9 @@ draw();
 document.getElementById("donateBtn").addEventListener("click",()=>{
   window.open("https://www.paypal.me/JohnBender612", "_blank");
 });
-document.getElementById("aboutBtn").addEventListener("click",()=>{
-  window.location.href="about.html";
+
+document.getElementById("homeBtn").addEventListener("click",()=>{
+  window.location.href = "about.html"; // Change to actual about page file if needed
 });
 </script>
 </body>
