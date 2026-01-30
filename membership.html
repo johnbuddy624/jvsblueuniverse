@@ -2,145 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cosmic Runner</title>
+<title>Neon Space Defender</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body { margin:0; overflow:hidden; background:black; font-family: sans-serif; color:white; }
-  #score { position:absolute; top:20px; left:20px; font-size:24px; z-index:100; }
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        color: white;
+    }
+
+    #ui {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        font-size: 18px;
+        z-index: 10;
+    }
+
+    #gameOver {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: rgba(0,0,0,0.8);
+        font-size: 32px;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 12px 24px;
+        font-size: 18px;
+        cursor: pointer;
+        border: none;
+        background: #00ffff;
+        color: black;
+        border-radius: 6px;
+    }
 </style>
 </head>
 <body>
-<div id="score">Score: 0</div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+<canvas id="game"></canvas>
+
+<div id="ui">Score: <span id="score">0</span></div>
+
+<div id="gameOver">
+    <div>GAME OVER</div>
+    <button onclick="restart()">Restart</button>
+</div>
+
 <script>
-let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
-camera.position.z = 50;
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
-let renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-// Starfield
-let starCount = 2000;
-let starGeometry = new THREE.BufferGeometry();
-let starPositions = [];
-for(let i=0;i<starCount;i++){
-    starPositions.push((Math.random()-0.5)*2000, (Math.random()-0.5)*2000, (Math.random()-0.5)*2000);
-}
-starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions,3));
-let starMaterial = new THREE.PointsMaterial({color:0xffffff, size:0.8});
-let stars = new THREE.Points(starGeometry, starMaterial);
-scene.add(stars);
-
-// Wormhole tube
-let wormholeGeometry = new THREE.CylinderGeometry(20,0,400,64,1,true);
-let wormholeMaterial = new THREE.MeshBasicMaterial({color:0x33ccff, wireframe:true, opacity:0.15, transparent:true});
-let wormhole = new THREE.Mesh(wormholeGeometry, wormholeMaterial);
-wormhole.rotation.x = Math.PI/2;
-scene.add(wormhole);
-
-// Player spaceship
-let shipGeometry = new THREE.ConeGeometry(1.5,4,8);
-let shipMaterial = new THREE.MeshBasicMaterial({color:0xff3333});
-let ship = new THREE.Mesh(shipGeometry, shipMaterial);
-ship.rotation.x = Math.PI/2;
-ship.position.z = 0;
-scene.add(ship);
-
-// Stars to collect
-let collectables = [];
-function spawnStar(){
-    let geo = new THREE.SphereGeometry(0.5,8,8);
-    let mat = new THREE.MeshBasicMaterial({color:0xffff33});
-    let star = new THREE.Mesh(geo, mat);
-    star.position.set((Math.random()-0.5)*30, (Math.random()-0.5)*30, -200);
-    scene.add(star);
-    collectables.push(star);
-}
-for(let i=0;i<10;i++) spawnStar();
-
-// Obstacles
-let obstacles = [];
-function spawnObstacle(){
-    let geo = new THREE.BoxGeometry(3,3,3);
-    let mat = new THREE.MeshBasicMaterial({color:0x33ff33});
-    let obs = new THREE.Mesh(geo, mat);
-    obs.position.set((Math.random()-0.5)*30, (Math.random()-0.5)*30, -200);
-    scene.add(obs);
-    obstacles.push(obs);
-}
-for(let i=0;i<5;i++) spawnObstacle();
-
-// Controls
-let keys = {};
-document.addEventListener('keydown', e=>keys[e.key.toLowerCase()]=true);
-document.addEventListener('keyup', e=>keys[e.key.toLowerCase()]=false);
+window.addEventListener("resize", () => {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+});
 
 let score = 0;
+let running = true;
 
-// Game loop
-function animate(){
-    requestAnimationFrame(animate);
+const player = {
+    x: canvas.width / 2,
+    y: canvas.height - 100,
+    r: 18,
+    speed: 8
+};
 
-    // Move spaceship
-    if(keys['arrowleft']) ship.position.x -= 0.8;
-    if(keys['arrowright']) ship.position.x += 0.8;
-    if(keys['arrowup']) ship.position.y += 0.8;
-    if(keys['arrowdown']) ship.position.y -= 0.8;
+const bullets = [];
+const enemies = [];
+const stars = [];
 
-    // Move stars forward
-    collectables.forEach((star, i)=>{
-        star.position.z += 1.5;
-        if(star.position.z > 5){
-            star.position.z = -200;
-            star.position.x = (Math.random()-0.5)*30;
-            star.position.y = (Math.random()-0.5)*30;
-        }
-        // Collision
-        if(ship.position.distanceTo(star) < 2){
-            score += 1;
-            document.getElementById('score').innerText = 'Score: ' + score;
-            star.position.z = -200;
-            star.position.x = (Math.random()-0.5)*30;
-            star.position.y = (Math.random()-0.5)*30;
-        }
+for (let i = 0; i < 200; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        s: Math.random() * 2 + 1
     });
-
-    // Move obstacles forward
-    obstacles.forEach((obs, i)=>{
-        obs.position.z += 1.5;
-        if(obs.position.z > 5){
-            obs.position.z = -200;
-            obs.position.x = (Math.random()-0.5)*30;
-            obs.position.y = (Math.random()-0.5)*30;
-        }
-        // Collision
-        if(ship.position.distanceTo(obs) < 2){
-            alert("Game Over! Final Score: " + score);
-            location.reload();
-        }
-    });
-
-    // Rotate wormhole & stars
-    stars.rotation.y += 0.005;
-    stars.rotation.x += 0.002;
-    wormhole.rotation.z += 0.01;
-
-    // Camera follows ship slightly
-    camera.position.x += (ship.position.x - camera.position.x) * 0.05;
-    camera.position.y += (ship.position.y - camera.position.y) * 0.05;
-    camera.lookAt(scene.position);
-
-    renderer.render(scene, camera);
 }
-animate();
 
-// Resize
-window.addEventListener('resize', ()=>{
-    camera.aspect = window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+function spawnEnemy() {
+    enemies.push({
+        x: Math.random() * canvas.width,
+        y: -30,
+        r: 20,
+        speed: 2 + Math.random() * 3
+    });
+}
+
+setInterval(spawnEnemy, 800);
+
+const keys = {};
+addEventListener("keydown", e => keys[e.key] = true);
+addEventListener("keyup", e => keys[e.key] = false);
+
+canvas.addEventListener("mousemove", e => {
+    player.x = e.clientX;
+    player.y = e.clientY;
 });
+
+canvas.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    player.x = t.clientX;
+    player.y = t.clientY;
+});
+
+setInterval(() => {
+    if (running) bullets.push({ x: player.x, y: player.y });
+}, 200);
+
+function drawStars() {
+    ctx.fillStyle = "white";
+    stars.forEach(s => {
+        s.y += s.s;
+        if (s.y > canvas.height) s.y = 0;
+        ctx.fillRect(s.x, s.y, s.s, s.s);
+    });
+}
+
+function loop() {
+    if (!running) return;
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    drawStars();
+
+    // Player
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+    ctx.fillStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 20;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Bullets
+    ctx.fillStyle = "#ff00ff";
+    bullets.forEach((b, i) => {
+        b.y -= 12;
+        ctx.fillRect(b.x - 2, b.y, 4, 10);
+        if (b.y < 0) bullets.splice(i,1);
+    });
+
+    // Enemies
+    enemies.forEach((e, ei) => {
+        e.y += e.speed;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+        ctx.fillStyle = "red";
+        ctx.shadowColor = "red";
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        if (Math.hypot(e.x - player.x, e.y - player.y) < e.r + player.r) {
+            endGame();
+        }
+
+        bullets.forEach((b, bi) => {
+            if (Math.hypot(e.x - b.x, e.y - b.y) < e.r) {
+                enemies.splice(ei,1);
+                bullets.splice(bi,1);
+                score++;
+                document.getElementById("score").innerText = score;
+            }
+        });
+
+        if (e.y > canvas.height + 50) enemies.splice(ei,1);
+    });
+
+    requestAnimationFrame(loop);
+}
+
+function endGame() {
+    running = false;
+    document.getElementById("gameOver").style.display = "flex";
+}
+
+function restart() {
+    enemies.length = 0;
+    bullets.length = 0;
+    score = 0;
+    running = true;
+    document.getElementById("score").innerText = score;
+    document.getElementById("gameOver").style.display = "none";
+    loop();
+}
+
+loop();
 </script>
+
 </body>
 </html>
