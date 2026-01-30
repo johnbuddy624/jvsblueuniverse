@@ -22,13 +22,13 @@ canvas {
   z-index: 0;
 }
 
-/* ===== CONTENT ===== */
+/* ===== CENTER CONTENT ===== */
 #content {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: 900px;
+  max-width: 720px;
   text-align: center;
   z-index: 2;
   line-height: 1.45;
@@ -36,13 +36,43 @@ canvas {
 }
 
 #content h1 {
-  font-size: 60px;
+  font-size: 58px;
   margin-bottom: 20px;
   color: rgba(100,150,255,1);
 }
 
-#content p {
-  margin-bottom: 18px;
+/* ===== AFFILIATE ORBIT ===== */
+.affiliate {
+  position: absolute;
+  width: 180px;
+  padding: 16px;
+  text-align: center;
+  background: rgba(40,80,140,0.35);
+  border: 2px solid rgba(120,170,255,0.5);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  color: #cfe4ff;
+  font-size: 18px;
+  z-index: 2;
+
+  box-shadow:
+    0 0 20px rgba(120,170,255,0.3),
+    inset 0 0 12px rgba(120,170,255,0.2);
+
+  animation: float 6s ease-in-out infinite;
+}
+
+.affiliate strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 /* ===== BUTTONS ===== */
@@ -59,17 +89,11 @@ canvas {
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100,149,237,0.4);
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
-  transition: transform 0.1s, box-shadow 0.2s;
 }
 
 .button:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
-}
-
-.button:active {
-  transform: translateY(3px);
-  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 </style>
 </head>
@@ -78,30 +102,49 @@ canvas {
 
 <canvas id="space"></canvas>
 
+<!-- ===== AFFILIATE BOXES ===== -->
+<div class="affiliate" style="top:20%; left:50%; transform:translateX(-50%)">
+  <strong>Affiliate One</strong>
+  Creative tools we trust
+</div>
+
+<div class="affiliate" style="top:35%; left:18%">
+  <strong>Affiliate Two</strong>
+  Inspiration fuel 🚀
+</div>
+
+<div class="affiliate" style="top:35%; right:18%">
+  <strong>Affiliate Three</strong>
+  Cosmic tech
+</div>
+
+<div class="affiliate" style="bottom:28%; left:22%">
+  <strong>Affiliate Four</strong>
+  Design magic
+</div>
+
+<div class="affiliate" style="bottom:28%; right:22%">
+  <strong>Affiliate Five</strong>
+  Universe builders
+</div>
+
+<div class="affiliate" style="bottom:15%; left:50%; transform:translateX(-50%)">
+  <strong>Affiliate Six</strong>
+  Future ideas
+</div>
+
+<!-- ===== CENTER TEXT ===== -->
 <div id="content">
   <h1>Affiliates</h1>
-
   <p>
-    Welcome to the <strong>Affiliate Universe</strong> 🌌  
-    This page is dedicated to creators, tools, and ideas that align with the heart
-    of <strong>J&V’s Blue Universe</strong>.
+    This universe grows through creativity, trust, and collaboration.  
+    Some links on this page are affiliate links — if you choose to support them,
+    it helps <strong>J&V’s Blue Universe</strong> grow at no extra cost to you 💙.
   </p>
 
   <p>
-    Some links on this page may be affiliate links.  
-    This means that if you choose to support an affiliate, it helps our universe
-    grow at no extra cost to you 💙.
-  </p>
-
-  <p>
-    We only feature things we genuinely believe in—creative, fun, useful,
-    or just plain awesome.  
-    Transparency matters here, always.
-  </p>
-
-  <p>
-    Interested in becoming an affiliate or collaborating with us?  
-    Reach out anytime at <strong>johnbuddy624@gmail.com</strong>.
+    We only feature things we genuinely believe in — tools, ideas, and creators
+    that align with our values.
   </p>
 
   <button class="button" onclick="location.href='index.html'">Home</button>
@@ -109,7 +152,7 @@ canvas {
 </div>
 
 <script>
-/* ===== CANVAS ===== */
+/* ===== STARFIELD ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
@@ -121,7 +164,6 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/* ===== STARS ===== */
 const stars = Array.from({ length: 600 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
@@ -130,23 +172,8 @@ const stars = Array.from({ length: 600 }, () => ({
   r: Math.random() * 1.5 + 0.5
 }));
 
-/* ===== COSMIC WORM ===== */
-const worm = {
-  segments: 40,
-  size: 10,
-  color: "rgba(0,150,255,0.9)",
-  pos: Array.from({ length: 40 }, () => ({
-    x: w / 2,
-    y: h / 2
-  })),
-  vx: (Math.random() - 0.5) * 1.2,
-  vy: (Math.random() - 0.5) * 1.2
-};
-
 function draw() {
   ctx.clearRect(0, 0, w, h);
-
-  // Stars drift
   stars.forEach(s => {
     s.x += 0.15 * s.z;
     if (s.x > w) s.x = 0;
@@ -156,28 +183,6 @@ function draw() {
     ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
     ctx.fill();
   });
-
-  // Worm movement
-  let head = worm.pos[0];
-  head.x += worm.vx;
-  head.y += worm.vy;
-
-  if (head.x < 0 || head.x > w) worm.vx *= -1;
-  if (head.y < 0 || head.y > h) worm.vy *= -1;
-
-  for (let i = 1; i < worm.segments; i++) {
-    worm.pos[i].x += (worm.pos[i - 1].x - worm.pos[i].x) * 0.15;
-    worm.pos[i].y += (worm.pos[i - 1].y - worm.pos[i].y) * 0.15;
-  }
-
-  worm.pos.forEach((p, i) => {
-    ctx.globalAlpha = 1 - i * 0.02;
-    ctx.fillStyle = worm.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, worm.size * (1 - i * 0.015), 0, Math.PI * 2);
-    ctx.fill();
-  });
-
   requestAnimationFrame(draw);
 }
 draw();
