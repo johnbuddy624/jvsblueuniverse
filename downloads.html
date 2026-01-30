@@ -27,8 +27,8 @@ button {
   color: white;
   border: none;
   border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 24px;
+  padding: 14px 28px;
+  font-size: 26px;
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100,149,237,0.4);
   transition: transform 0.1s, box-shadow 0.1s;
@@ -64,15 +64,15 @@ function resize(){
   w = canvas.width = window.innerWidth;
   h = canvas.height = window.innerHeight;
 
-  // Position buttons evenly
-  document.getElementById("download1").style.top = (h/2 - 50) + "px";
-  document.getElementById("download1").style.left = (w/2 - 180) + "px";
+  // Position buttons
+  document.getElementById("download1").style.top = (h/2 - 60) + "px";
+  document.getElementById("download1").style.left = (w/2 - 200) + "px";
 
-  document.getElementById("download2").style.top = (h/2 - 50) + "px";
+  document.getElementById("download2").style.top = (h/2 - 60) + "px";
   document.getElementById("download2").style.left = (w/2 + 20) + "px";
 
-  document.getElementById("homeBtn").style.top = (h/2 + 50) + "px";
-  document.getElementById("homeBtn").style.left = (w/2 - 80) + "px";
+  document.getElementById("homeBtn").style.top = (h/2 + 60) + "px";
+  document.getElementById("homeBtn").style.left = (w/2 - 60) + "px";
 }
 window.addEventListener("resize",resize);
 resize();
