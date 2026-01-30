@@ -55,11 +55,11 @@ canvas {
 
 <script>
 /* ===== CURRENT BLUEPRINT =====
-   Phase 2E Upgrade:
-   - Added glowing effect to Donate button
-   - Button clickable to PayPal.me link
-   - Press animation and glow on hover
-   - Button remains 100px above welcome text
+   Phase 2F Upgrade:
+   - Welcome text updated to full personalized message
+   - Donate button remains glowing and clickable
+   - Press animation intact
+   - Button 100px above welcome text
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -125,7 +125,13 @@ const worm={
 /* ===== TEXT OBJECTS ===== */
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
 const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };
-const textWelcome = { text:"Welcome — you belong here", x:()=>w/2, y:()=>h/2, size:30, color:"rgba(120,170,255,0.8)" };
+const textWelcome = { 
+  text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙", 
+  x:()=>w/2, 
+  y:()=>h/2, 
+  size:30, 
+  color:"rgba(120,170,255,0.8)" 
+};
 
 /* ===== DRAW LOOP ===== */
 function draw(){
