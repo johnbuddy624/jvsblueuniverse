@@ -2,34 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Legend of Pixel Adventure</title>
+<title>Legend of Pixel Adventure - Full</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-html, body {
-    margin:0;
-    padding:0;
-    overflow:hidden;
-    background:#000;
-    font-family: monospace;
-}
-canvas { display:block; margin:0; background:#000; }
-#ui{
-    position:fixed;
-    top:10px;
-    left:10px;
-    color:#0ff;
-    font-size:18px;
-    z-index:10;
-}
-#message{
-    position:fixed;
-    bottom:10px;
-    left:50%;
-    transform:translateX(-50%);
-    color:#ff0;
-    font-size:16px;
-    z-index:10;
-}
+html,body{margin:0;padding:0;overflow:hidden;background:#000;}
+canvas{display:block;margin:0 auto;background:#000;}
+#ui{position:fixed;top:10px;left:10px;color:#0ff;font-size:18px;z-index:10;}
+#message{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);color:#ff0;font-size:16px;z-index:10;}
 </style>
 </head>
 <body>
@@ -37,187 +16,232 @@ canvas { display:block; margin:0; background:#000; }
 <div id="ui">Health: <span id="health">5</span> | Keys: <span id="keys">0</span> | Score: <span id="score">0</span></div>
 <div id="message"></div>
 <script>
-// --- Setup ---
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-window.addEventListener('resize',()=>{ width=canvas.width=window.innerWidth; height=canvas.height=window.innerHeight; });
+// =========================
+// SETTINGS
+// =========================
+const TILE=32, ROOM_WIDTH=16, ROOM_HEIGHT=12;
+const canvas=document.getElementById('game');
+const ctx=canvas.getContext('2d');
+let width=canvas.width=window.innerWidth;
+let height=canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight;});
 
-// --- Tile Map ---
-const TILE = 32;
-const ROOM_WIDTH = 16;
-const ROOM_HEIGHT = 12;
+// =========================
+// PLAYER
+// =========================
+const player={
+ x:2*TILE, y:2*TILE,
+ w:28, h:28,
+ health:5,
+ keys:0,
+ speed:2,
+ dir:'down',
+ swinging:false,
+ swingTimer:0,
+ swingDuration:10
+};
 
-// Define rooms: 0=empty, 1=wall, 2=enemy, 3=key, 4=door
-const rooms = [
-    [   // Room 0
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,1],
-        [1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,2,0,0,2,0,0,2,0,0,2,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-        [1,0,0,2,0,0,2,0,0,2,0,0,2,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,2,0,0,2,0,0,2,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    ],
-    [   // Room 1
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,2,0,0,0,2,0,0,0,2,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
-        [1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-        [1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,1],
-        [1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    ]
+// =========================
+// INPUT
+// =========================
+const keysDown={};
+window.addEventListener('keydown',e=>keysDown[e.key]=true);
+window.addEventListener('keyup',e=>keysDown[e.key]=false);
+
+// =========================
+// MAPS & ROOMS
+// 0=empty,1=wall,2=enemy,3=key,4=door
+// =========================
+const rooms=[
+[
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,1],
+[1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,2,0,0,2,0,0,2,0,0,2,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
+[1,0,0,2,0,0,2,0,0,2,0,0,2,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,2,0,0,2,0,0,2,0,0,0,0,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+],
+[
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,2,0,0,0,2,0,0,0,2,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
+[1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
+[1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,3,0,1],
+[1,0,2,0,0,2,0,0,2,0,0,2,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+]
 ];
 
-// --- Player ---
-const player = {x:2*TILE,y:2*TILE,w:28,h:28,health:5,keys:0,speed:2,dir:'down',swing:false};
-
-// --- Input ---
-const keysDown = {};
-window.addEventListener('keydown', e=>{ keysDown[e.key]=true; });
-window.addEventListener('keyup', e=>{ keysDown[e.key]=false; });
-
-// --- Game State ---
+// =========================
+// GAME STATE
+// =========================
 let roomIndex=0;
 let enemies=[];
+let particles=[];
 
-// --- Sound Effects ---
+// =========================
+// SOUND EFFECTS
+// =========================
 function playSound(type){
-    const ctxAudio = new (window.AudioContext||window.webkitAudioContext)();
-    const osc = ctxAudio.createOscillator();
-    osc.type = "square";
-    osc.frequency.setValueAtTime(type==="swing"?600: type==="hit"?200:400, ctxAudio.currentTime);
-    osc.connect(ctxAudio.destination);
-    osc.start();
-    osc.stop(ctxAudio.currentTime + 0.1);
+ const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+ const osc = audioCtx.createOscillator();
+ osc.type="square";
+ osc.frequency.setValueAtTime(type==='swing'?600:type==='hit'?200:400,audioCtx.currentTime);
+ osc.connect(audioCtx.destination);
+ osc.start();
+ osc.stop(audioCtx.currentTime+0.1);
 }
 
-// --- Utility ---
-function drawRect(x,y,w,h,color){ ctx.fillStyle=color; ctx.fillRect(x,y,w,h); }
-
-// --- Load Enemies ---
+// =========================
+// ENEMY LOADING
+// =========================
 function loadEnemies(){
-    enemies=[];
-    const map = rooms[roomIndex];
-    for(let y=0;y<ROOM_HEIGHT;y++){
-        for(let x=0;x<ROOM_WIDTH;x++){
-            if(map[y][x]===2) enemies.push({x:x*TILE,y:y*TILE,w:28,h:28,dir:Math.random()<0.5?1:-1});
-        }
-    }
+ enemies=[];
+ const map = rooms[roomIndex];
+ for(let y=0;y<ROOM_HEIGHT;y++){
+   for(let x=0;x<ROOM_WIDTH;x++){
+     if(map[y][x]===2) enemies.push({x:x*TILE,y:y*TILE,w:28,h:28,dir:Math.random()<0.5?1:-1});
+   }
+ }
 }
-
-// --- Init ---
 loadEnemies();
 
-// --- Game Loop ---
+// =========================
+// PARTICLES
+// =========================
+function createParticles(x,y,color){
+ for(let i=0;i<10;i++){
+   particles.push({x,y,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,l:20,color});
+ }
+}
+
+// =========================
+// UPDATE
+// =========================
 function update(){
-    // Movement
-    if(keysDown['ArrowUp']) player.y -= player.speed,player.dir='up';
-    if(keysDown['ArrowDown']) player.y += player.speed,player.dir='down';
-    if(keysDown['ArrowLeft']) player.x -= player.speed,player.dir='left';
-    if(keysDown['ArrowRight']) player.x += player.speed,player.dir='right';
-    if(keysDown[' ']) player.swing=true,playSound('swing'); else player.swing=false;
+ // Movement
+ if(keysDown['ArrowUp']) player.y-=player.speed,player.dir='up';
+ if(keysDown['ArrowDown']) player.y+=player.speed,player.dir='down';
+ if(keysDown['ArrowLeft']) player.x-=player.speed,player.dir='left';
+ if(keysDown['ArrowRight']) player.x+=player.speed,player.dir='right';
+ if(keysDown[' ']) { if(player.swingTimer===0){player.swinging=true;player.swingTimer=player.swingDuration; playSound('swing');} }
 
-    // Collision with walls
-    const map = rooms[roomIndex];
-    for(let y=0;y<ROOM_HEIGHT;y++){
-        for(let x=0;x<ROOM_WIDTH;x++){
-            if(map[y][x]===1){
-                const wx = x*TILE, wy=y*TILE;
-                if(player.x+player.w>wx && player.x<wx+TILE && player.y+player.h>wy && player.y<wy+TILE){
-                    if(keysDown['ArrowUp']) player.y+=player.speed;
-                    if(keysDown['ArrowDown']) player.y-=player.speed;
-                    if(keysDown['ArrowLeft']) player.x+=player.speed;
-                    if(keysDown['ArrowRight']) player.x-=player.speed;
-                }
-            }
-        }
-    }
+ // Swing timer
+ if(player.swingTimer>0){player.swingTimer--; if(player.swingTimer===0)player.swinging=false;}
 
-    // Enemy movement simple AI
-    enemies.forEach(e=>{
-        e.y+=0.5*e.dir;
-        if(e.y<0 || e.y+e.h>ROOM_HEIGHT*TILE) e.dir*=-1;
-    });
+ // Collision with walls
+ const map = rooms[roomIndex];
+ for(let y=0;y<ROOM_HEIGHT;y++){
+   for(let x=0;x<ROOM_WIDTH;x++){
+     if(map[y][x]===1){
+       const wx=x*TILE,wy=y*TILE;
+       if(player.x+player.w>wx && player.x<wx+TILE && player.y+player.h>wy && player.y<wy+TILE){
+         if(keysDown['ArrowUp']) player.y+=player.speed;
+         if(keysDown['ArrowDown']) player.y-=player.speed;
+         if(keysDown['ArrowLeft']) player.x+=player.speed;
+         if(keysDown['ArrowRight']) player.x-=player.speed;
+       }
+     }
+   }
+ }
 
-    // Sword attack collision
-    if(player.swing){
-        enemies.forEach((e,i)=>{
-            const sx = player.x+(player.dir==='right'?player.w:player.dir==='left'?-player.w:0);
-            const sy = player.y+(player.dir==='down'?player.h:player.dir==='up'?-player.h:0);
-            if(sx<e.x+e.w && sx+player.w>e.x && sy<e.y+e.h && sy+player.h>e.y){
-                enemies.splice(i,1); score++; document.getElementById('score').textContent=score; playSound('hit');
-            }
-        });
-    }
+ // Enemy movement
+ enemies.forEach(e=>{
+   e.y+=0.5*e.dir;
+   if(e.y<0 || e.y+e.h>ROOM_HEIGHT*TILE) e.dir*=-1;
+ });
 
-    // Enemy touching player
-    enemies.forEach(e=>{
-        if(player.x<e.x+e.w && player.x+player.w>e.x && player.y<e.y+e.h && player.y+player.h>e.y){
-            player.health--; document.getElementById('health').textContent=player.health; playSound('hit');
-            if(player.health<=0){ alert("Game Over! Score:"+score); location.reload(); }
-        }
-    });
+ // Sword collision
+ if(player.swinging){
+   enemies.forEach((e,i)=>{
+     let sx=player.x+(player.dir==='right'?player.w:player.dir==='left'?-player.w:0);
+     let sy=player.y+(player.dir==='down'?player.h:player.dir==='up'?-player.h:0);
+     if(sx<e.x+e.w && sx+player.w>e.x && sy<e.y+e.h && sy+player.h>e.y){
+       createParticles(e.x+e.w/2,e.y+e.h/2,'#f0f'); enemies.splice(i,1);
+       document.getElementById('score').textContent=++score; playSound('hit');
+     }
+   });
+ }
 
-    // Collect key or door
-    for(let y=0;y<ROOM_HEIGHT;y++){
-        for(let x=0;x<ROOM_WIDTH;x++){
-            if(map[y][x]===3 && player.x<TILE*x+TILE && player.x+player.w>TILE*x && player.y<TILE*y+TILE && player.y+player.h>TILE*y){
-                player.keys++; map[y][x]=0; document.getElementById('keys').textContent=player.keys;
-            }
-            if(map[y][x]===4 && player.keys>0 && player.x<TILE*x+TILE && player.x+player.w>TILE*x && player.y<TILE*y+TILE && player.y+player.h>TILE*y){
-                player.keys--; map[y][x]=0; document.getElementById('keys').textContent=player.keys;
-                roomIndex = (roomIndex+1)%rooms.length; loadEnemies();
-            }
-        }
-    }
+ // Enemy touching player
+ enemies.forEach(e=>{
+   if(player.x<e.x+e.w && player.x+player.w>e.x && player.y<e.y+e.h && player.y+player.h>e.y){
+     player.health--; document.getElementById('health').textContent=player.health; playSound('hit');
+     createParticles(player.x+player.w/2,player.y+player.h/2,'#f00');
+     if(player.health<=0){ alert("Game Over! Score:"+score); location.reload(); }
+   }
+ });
+
+ // Key / Door collection
+ for(let y=0;y<ROOM_HEIGHT;y++){
+   for(let x=0;x<ROOM_WIDTH;x++){
+     if(map[y][x]===3 && player.x<TILE*x+TILE && player.x+player.w>TILE*x && player.y<TILE*y+TILE && player.y+player.h>TILE*y){
+       player.keys++; map[y][x]=0; document.getElementById('keys').textContent=player.keys;
+       createParticles(player.x+player.w/2,player.y+player.h/2,'#ff0');
+     }
+     if(map[y][x]===4 && player.keys>0 && player.x<TILE*x+TILE && player.x+player.w>TILE*x && player.y<TILE*y+TILE && player.y+player.h>TILE*y){
+       player.keys--; map[y][x]=0; document.getElementById('keys').textContent=player.keys;
+       roomIndex=(roomIndex+1)%rooms.length; loadEnemies();
+     }
+   }
+ }
+
+ // Particles update
+ particles.forEach((p,i)=>{
+   p.x+=p.vx; p.y+=p.vy; p.l--;
+   if(p.l<=0) particles.splice(i,1);
+ });
 }
 
-// --- Draw ---
+// =========================
+// DRAW
+// =========================
 function draw(){
-    ctx.clearRect(0,0,width,height);
-    const map = rooms[roomIndex];
-    for(let y=0;y<ROOM_HEIGHT;y++){
-        for(let x=0;x<ROOM_WIDTH;x++){
-            if(map[y][x]===1) drawRect(x*TILE,y*TILE,TILE,TILE,'#555');
-            if(map[y][x]===3) drawRect(x*TILE+8,y*TILE+8,TILE-16,TILE-16,'#ff0');
-            if(map[y][x]===4) drawRect(x*TILE,y*TILE,TILE,TILE,'#0f0');
-        }
-    }
+ ctx.clearRect(0,0,width,height);
+ const map = rooms[roomIndex];
+ for(let y=0;y<ROOM_HEIGHT;y++){
+   for(let x=0;x<ROOM_WIDTH;x++){
+     if(map[y][x]===1) ctx.fillStyle='#555',ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+     if(map[y][x]===3) ctx.fillStyle='#ff0',ctx.fillRect(x*TILE+8,y*TILE+8,TILE-16,TILE-16);
+     if(map[y][x]===4) ctx.fillStyle='#0f0',ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+   }
+ }
 
-    // Enemies
-    enemies.forEach(e=>drawRect(e.x,e.y,e.w,e.h,'#f00'));
+ // Enemies
+ enemies.forEach(e=>ctx.fillStyle='#f00',ctx.fillRect(e.x,e.y,e.w,e.h));
 
-    // Player
-    drawRect(player.x,player.y,player.w,player.h,'#0ff');
+ // Particles
+ particles.forEach(p=>{ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,4,4);});
 
-    // Sword swing
-    if(player.swing){
-        if(player.dir==='up') drawRect(player.x,player.y-16,player.w,16,'#ff0');
-        if(player.dir==='down') drawRect(player.x,player.y+player.h,player.w,16,'#ff0');
-        if(player.dir==='left') drawRect(player.x-16,player.y,16,player.h,'#ff0');
-        if(player.dir==='right') drawRect(player.x+player.w,player.y,16,player.h,'#ff0');
-    }
+ // Player
+ ctx.fillStyle='#0ff'; ctx.fillRect(player.x,player.y,player.w,player.h);
+
+ // Sword swing
+ if(player.swinging){
+   ctx.fillStyle='#ff0';
+   if(player.dir==='up') ctx.fillRect(player.x,player.y-16,player.w,16);
+   if(player.dir==='down') ctx.fillRect(player.x,player.y+player.h,player.w,16);
+   if(player.dir==='left') ctx.fillRect(player.x-16,player.y,16,player.h);
+   if(player.dir==='right') ctx.fillRect(player.x+player.w,player.y,16,player.h);
+ }
 }
 
-// --- Main Loop ---
-function loop(){
-    update();
-    draw();
-    requestAnimationFrame(loop);
-}
+// =========================
+// MAIN LOOP
+// =========================
+let score=0;
+function loop(){update(); draw(); requestAnimationFrame(loop);}
 loop();
 </script>
 </body>
