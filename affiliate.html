@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>J&V’s Blue Universe - Affiliate</title>
+<title>Affiliate - J&V’s Blue Universe</title>
 <style>
 html, body {
   margin: 0;
@@ -12,41 +12,14 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: sans-serif;
-  color: rgba(120,170,255,0.9);
 }
 canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
-
-/* ===== AFFILIATE BUTTON STYLES ===== */
-.affiliateBtn {
-  position: absolute;
-  cursor: pointer;
-  background: rgba(100, 149, 237, 0.6);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 20px;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
-  z-index: 2;
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-.affiliateBtn:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-  text-shadow: 0 0 12px rgba(100,149,237,1);
-}
-.affiliateBtn:active {
-  transform: translateY(3px);
-  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
-}
-
-/* ===== HOME BUTTON ===== */
-#homeBtn {
+/* ===== BUTTON STYLES ===== */
+button {
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
   color: white;
@@ -56,19 +29,19 @@ canvas {
   font-size: 28px;
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
-  z-index: 2;
   transition: transform 0.1s, box-shadow 0.1s;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  position: absolute;
+  z-index: 2;
 }
-#homeBtn:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-  text-shadow: 0 0 12px rgba(100,149,237,1);
-}
-#homeBtn:active {
+button:active {
   transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
-
+button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
+}
 </style>
 </head>
 <body>
@@ -76,61 +49,46 @@ canvas {
 <canvas id="space"></canvas>
 
 <!-- ===== AFFILIATE BUTTONS ===== -->
-<button id="affiliate1" class="affiliateBtn">Affiliate 1</button>
-<button id="affiliate2" class="affiliateBtn">Affiliate 2</button>
-<button id="affiliate3" class="affiliateBtn">Affiliate 3</button>
+<button id="affiliate1">Affiliate 1</button>
+<button id="affiliate2">Affiliate 2</button>
 
-<!-- ===== HOME BUTTON ===== -->
+<!-- ===== HOME BUTTON (locked for now) ===== -->
 <button id="homeBtn">Home</button>
 
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
-function resize(){ 
-  w = canvas.width = window.innerWidth; 
-  h = canvas.height = window.innerHeight; 
-  positionAffiliateBtns();
-  positionHomeBtn();
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+
+  // Lock affiliate buttons in place
+  document.getElementById("affiliate1").style.top = (h/2 - 50) + "px";
+  document.getElementById("affiliate1").style.left = (w/2 - 150) + "px";
+
+  document.getElementById("affiliate2").style.top = (h/2 - 50) + "px";
+  document.getElementById("affiliate2").style.left = (w/2 + 50) + "px";
+
+  // Home button position (still locked above affiliate2)
+  document.getElementById("homeBtn").style.top = (h/2 + 50) + "px";
+  document.getElementById("homeBtn").style.left = (w/2 + 50) + "px";
 }
 window.addEventListener("resize",resize);
 resize();
 
-/* ===== AFFILIATE BUTTON POSITION ===== */
-const affiliate1 = document.getElementById("affiliate1");
-const affiliate2 = document.getElementById("affiliate2");
-const affiliate3 = document.getElementById("affiliate3");
-
-function positionAffiliateBtns(){
-  const centerX = w/2;
-  const centerY = h/2;
-  const spacing = 100; // outward distance
-  affiliate1.style.left = centerX - spacing - affiliate1.offsetWidth/2 + "px";
-  affiliate1.style.top = centerY - affiliate1.offsetHeight/2 + "px";
-
-  affiliate2.style.left = centerX - affiliate2.offsetWidth/2 + "px";
-  affiliate2.style.top = centerY - affiliate2.offsetHeight/2 + "px";
-
-  affiliate3.style.left = centerX + spacing - affiliate3.offsetWidth/2 + "px";
-  affiliate3.style.top = centerY - affiliate3.offsetHeight/2 + "px";
-}
-
-/* ===== HOME BUTTON POSITION ===== */
-const homeBtn = document.getElementById("homeBtn");
-function positionHomeBtn() {
-  const rect = affiliate2.getBoundingClientRect();
-  homeBtn.style.left = rect.left + rect.width/2 - homeBtn.offsetWidth/2 + "px";
-  homeBtn.style.top = rect.bottom + 15 + "px"; // 15px below affiliate2
-}
-
 /* ===== STARS ===== */
-const stars = Array.from({length:600},()=>({
+const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
   a:Math.random()*0.8+0.2,
-  r:Math.random()*1.5+0.5
+  r:Math.random()*1.5+0.5,
+  baseX:0,
+  baseY:0
 }));
+stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -150,30 +108,32 @@ setInterval(()=>{
 
 /* ===== COSMIC WORM ===== */
 const worm={
-  segments:40,
-  size:10,
+  segments:60,
+  size:12,
   color:"rgba(0,150,255,0.9)",
-  pos:Array.from({length:40},()=>({x:w/2,y:h/2})),
+  pos:Array.from({length:60},()=>({x:w/2,y:h/2})),
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
 
-/* ===== FLOATING NAMES ===== */
-const floatingNames = [
-  {text:"John Bender", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2, a:1, r:20},
-  {text:"Veyra", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2, a:1, r:20}
-];
+/* ===== LOCKED TEXT ===== */
+const textAbout = { 
+  text:"Welcome to J&V’s Blue Universe! 💙 Here we explore, share inspiration, and grow this universe together. Contact: johnbuddy624@gmail.com", 
+  x:()=>w/2, 
+  y:()=>h/2 - 150, 
+  size:28, 
+  color:"rgba(120,170,255,0.9)",
+  maxWidth:()=>w*0.7
+};
 
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars drifting
+  // Background stars with depth
   stars.forEach(s=>{
-    s.x += 0.2 * s.z; 
-    if(s.x > w) s.x = 0;
-    ctx.globalAlpha = s.a * s.z;
-    ctx.fillStyle = "white";
+    ctx.globalAlpha=s.a*s.z;
+    ctx.fillStyle="white";
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
@@ -190,9 +150,9 @@ function draw(){
       ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
       ctx.stroke();
     }
-    s.x += s.vx*s.z;
-    s.y += s.vy*s.z;
-    if(s.x<0||s.x>w||s.y<0||s.y>h){
+    s.x += s.vx * s.z;
+    s.y += s.vy * s.z;
+    if(s.x<0 || s.x>w || s.y<0 || s.y>h){
       shootingStars.splice(i,1);
     }
   });
@@ -214,25 +174,36 @@ function draw(){
     ctx.fill();
   });
 
-  // Floating names
-  floatingNames.forEach(n=>{
-    n.x += 0.15*n.z; // drift slowly like stars
-    if(n.x>w) n.x = 0;
-    ctx.globalAlpha = n.a * n.z;
-    ctx.fillStyle = "rgba(120,200,255,1)";
-    ctx.font = `${n.r}px sans-serif`;
-    ctx.fillText(n.text,n.x,n.y);
-  });
+  // About text
+  ctx.globalAlpha=1;
+  ctx.font=`${textAbout.size}px sans-serif`;
+  ctx.fillStyle=textAbout.color;
+  const words = textAbout.text.split(" ");
+  let line = "";
+  let lineHeight = textAbout.size * 1.2;
+  let startY = textAbout.y();
+  let maxWidth = textAbout.maxWidth();
+  for(let i=0; i<words.length; i++){
+    const testLine = line + words[i] + " ";
+    const metrics = ctx.measureText(testLine);
+    if(metrics.width > maxWidth && i > 0){
+      ctx.fillText(line, w/2, startY);
+      line = words[i] + " ";
+      startY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, w/2, startY);
 
   requestAnimationFrame(draw);
 }
 draw();
 
 /* ===== BUTTON CLICKS ===== */
-affiliate1.addEventListener("click",()=>window.open("https://example.com/affiliate1","_blank"));
-affiliate2.addEventListener("click",()=>window.open("https://example.com/affiliate2","_blank"));
-affiliate3.addEventListener("click",()=>window.open("https://example.com/affiliate3","_blank"));
-homeBtn.addEventListener("click",()=>window.location.href="index.html"); // link to home page
+document.getElementById("affiliate1").addEventListener("click",()=>window.open("#affiliate1-link","_blank"));
+document.getElementById("affiliate2").addEventListener("click",()=>window.open("#affiliate2-link","_blank"));
+document.getElementById("homeBtn").addEventListener("click",()=>window.location.href="index.html");
 </script>
 </body>
 </html>
