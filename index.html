@@ -24,10 +24,9 @@ canvas {
 
 <script>
 /* ===== CURRENT BLUEPRINT =====
-   Phase 2A completed:
-   - Shooting stars smoothed
-   - Added 3D depth effect (opacity, size, speed)
-   - No other elements changed
+   Phase 2A Upgrade:
+   - Shooting stars appear 3D with depth, motion blur, and parallax
+   - Nothing else changed
 ================================ */
 
 const canvas = document.getElementById("space");
@@ -49,14 +48,15 @@ const stars = Array.from({length:800},()=>({
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
 setInterval(()=>{
-  if(Math.random()<0.015){ // slightly higher spawn for more activity
+  if(Math.random()<0.015){
     shootingStars.push({
       x:Math.random()*w,
       y:Math.random()*h,
       z:Math.random()*0.5+0.5, // depth factor
       vx:(Math.random()*8-4),
       vy:(Math.random()*8-4),
-      length:Math.random()*20+10
+      length:Math.random()*20+10,
+      trail:5 // number of blur segments
     });
   }
 },40);
@@ -88,19 +88,21 @@ function draw(){
     ctx.fill();
   });
 
-  // Smooth 3D shooting stars
+  // 3D Shooting stars with motion blur
   shootingStars.forEach((s,i)=>{
-    ctx.strokeStyle=`rgba(255,255,255,${0.6*s.z})`;
-    ctx.lineWidth = 2*s.z;
-    ctx.beginPath();
-    ctx.moveTo(s.x,s.y);
-    ctx.lineTo(s.x - s.vx*s.length, s.y - s.vy*s.length);
-    ctx.stroke();
-    
+    for(let t=0;t<s.trail;t++){
+      const factor = 1 - t/s.trail;
+      ctx.strokeStyle=`rgba(255,255,255,${0.6*factor*s.z})`;
+      ctx.lineWidth = 2*s.z*factor;
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.vx*s.z*t, s.y - s.vy*s.z*t);
+      ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
+      ctx.stroke();
+    }
+
     s.x += s.vx * s.z;
     s.y += s.vy * s.z;
 
-    // Remove stars off-screen
     if(s.x<0 || s.x>w || s.y<0 || s.y>h){
       shootingStars.splice(i,1);
     }
@@ -123,6 +125,7 @@ function draw(){
     ctx.fill();
   });
 
+  // Text
   ctx.globalAlpha=1;
   ctx.textAlign="center";
   ctx.font=`bold ${textJV.size}px sans-serif`;
