@@ -38,9 +38,10 @@ canvas {
   position: relative;
   top: 60px; /* shifted down 60px */
 }
-#donateBtn {
+#donateBtn, #aboutBtn {
   display: inline-block;
   margin-top: 25px;
+  margin-left: 15px;
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
   color: white;
@@ -53,11 +54,11 @@ canvas {
   transition: transform 0.1s, box-shadow 0.1s;
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
-#donateBtn:active {
+#donateBtn:active, #aboutBtn:active {
   transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
-#donateBtn:hover {
+#donateBtn:hover, #aboutBtn:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
   text-shadow: 0 0 12px rgba(100,149,237,1);
 }
@@ -78,6 +79,7 @@ canvas {
     Thank you for being here. We can’t wait to see where this journey takes us, and we’re so glad to have you along for the ride!
   </p>
   <button id="donateBtn">Donate</button>
+  <button id="aboutBtn" onclick="window.location.href='index.html'">Home</button>
 </div>
 
 <script>
@@ -100,19 +102,17 @@ const stars = Array.from({length:600},()=>({
   r:Math.random()*1.5+0.5
 }));
 
-/* ===== FLOATING NAME STARS ===== */
-const nameStars = [];
+/* ===== NAME STARS INTEGRATED WITH STARFIELD ===== */
 const fullNames = "John Bender  Veyra Blue";
-ctx.font = "40px sans-serif";
-for(let i=0; i<fullNames.length; i++){
+const nameStars = [];
+for(let i=0;i<fullNames.length;i++){
   const char = fullNames[i];
   if(char !== " "){
+    // assign a random star as base for each letter
+    const baseStar = stars[Math.floor(Math.random()*stars.length)];
     nameStars.push({
       char: char,
-      x: w/4 + i*28,
-      y: h/2 - 100,
-      dx: Math.random()*0.3 - 0.15,
-      dy: Math.random()*0.3 - 0.15,
+      star: baseStar,
       alpha: Math.random()*0.6 + 0.4,
       deltaAlpha: Math.random()*0.02 + 0.005
     });
@@ -160,17 +160,14 @@ function draw(){
     ctx.fill();
   });
 
-  // Floating name stars
+  // Letters follow their star
   nameStars.forEach(s=>{
-    s.x += s.dx;
-    s.y += s.dy;
     s.alpha += s.deltaAlpha;
-    if(s.alpha > 1 || s.alpha < 0.4) s.deltaAlpha *= -1; // twinkle
-    if(s.x < 0 || s.x > w) s.dx *= -1;
-    if(s.y < 0 || s.y > h) s.dy *= -1;
+    if(s.alpha > 1 || s.alpha < 0.4) s.deltaAlpha *= -1;
     ctx.globalAlpha = s.alpha;
     ctx.fillStyle = "rgba(120,200,255,1)";
-    ctx.fillText(s.char, s.x, s.y);
+    ctx.font = `${s.star.r*15 + 20}px sans-serif`; // size based on star
+    ctx.fillText(s.char, s.star.x, s.star.y);
   });
 
   // Shooting stars
