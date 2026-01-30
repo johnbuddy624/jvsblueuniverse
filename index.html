@@ -1,3 +1,4 @@
+<!-- Current Blueprint -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,10 +26,25 @@ canvas {
 
 <script>
 /* =========================
-  CURRENT BLUEPRINT
+  META / INFO / DEBUG NOTES
   =========================
-  Stars, Cosmic Worm, J&V's text unchanged.
-  New: Welcome text object added.
+  Stars: 800, size 0.5-2px, z-depth 0.2-1, alpha 0.2-1
+  Shooting Stars: spawn chance 0.01 per frame, trail 30px, RGB "255,255,255"
+  Cosmic Worm:
+    - Head radius: 15px
+    - Segments: 25 for flowing length
+    - Body: rgba(0,150,255,0.9)
+    - Mist trail: rgba(255,255,100,0.25)
+    - Wiggle via segment-following
+    - Tail follows head, fading in alpha & radius
+    - Head clamped to canvas edges
+    - Works on desktop + mobile
+  New Text Object: "J&V's"
+    - Top-center
+    - Size: 80px
+    - Color: cloudy blue
+    - Static, full opacity
+  Locked: Stars, shooting stars, canvas background remain untouched
 ========================= */
 
 /* ===== CANVAS SETUP ===== */
@@ -69,9 +85,9 @@ setInterval(()=>{if(Math.random()<0.01) spawnShootingStar();},50);
 
 /* ===== COSMIC WORM ===== */
 const worm = {
-  segments:25,
-  positions:[],
-  size:15,
+  segments:25,           // long flowing body
+  positions:[],           // segment positions
+  size:15,                // head/thin body radius
   color:"rgba(0,150,255,0.9)",
   mistColor:"rgba(255,255,100,0.25)",
   vx:(Math.random()-0.5)*1.5,
@@ -79,26 +95,14 @@ const worm = {
 };
 for(let i=0;i<worm.segments;i++){ worm.positions.push({x:w/2,y:h/2}); }
 
-/* ===== J&V TEXT OBJECT ===== */
+/* ===== 3D TEXT OBJECT ("J&V's") ===== */
 const textObj = {
   text:"J&V's",
   size:80,
   x:w/2,
   y:100,
-  baseAlpha:0,
-  pulseSpeed:0.02,
-  alphaDirection:1,
-  color:"rgba(100,150,255,ALPHA)"
-};
-
-/* ===== WELCOME TEXT OBJECT ===== */
-const welcomeText = {
-  text:"Welcome to our universe, friend!",
-  size:30,
-  x:w/2,
-  y:h/2,
-  alpha:1,
-  color:"rgba(100,180,255,ALPHA)" // smokey blue, ALPHA replaced per frame
+  alpha:1,           // static full opacity
+  color:"rgba(100,150,255,ALPHA)" // cloudy blue, ALPHA replaced per frame
 };
 
 /* ===== DRAW FUNCTIONS ===== */
@@ -174,24 +178,12 @@ function updateWorm(){
 }
 
 function drawTextObj(){
-  textObj.baseAlpha += textObj.pulseSpeed * textObj.alphaDirection;
-  if(textObj.baseAlpha>1){textObj.baseAlpha=1;textObj.alphaDirection=-1;}
-  if(textObj.baseAlpha<0){textObj.baseAlpha=0;textObj.alphaDirection=1;}
-  const color=textObj.color.replace("ALPHA",textObj.baseAlpha);
+  const color=textObj.color.replace("ALPHA",textObj.alpha);
   ctx.font=`bold ${textObj.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
   ctx.fillStyle=color;
   ctx.fillText(textObj.text,textObj.x,textObj.y);
-}
-
-function drawWelcomeText(){
-  const color=welcomeText.color.replace("ALPHA",welcomeText.alpha);
-  ctx.font=`bold ${welcomeText.size}px sans-serif`;
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
-  ctx.fillStyle=color;
-  ctx.fillText(welcomeText.text,welcomeText.x,welcomeText.y);
 }
 
 /* ===== ANIMATION LOOP ===== */
@@ -202,7 +194,6 @@ function animate(){
   updateWorm();
   drawWorm();
   drawTextObj();
-  drawWelcomeText();
   requestAnimationFrame(animate);
 }
 
