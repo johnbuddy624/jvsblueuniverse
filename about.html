@@ -19,11 +19,27 @@ canvas {
   inset: 0;
   z-index: 0;
 }
-/* ===== BUTTON STYLES ===== */
-.button {
+/* ===== CONTENT STYLES ===== */
+#content {
   position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  max-width: 800px;
+  text-align: center;
+  z-index: 2;
+  line-height: 1.4; /* slightly squished vertically */
+  font-size: 22px;
+}
+#content h1 {
+  font-size: 60px;
+  color: rgba(100,150,255,1);
+  margin-bottom: 20px;
+}
+#homeBtn {
+  display: inline-block;
+  margin-top: 25px;
+  margin-left: 15px;
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
   color: white;
@@ -34,14 +50,13 @@ canvas {
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
   transition: transform 0.1s, box-shadow 0.1s;
-  z-index: 2;
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
-.button:active {
-  transform: translateX(-50%) translateY(3px);
+#homeBtn:active {
+  transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
-.button:hover {
+#homeBtn:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
   text-shadow: 0 0 12px rgba(100,149,237,1);
 }
@@ -51,9 +66,18 @@ canvas {
 
 <canvas id="space"></canvas>
 
-<!-- ===== BUTTONS ===== -->
-<button id="donateBtn" class="button">Donate</button>
-<button id="homeBtn" class="button" style="top: 140px;">Home</button>
+<div id="content">
+  <h1>About Us</h1>
+  <p id="aboutText">
+    Welcome to <strong>J&V’s Blue Universe</strong>! 💙<br><br>
+    This universe started as a simple spark of curiosity, a love for creativity, and a tiny bit of cosmic mischief. One day, while dreaming up ways to make our world more playful and alive, the <strong>cosmic worm 🪱</strong> appeared — a little guide to remind us that even small, unexpected things can bring joy and wonder.<br><br>
+    Our mission is simple: to <strong>explore new ideas, share inspiration, and grow this universe together</strong>. We update our universe daily with new thoughts, experiments, and creative bursts, all designed to surprise and delight.<br><br>
+    We believe in <strong>fun, honesty, and heart</strong> — and we hope you feel that the moment you step into our world. If you ever have an idea, question, or just want to say hi, don’t hesitate to email me at <strong>johnbuddy624@gmail.com</strong>.<br><br>
+    And yes — if you’d like to support our universe, the <strong>donate button</strong> is here for you. No pressure, no obligations — just a way to help this universe grow a little brighter. 🌟<br><br>
+    Thank you for being here. We can’t wait to see where this journey takes us, and we’re so glad to have you along for the ride!
+  </p>
+  <button id="homeBtn">Home</button>
+</div>
 
 <script>
 const canvas = document.getElementById("space");
@@ -62,9 +86,6 @@ let w,h;
 function resize(){ 
   w = canvas.width = window.innerWidth; 
   h = canvas.height = window.innerHeight; 
-
-  document.getElementById("donateBtn").style.top = (h/2 + 160) + "px";
-  document.getElementById("homeBtn").style.top = (h/2 + 220) + "px";
 }
 window.addEventListener("resize",resize);
 resize();
@@ -75,8 +96,11 @@ const stars = Array.from({length:600},()=>({
   y:Math.random()*h,
   z:Math.random()*0.8+0.2,
   a:Math.random()*0.8+0.2,
-  r:Math.random()*1.5+0.5
+  r:Math.random()*1.5+0.5,
+  baseX:0,
+  baseY:0
 }));
+stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
@@ -96,42 +120,34 @@ setInterval(()=>{
 
 /* ===== COSMIC WORM ===== */
 const worm={
-  segments:60,
-  size:12,
+  segments:40,
+  size:10,
   color:"rgba(0,150,255,0.9)",
-  pos:Array.from({length:60},()=>({x:w/2,y:h/2})),
+  pos:Array.from({length:40},()=>({x:w/2,y:h/2})),
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
 
-/* ===== OUR NAMES AS STARS ===== */
-const nameStars = [
-  {text:"John Bender", x:50, y:50, vx:0.3 + Math.random()*0.2, vy:0.1 + Math.random()*0.1},
-  {text:"Victoria Bender", x:300, y:100, vx:0.3 + Math.random()*0.2, vy:0.1 + Math.random()*0.1}
-];
-
-/* ===== BODY TEXT ===== */
-const bodyText = `Welcome to J&V’s Blue Universe! 💙
-This universe began as a tiny spark of curiosity, creativity, and a pinch of cosmic mischief. One day, while dreaming up ways to make our world more playful, the cosmic worm 🪱 appeared—a little guide to remind us that even the smallest, unexpected things can bring joy and wonder.
-
-Our mission is simple: to explore new ideas, share inspiration, and grow this universe together. We add new thoughts, experiments, and playful bursts almost every day, all designed to surprise and delight.
-
-We believe in fun, honesty, and heart—and we hope you feel that the moment you step in. If you ever have an idea, question, or just want to say hi, don’t hesitate to email me at johnbuddy624@gmail.com.
-
-And yes—if you’d like to support our universe, the donate button is here for you. No pressure, no obligations—just a way to help this universe grow a little brighter. 🌟
-
-Thank you for being here. We’re so glad to have you along for the ride!`;
+/* ===== FLOATING Veyra NAME ===== */
+const veyraName = {
+  text: "Veyra",
+  x: Math.random()*w,
+  y: Math.random()*h,
+  z: Math.random()*0.8+0.2,
+  speedX: (Math.random()*0.2)+0.05,
+  speedY: (Math.random()*0.2)-0.1
+};
 
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars
+  // Stars drifting left to right with depth
   stars.forEach(s=>{
-    s.x += 0.1*s.z;
-    if(s.x>w) s.x=0;
-    ctx.globalAlpha = s.a*s.z;
-    ctx.fillStyle="white";
+    s.x += 0.2 * s.z; 
+    if(s.x > w) s.x = 0;
+    ctx.globalAlpha = s.a * s.z;
+    ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
@@ -150,56 +166,49 @@ function draw(){
     }
     s.x += s.vx*s.z;
     s.y += s.vy*s.z;
-    if(s.x<0||s.x>w||s.y<0||s.y>h) shootingStars.splice(i,1);
+    if(s.x<0||s.x>w||s.y<0||s.y>h){
+      shootingStars.splice(i,1);
+    }
   });
 
   // Cosmic worm
-  let hpos=worm.pos[0];
-  hpos.x+=worm.vx; hpos.y+=worm.vy;
+  let hpos = worm.pos[0];
+  hpos.x += worm.vx; hpos.y += worm.vy;
   if(hpos.x<0||hpos.x>w) worm.vx*=-1;
   if(hpos.y<0||hpos.y>h) worm.vy*=-1;
   for(let i=1;i<worm.segments;i++){
-    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;
-    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;
+    worm.pos[i].x += (worm.pos[i-1].x - worm.pos[i].x)*0.15;
+    worm.pos[i].y += (worm.pos[i-1].y - worm.pos[i].y)*0.15;
   }
   worm.pos.forEach((p,i)=>{
-    ctx.globalAlpha=1-i*0.015;
-    ctx.fillStyle=worm.color;
+    ctx.globalAlpha = 1 - i*0.015;
+    ctx.fillStyle = worm.color;
     ctx.beginPath();
-    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
+    ctx.arc(p.x,p.y, worm.size*(1-i*0.012), 0, Math.PI*2);
     ctx.fill();
   });
 
-  // Names floating
-  ctx.font = "bold 32px sans-serif";
+  // Veyra name floats with stars
+  veyraName.x += veyraName.speedX;
+  veyraName.y += veyraName.speedY;
+  if(veyraName.x > w) veyraName.x = 0;
+  if(veyraName.y > h) veyraName.y = 0;
+  if(veyraName.y < 0) veyraName.y = h;
+  ctx.globalAlpha = veyraName.z;
   ctx.fillStyle = "rgba(120,200,255,0.9)";
-  nameStars.forEach(n=>{
-    ctx.fillText(n.text, n.x, n.y);
-    n.x += n.vx;
-    n.y += Math.sin(Date.now()*0.002)*0.5 + n.vy;
-    if(n.x > w) n.x = -200;
-    if(n.y > h) n.y = 0;
-  });
-
-  // Body text (vertically squished)
-  ctx.font = "20px sans-serif";
-  ctx.fillStyle = "rgba(120,170,255,0.85)";
-  ctx.textAlign="center";
-  const lines = bodyText.split("\n");
-  let startY = h/4 + 60; // slightly higher
-  lines.forEach(line=>{
-    ctx.fillText(line, w/2, startY);
-    startY += 24; // squished line height
-  });
+  ctx.font = "40px sans-serif";
+  ctx.fillText(veyraName.text, veyraName.x, veyraName.y);
 
   requestAnimationFrame(draw);
 }
 draw();
 
-/* ===== BUTTON CLICKS ===== */
-document.getElementById("donateBtn").addEventListener("click",()=>window.open("https://www.paypal.me/JohnBender612","_blank"));
-document.getElementById("homeBtn").addEventListener("click",()=>window.location.href="index.html");
-
+/* ===== HOME BUTTON CLICK ===== */
+const homeBtn = document.getElementById("homeBtn");
+homeBtn.addEventListener("click", ()=>{
+  window.location.href = "index.html";
+});
 </script>
+
 </body>
 </html>
