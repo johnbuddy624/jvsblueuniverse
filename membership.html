@@ -15,30 +15,22 @@ html, body {
   font-family: "Segoe UI", sans-serif;
 }
 
-/* ================= CANVAS ================= */
 canvas {
   position: fixed;
   inset: 0;
   z-index: 1;
 }
 
-/**********************************************************************
-======================= REFRESHER CONTROL BOX =========================
-**********************************************************************/
 #refresher-panel {
   position: fixed;
   top: 500px;
   right: 2000px;
   z-index: 9999;
-
   background: rgba(0,0,0,0.8);
   border: 3px solid #70c2ff;
   border-radius: 16px;
   padding: 18px;
-
-  box-shadow:
-    0 0 15px rgba(112,194,255,0.6),
-    0 0 30px rgba(112,194,255,0.4);
+  box-shadow: 0 0 15px rgba(112,194,255,0.6), 0 0 30px rgba(112,194,255,0.4);
 }
 
 #refresher-panel label {
@@ -54,15 +46,12 @@ canvas {
   height: 50px;
   font-size: 26px;
   text-align: center;
-
   background: black;
   color: #70c2ff;
   border: 2px solid #70c2ff;
   border-radius: 10px;
   outline: none;
 }
-
-/**********************************************************************/
 </style>
 </head>
 
@@ -76,9 +65,6 @@ canvas {
 </div>
 
 <script>
-/**********************************************************************
-========================= CANVAS SETUP ================================
-**********************************************************************/
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 
@@ -89,13 +75,10 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/**********************************************************************
-=========================== UFO SYSTEM ================================
-**********************************************************************/
+/* ===== UFO SYSTEM ===== */
 const ufos = [];
-const UFO_COUNT = 3;        // 👈 CHANGE THIS FOR MORE UFOs
-const UFO_SIZE = 90;        // 👈 BIG UFO SIZE
-
+const UFO_COUNT = 3;
+const UFO_SIZE = 90;
 for (let i = 0; i < UFO_COUNT; i++) {
   ufos.push({
     x: Math.random() * canvas.width,
@@ -109,50 +92,102 @@ for (let i = 0; i < UFO_COUNT; i++) {
 function drawUFO(ufo) {
   ctx.save();
   ctx.translate(ufo.x, ufo.y);
-
-  // glow
   ctx.shadowBlur = 30;
   ctx.shadowColor = "rgba(120,200,255,0.8)";
-
-  // body
   ctx.fillStyle = "#9fdcff";
   ctx.beginPath();
   ctx.ellipse(0, 0, UFO_SIZE, UFO_SIZE * 0.35, 0, 0, Math.PI * 2);
   ctx.fill();
-
-  // dome
   ctx.fillStyle = "rgba(180,220,255,0.9)";
   ctx.beginPath();
   ctx.ellipse(0, -UFO_SIZE * 0.2, UFO_SIZE * 0.4, UFO_SIZE * 0.3, 0, 0, Math.PI * 2);
   ctx.fill();
-
-  // lights
   for (let i = -2; i <= 2; i++) {
     ctx.fillStyle = `rgba(255,255,200,${0.6 + Math.random() * 0.4})`;
     ctx.beginPath();
     ctx.arc(i * (UFO_SIZE * 0.3), UFO_SIZE * 0.15, 6, 0, Math.PI * 2);
     ctx.fill();
   }
-
   ctx.restore();
 }
 
-/**********************************************************************
-=========================== DRAW LOOP ================================
-**********************************************************************/
+/* ===== STARS ===== */
+const stars = Array.from({length:500},()=>({
+  x: Math.random()*canvas.width,
+  y: Math.random()*canvas.height,
+  z: Math.random()*0.8+0.2,
+  a: Math.random()*0.8+0.2,
+  r: Math.random()*1.5+0.5
+}));
+
+/* ===== SATURN ===== */
+const saturn = {
+  x: canvas.width / 2,
+  y: canvas.height / 2 + 100,
+  radius: 80,
+  ringInner: 100,
+  ringOuter: 140,
+  ringAngle: 0,
+  ringSpeed: 0.002
+};
+
+function drawSaturn() {
+  // Planet body
+  const grd = ctx.createRadialGradient(
+    saturn.x - 20, saturn.y - 20, saturn.radius*0.3,
+    saturn.x, saturn.y, saturn.radius
+  );
+  grd.addColorStop(0, "#f5e2c2");
+  grd.addColorStop(1, "#d2a76f");
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.arc(saturn.x, saturn.y, saturn.radius, 0, Math.PI*2);
+  ctx.fill();
+
+  // Rings
+  ctx.save();
+  ctx.translate(saturn.x, saturn.y);
+  ctx.rotate(saturn.ringAngle);
+  saturn.ringAngle += saturn.ringSpeed;
+  const ringGradient = ctx.createLinearGradient(-saturn.ringOuter,0,saturn.ringOuter,0);
+  ringGradient.addColorStop(0,"rgba(200,180,140,0.3)");
+  ringGradient.addColorStop(0.5,"rgba(220,200,160,0.6)");
+  ringGradient.addColorStop(1,"rgba(200,180,140,0.3)");
+  ctx.fillStyle = ringGradient;
+  ctx.beginPath();
+  ctx.ellipse(0,0,(saturn.ringOuter+saturn.ringInner)/2, saturn.ringOuter*0.4, 0, 0, Math.PI*2);
+  ctx.lineWidth = saturn.ringOuter - saturn.ringInner;
+  ctx.strokeStyle = ringGradient;
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ===== DRAW LOOP ===== */
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Stars drifting left to right
+  stars.forEach(s=>{
+    s.x += 0.2 * s.z;
+    if(s.x > canvas.width) s.x = 0;
+    ctx.globalAlpha = s.a * s.z;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  drawSaturn();
+
+  // UFOs
   ufos.forEach(ufo => {
     ufo.phase += 0.02;
     ufo.x += ufo.vx;
     ufo.y += Math.sin(ufo.phase) * 0.6;
-
     if (ufo.x > canvas.width + UFO_SIZE) {
       ufo.x = -UFO_SIZE;
       ufo.y = Math.random() * canvas.height;
     }
-
     drawUFO(ufo);
   });
 
@@ -160,19 +195,14 @@ function draw() {
 }
 draw();
 
-/**********************************************************************
-========================= AUTO REFRESH ================================
-**********************************************************************/
+/* ===== AUTO REFRESH ===== */
 let refreshTimer = null;
-
 function startRefresher(seconds) {
   if (refreshTimer) clearInterval(refreshTimer);
   refreshTimer = setInterval(() => location.reload(), seconds * 1000);
 }
-
 const refreshInput = document.getElementById("refresh-input");
 startRefresher(parseInt(refreshInput.value, 10));
-
 refreshInput.addEventListener("change", () => {
   startRefresher(parseInt(refreshInput.value, 10));
 });
