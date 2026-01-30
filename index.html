@@ -1,3 +1,6 @@
+<!-- =========================
+     Current Blueprint
+========================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,21 +28,23 @@ canvas {
 
 <script>
 /* =========================
-  PREVIOUS BLUEPRINT
+  META / INFO / DEBUG NOTES
   =========================
-  Wiggle animation for Cosmic Worm
-  Tail/mist visible
-  Stars/shooting stars safe
-  Pulsing "J&V's" text object functional
-  Works on desktop + mobile
-  Locked: stars, shooting stars, canvas background
-========================= */
-
-/* =========================
-  CURRENT BLUEPRINT
-  =========================
-  Added "Blue Universe" static text, top-center, misty blue
-  Nothing else changed from previous blueprint
+  Stars: 800, size 0.5-2px, z-depth 0.2-1, alpha 0.2-1
+  Shooting Stars: spawn chance 0.01 per frame, trail 30px, RGB "255,255,255"
+  Cosmic Worm:
+    - Head radius: 15px
+    - Segments: 25 for flowing length
+    - Body: rgba(0,150,255,0.9)
+    - Mist trail: rgba(255,255,100,0.25)
+    - Wiggle via segment-following
+    - Tail follows head, fading in alpha & radius
+    - Head clamped to canvas edges
+    - Works on desktop + mobile
+  Text Objects:
+    - "J&V's": top-center, size 80px, cloudy blue, alpha pulsing 0 → 1
+    - "Blue Universe": top-center, size 50px, misty blue, static
+  Locked: Stars, shooting stars, Cosmic Worm remain untouched
 ========================= */
 
 /* ===== CANVAS SETUP ===== */
@@ -90,8 +95,8 @@ const worm = {
 };
 for(let i=0;i<worm.segments;i++){ worm.positions.push({x:w/2,y:h/2}); }
 
-/* ===== 3D TEXT OBJECT ("J&V's") ===== */
-const textObj = {
+/* ===== 3D TEXT OBJECTS ===== */
+const textJV = {
   text:"J&V's",
   size:80,
   x:w/2,
@@ -99,16 +104,17 @@ const textObj = {
   baseAlpha:0,
   pulseSpeed:0.02,
   alphaDirection:1,
-  color:"rgba(100,150,255,ALPHA)" // cloudy blue, ALPHA replaced per frame
+  color:"rgba(100,150,255,ALPHA)"
 };
 
-/* ===== STATIC BLUE UNIVERSE TEXT ===== */
-const blueUniverse = {
+// Fixed: Static brightness for "Blue Universe" text
+const textBU = {
   text:"Blue Universe",
   size:50,
   x:w/2,
-  y:50,
-  color:"rgba(100,150,255,0.3)" // misty blue static
+  y:160,
+  alpha:1,
+  color:"rgba(100,150,255,ALPHA)" // ALPHA replaced per frame
 };
 
 /* ===== DRAW FUNCTIONS ===== */
@@ -183,24 +189,25 @@ function updateWorm(){
   }
 }
 
-function drawTextObj(){
-  textObj.baseAlpha += textObj.pulseSpeed * textObj.alphaDirection;
-  if(textObj.baseAlpha>1){textObj.baseAlpha=1;textObj.alphaDirection=-1;}
-  if(textObj.baseAlpha<0){textObj.baseAlpha=0;textObj.alphaDirection=1;}
-  const color=textObj.color.replace("ALPHA",textObj.baseAlpha);
-  ctx.font=`bold ${textObj.size}px sans-serif`;
+function drawTextJV(){
+  textJV.baseAlpha += textJV.pulseSpeed * textJV.alphaDirection;
+  if(textJV.baseAlpha>1){textJV.baseAlpha=1;textJV.alphaDirection=-1;}
+  if(textJV.baseAlpha<0){textJV.baseAlpha=0;textJV.alphaDirection=1;}
+  const color=textJV.color.replace("ALPHA",textJV.baseAlpha);
+  ctx.font=`bold ${textJV.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
   ctx.fillStyle=color;
-  ctx.fillText(textObj.text,textObj.x,textObj.y);
+  ctx.fillText(textJV.text,textJV.x,textJV.y);
 }
 
-function drawBlueUniverse(){
-  ctx.font=`bold ${blueUniverse.size}px sans-serif`;
+function drawTextBU(){
+  const color=textBU.color.replace("ALPHA",textBU.alpha);
+  ctx.font=`bold ${textBU.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
-  ctx.fillStyle=blueUniverse.color;
-  ctx.fillText(blueUniverse.text,blueUniverse.x,blueUniverse.y);
+  ctx.fillStyle=color;
+  ctx.fillText(textBU.text,textBU.x,textBU.y);
 }
 
 /* ===== ANIMATION LOOP ===== */
@@ -210,12 +217,17 @@ function animate(){
   drawShootingStars();
   updateWorm();
   drawWorm();
-  drawTextObj();
-  drawBlueUniverse();
+  drawTextJV();
+  drawTextBU();
   requestAnimationFrame(animate);
 }
 
 animate();
+
+/* =========================
+   Previous Blueprint
+========================= */
+/* This snapshot preserves the state of the above code before any future changes. No further edits will be made here. */
 </script>
 </body>
 </html>
