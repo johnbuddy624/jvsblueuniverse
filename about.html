@@ -58,15 +58,15 @@ canvas {
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
+
 function resize(){ 
   w = canvas.width = window.innerWidth; 
   h = canvas.height = window.innerHeight; 
 
-  // Update button vertical positions
   const donateBtn = document.getElementById("donateBtn");
   const homeBtn = document.getElementById("homeBtn");
-  donateBtn.style.top = (h/2 - 70) + "px"; // moved down 80px from before
-  homeBtn.style.top = (h/2 - 70 + 60) + "px"; // 60px below donate
+  donateBtn.style.top = (h/2 - 70) + "px";
+  homeBtn.style.top = (h/2 + 10) + "px"; // 60px below donate
 }
 window.addEventListener("resize",resize);
 resize();
@@ -83,6 +83,12 @@ const stars = Array.from({length:800},()=>({
 }));
 stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
+/* ===== FLOATING NAMES AS STARS ===== */
+const names = [
+  { text:"John Bender", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2 },
+  { text:"Veyra", x:Math.random()*w, y:Math.random()*h, z:Math.random()*0.8+0.2 }
+];
+
 /* ===== SHOOTING STARS ===== */
 let shootingStars=[];
 setInterval(()=>{
@@ -90,7 +96,7 @@ setInterval(()=>{
     shootingStars.push({
       x:Math.random()*w,
       y:Math.random()*h,
-      z:Math.random()*0.5+0.5,
+      z:(Math.random()*0.5+0.5),
       vx:(Math.random()*8-4),
       vy:(Math.random()*8-4),
       length:Math.random()*20+10,
@@ -118,14 +124,14 @@ const textWelcome = {
   y:()=>h/2 + 100, 
   size:28, 
   color:"rgba(120,170,255,0.8)",
-  maxWidth:()=>w * 0.7 // wrap at 70% of screen width
+  maxWidth:()=>w * 0.7
 };
 
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars with slow left-right motion
+  // Background stars with slow drift
   stars.forEach(s=>{
     s.x += 0.2*s.z;
     if(s.x > w) s.x = 0;
@@ -134,6 +140,16 @@ function draw(){
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
+  });
+
+  // Floating names
+  names.forEach(n=>{
+    n.x += 0.15*n.z; // float speed
+    if(n.x>w) n.x = 0;
+    ctx.globalAlpha = 1;
+    ctx.font = `${30*n.z}px sans-serif`;
+    ctx.fillStyle = "rgba(150,200,255,0.85)";
+    ctx.fillText(n.text, n.x, n.y);
   });
 
   // Shooting stars
@@ -171,7 +187,7 @@ function draw(){
     ctx.fill();
   });
 
-  // Text
+  // Main text
   ctx.globalAlpha=1;
   ctx.textAlign="center";
   ctx.font=`bold ${textJV.size}px sans-serif`;
@@ -212,7 +228,7 @@ document.getElementById("donateBtn").addEventListener("click",()=>{
 });
 
 document.getElementById("homeBtn").addEventListener("click",()=>{
-  window.location.href = "about.html"; // Change to actual about page file if needed
+  window.location.href = "index.html"; // <- Link to main page
 });
 </script>
 </body>
