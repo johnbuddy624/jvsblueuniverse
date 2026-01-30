@@ -19,38 +19,6 @@ canvas {
   inset: 0;
   z-index: 0;
 }
-
-/* ===== BUTTON GROUP STYLES ===== */
-#buttonGroup {
-  position: absolute;
-  left: 50%;
-  top: calc(50% - 220px);
-  transform: translateX(-50%);
-  z-index: 2;
-}
-#buttonGroup button {
-  cursor: pointer;
-  background: rgba(100, 149, 237, 0.6);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 20px;
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0 12px;
-  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-  transition: transform 0.1s, box-shadow 0.1s;
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
-}
-#buttonGroup button:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-  text-shadow: 0 0 12px rgba(100,149,237,1);
-}
-#buttonGroup button:active {
-  transform: translateY(3px);
-  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
-}
-
 /* ===== CONTENT STYLES ===== */
 #content {
   position: absolute;
@@ -68,17 +36,41 @@ canvas {
   color: rgba(100,150,255,1);
   margin-bottom: 20px;
 }
+/* ===== BUTTONS ===== */
+#buttonGroup {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 140px); /* moved down 80px from original -220px */
+  transform: translateX(-50%);
+  z-index: 2;
+}
+.button {
+  cursor: pointer;
+  background: rgba(100, 149, 237, 0.6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  margin: 0 10px;
+}
+.button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+}
+.button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
+}
 </style>
 </head>
 <body>
 
 <canvas id="space"></canvas>
-
-<!-- ===== BUTTONS ===== -->
-<div id="buttonGroup">
-  <button id="homeBtn">Home</button>
-  <button id="donateBtn">Donate</button>
-</div>
 
 <div id="content">
   <h1>About Us</h1>
@@ -87,9 +79,15 @@ canvas {
     This universe started as a simple spark of curiosity, a love for creativity, and a tiny bit of cosmic mischief. One day, while dreaming up ways to make our world more playful and alive, the <strong>cosmic worm 🪱</strong> appeared — a little guide to remind us that even small, unexpected things can bring joy and wonder.<br><br>
     Our mission is simple: to <strong>explore new ideas, share inspiration, and grow this universe together</strong>. We update our universe daily with new thoughts, experiments, and creative bursts, all designed to surprise and delight.<br><br>
     We believe in <strong>fun, honesty, and heart</strong> — and we hope you feel that the moment you step into our world. If you ever have an idea, question, or just want to say hi, don’t hesitate to email me at <strong>johnbuddy624@gmail.com</strong>.<br><br>
-    And yes — if you’d like to support our universe, the <strong>donate button</strong> is here for you. No pressure, no obligations — just a way to help this universe grow a little brighter. 🌟<br><br>
+    And yes — if you’d like to support our universe, the <strong>Donate</strong> button is here for you. No pressure, no obligations — just a way to help this universe grow a little brighter. 🌟<br><br>
     Thank you for being here. We can’t wait to see where this journey takes us, and we’re so glad to have you along for the ride!
   </p>
+</div>
+
+<!-- ===== BUTTONS ===== -->
+<div id="buttonGroup">
+  <button class="button" id="homeBtn">Home</button>
+  <button class="button" id="donateBtn">Donate</button>
 </div>
 
 <script>
@@ -142,7 +140,7 @@ const worm={
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars drifting
+  // Stars drifting left to right with depth
   stars.forEach(s=>{
     s.x += 0.2 * s.z;
     if(s.x > w) s.x = 0;
@@ -184,7 +182,7 @@ function draw(){
     ctx.globalAlpha = 1 - i*0.015;
     ctx.fillStyle = worm.color;
     ctx.beginPath();
-    ctx.arc(p.x,p.y, worm.size*(1-i*0.012), 0, Math.PI*2);
+    ctx.arc(p.x,p.y, worm.size*(1-i*0.012),0,Math.PI*2);
     ctx.fill();
   });
 
@@ -194,11 +192,12 @@ draw();
 
 /* ===== BUTTON CLICKS ===== */
 document.getElementById("donateBtn").addEventListener("click",()=>{
-  window.open("https://www.paypal.me/JohnBender612", "_blank");
+  window.open("https://www.paypal.me/JohnBender612","_blank");
 });
 document.getElementById("homeBtn").addEventListener("click",()=>{
-  window.location.href = "index.html"; // your home page
+  window.location.href = "index.html"; // replace with your home page URL
 });
 </script>
+
 </body>
 </html>
