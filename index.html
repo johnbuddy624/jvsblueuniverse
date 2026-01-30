@@ -18,71 +18,58 @@ canvas {
   inset: 0;
   z-index: 0;
 }
-/* ===== DONATE BUTTON STYLES ===== */
-#donateBtn {
+
+/* ===== BUTTON GROUP STYLES ===== */
+#buttonGroup {
   position: absolute;
   left: 50%;
+  top: calc(50% - 150px);
   transform: translateX(-50%);
+  z-index: 2;
+}
+#buttonGroup button {
   cursor: pointer;
-  background: rgba(100, 149, 237, 0.6); /* smokey blue */
+  background: rgba(100, 149, 237, 0.6);
   color: white;
   border: none;
   border-radius: 12px;
   padding: 10px 20px;
-  font-size: 28px; /* scaled close to Blue Universe text size */
+  font-size: 28px;
   font-weight: bold;
-  box-shadow: 0 5px 15px rgba(100, 149, 237, 0.4);
-  transition: transform 0.1s, box-shadow 0.1s, box-shadow 0.5s;
-  z-index: 2;
-  /* glow effect */
-  text-shadow: 0 0 8px rgba(100, 149, 237, 0.8);
+  margin: 0 12px;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
-#donateBtn:active {
-  transform: translateX(-50%) translateY(3px);
-  box-shadow: 0 2px 8px rgba(100, 149, 237, 0.3);
+#buttonGroup button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
 }
-#donateBtn:hover {
-  box-shadow: 0 0 20px rgba(100, 149, 237, 0.8), 0 0 40px rgba(100, 149, 237, 0.4);
-  text-shadow: 0 0 12px rgba(100, 149, 237, 1);
+#buttonGroup button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 </style>
 </head>
 <body>
 <canvas id="space"></canvas>
 
-<!-- ===== DONATE BUTTON ===== -->
-<button id="donateBtn">Donate</button>
+<!-- ===== BUTTONS ===== -->
+<div id="buttonGroup">
+  <button id="donateBtn">Donate</button>
+  <button id="aboutBtn">About Us</button>
+</div>
 
 <script>
-/* ===== CURRENT BLUEPRINT =====
-   Phase 2G Upgrade:
-   - Welcome text wrapped for better readability
-   - Donate button remains glowing and clickable
-   - Press animation intact
-   - Button 100px above welcome text
-================================ */
-
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w,h;
 function resize(){ 
   w = canvas.width = window.innerWidth; 
   h = canvas.height = window.innerHeight; 
-
-  // Update donate button vertical position
-  const donateBtn = document.getElementById("donateBtn");
-  donateBtn.style.top = (h/2 - 150) + "px"; // 100px above welcome text
 }
 window.addEventListener("resize",resize);
 resize();
-
-/* ===== MOUSE TRACKING ===== */
-let mouseX = 0;
-let mouseY = 0;
-window.addEventListener("mousemove",(e)=>{
-  mouseX = e.clientX - w/2;
-  mouseY = e.clientY - h/2;
-});
 
 /* ===== STARS ===== */
 const stars = Array.from({length:800},()=>({
@@ -131,25 +118,27 @@ const textWelcome = {
   y:()=>h/2, 
   size:30, 
   color:"rgba(120,170,255,0.8)",
-  maxWidth:()=>w * 0.7 // wrap at 70% of screen width
+  maxWidth:()=>w * 0.7
 };
 
 /* ===== DRAW LOOP ===== */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Background stars with 3D mouse parallax
+  // Stars with 3D parallax
   stars.forEach(s=>{
-    let offsetX = mouseX * 0.05 * s.z;
-    let offsetY = mouseY * 0.05 * s.z;
+    let offsetX = 0; // remove mouse interaction for smoother drift
+    let offsetY = 0;
+    s.x += 0.1 * s.z; // slow drift
+    if(s.x>w) s.x=0;
     ctx.globalAlpha=s.a*s.z;
     ctx.fillStyle="white";
     ctx.beginPath();
-    ctx.arc(s.baseX + offsetX, s.baseY + offsetY, s.r*s.z,0,Math.PI*2);
+    ctx.arc(s.x + offsetX, s.y + offsetY, s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
 
-  // 3D Shooting stars with motion blur
+  // Shooting stars
   shootingStars.forEach((s,i)=>{
     for(let t=0;t<s.trail;t++){
       const factor = 1 - t/s.trail;
@@ -167,7 +156,7 @@ function draw(){
     }
   });
 
-  // Cosmic worm movement
+  // Cosmic worm
   let hpos=worm.pos[0];
   hpos.x+=worm.vx; hpos.y+=worm.vy;
   if(hpos.x<0||hpos.x>w) worm.vx*=-1;
@@ -205,7 +194,7 @@ function draw(){
   for(let i=0; i<words.length; i++){
     const testLine = line + words[i] + " ";
     const metrics = ctx.measureText(testLine);
-    if(metrics.width > maxWidth && i > 0){
+    if(metrics.width > maxWidth && i>0){
       ctx.fillText(line, w/2, startY);
       line = words[i] + " ";
       startY += lineHeight;
@@ -219,10 +208,12 @@ function draw(){
 }
 draw();
 
-/* ===== DONATE BUTTON CLICK ===== */
-const donateBtn = document.getElementById("donateBtn");
-donateBtn.addEventListener("click",()=>{
+/* ===== BUTTON CLICKS ===== */
+document.getElementById("donateBtn").addEventListener("click", () => {
   window.open("https://www.paypal.me/JohnBender612", "_blank");
+});
+document.getElementById("aboutBtn").addEventListener("click", () => {
+  window.location.href = "about.html"; // link to your about page
 });
 </script>
 </body>
