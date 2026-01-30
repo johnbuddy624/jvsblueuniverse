@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Affiliates – J&V’s Blue Universe</title>
-
+<title>J&V’s Blue Universe - Affiliates</title>
 <style>
 html, body {
   margin: 0;
@@ -15,148 +14,81 @@ html, body {
   font-family: sans-serif;
   color: rgba(120,170,255,0.9);
 }
-
 canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-/* ===== CENTER CONTENT ===== */
+/* ===== AFFILIATE BUTTONS ===== */
+.affiliateBtn {
+  position: absolute;
+  display: inline-block;
+  background: rgba(100, 149, 237, 0.6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  transition: transform 0.1s, box-shadow 0.1s;
+  z-index: 2;
+}
+.affiliateBtn:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
+}
+.affiliateBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+}
+
+/* ===== MAIN CONTENT ===== */
 #content {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: 720px;
+  max-width: 800px;
   text-align: center;
   z-index: 2;
-  line-height: 1.45;
+  line-height: 1.5;
   font-size: 22px;
 }
-
 #content h1 {
-  font-size: 58px;
-  margin-bottom: 20px;
+  font-size: 60px;
   color: rgba(100,150,255,1);
-}
-
-/* ===== AFFILIATE ORBIT ===== */
-.affiliate {
-  position: absolute;
-  width: 180px;
-  padding: 16px;
-  text-align: center;
-  background: rgba(40,80,140,0.35);
-  border: 2px solid rgba(120,170,255,0.5);
-  border-radius: 16px;
-  backdrop-filter: blur(6px);
-  color: #cfe4ff;
-  font-size: 18px;
-  z-index: 2;
-
-  box-shadow:
-    0 0 20px rgba(120,170,255,0.3),
-    inset 0 0 12px rgba(120,170,255,0.2);
-
-  animation: float 6s ease-in-out infinite;
-}
-
-.affiliate strong {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 20px;
-  color: #ffffff;
-}
-
-@keyframes float {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-
-/* ===== BUTTONS ===== */
-.button {
-  display: inline-block;
-  margin: 25px 10px 0;
-  cursor: pointer;
-  background: rgba(100,149,237,0.6);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 22px;
-  font-size: 26px;
-  font-weight: bold;
-  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
-}
-
-.button:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8),
-              0 0 40px rgba(100,149,237,0.4);
+  margin-bottom: 20px;
 }
 </style>
 </head>
-
 <body>
 
 <canvas id="space"></canvas>
 
-<!-- ===== AFFILIATE BOXES ===== -->
-<div class="affiliate" style="top:20%; left:50%; transform:translateX(-50%)">
-  <strong>Affiliate One</strong>
-  Creative tools we trust
-</div>
-
-<div class="affiliate" style="top:35%; left:18%">
-  <strong>Affiliate Two</strong>
-  Inspiration fuel 🚀
-</div>
-
-<div class="affiliate" style="top:35%; right:18%">
-  <strong>Affiliate Three</strong>
-  Cosmic tech
-</div>
-
-<div class="affiliate" style="bottom:28%; left:22%">
-  <strong>Affiliate Four</strong>
-  Design magic
-</div>
-
-<div class="affiliate" style="bottom:28%; right:22%">
-  <strong>Affiliate Five</strong>
-  Universe builders
-</div>
-
-<div class="affiliate" style="bottom:15%; left:50%; transform:translateX(-50%)">
-  <strong>Affiliate Six</strong>
-  Future ideas
-</div>
-
-<!-- ===== CENTER TEXT ===== -->
 <div id="content">
-  <h1>Affiliates</h1>
+  <h1>Our Affiliates</h1>
   <p>
-    This universe grows through creativity, trust, and collaboration.  
-    Some links on this page are affiliate links — if you choose to support them,
-    it helps <strong>J&V’s Blue Universe</strong> grow at no extra cost to you 💙.
+    Welcome to our affiliate universe! 💙<br><br>
+    These are the brilliant links that help our world expand and shine. Click any to explore and support the amazing creators and platforms we love.
   </p>
-
-  <p>
-    We only feature things we genuinely believe in — tools, ideas, and creators
-    that align with our values.
-  </p>
-
-  <button class="button" onclick="location.href='index.html'">Home</button>
-  <button class="button" onclick="window.open('https://www.paypal.me/JohnBender612','_blank')">Donate</button>
 </div>
+
+<!-- ===== AFFILIATE BUTTONS ===== -->
+<button class="affiliateBtn" style="top:calc(20% - 100px); left:50%; transform:translateX(-50%)" onclick="window.open('https://affiliate1.example.com','_blank')">Affiliate 1</button>
+<button class="affiliateBtn" style="top:35%; left:calc(18% - 100px)" onclick="window.open('https://affiliate2.example.com','_blank')">Affiliate 2</button>
+<button class="affiliateBtn" style="top:35%; right:calc(18% - 100px)" onclick="window.open('https://affiliate3.example.com','_blank')">Affiliate 3</button>
+<button class="affiliateBtn" style="bottom:calc(28% - 100px); left:calc(22% - 100px)" onclick="window.open('https://affiliate4.example.com','_blank')">Affiliate 4</button>
+<button class="affiliateBtn" style="bottom:calc(28% - 100px); right:calc(22% - 100px)" onclick="window.open('https://affiliate5.example.com','_blank')">Affiliate 5</button>
+<button class="affiliateBtn" style="bottom:calc(15% - 100px); left:50%; transform:translateX(-50%)" onclick="window.open('https://affiliate6.example.com','_blank')">Affiliate 6</button>
 
 <script>
-/* ===== STARFIELD ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
-
 function resize() {
   w = canvas.width = window.innerWidth;
   h = canvas.height = window.innerHeight;
@@ -164,25 +96,74 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-const stars = Array.from({ length: 600 }, () => ({
-  x: Math.random() * w,
-  y: Math.random() * h,
-  z: Math.random() * 0.8 + 0.2,
-  a: Math.random() * 0.8 + 0.2,
-  r: Math.random() * 1.5 + 0.5
+/* ===== STARS ===== */
+const stars = Array.from({length:600},()=>({
+  x: Math.random()*w,
+  y: Math.random()*h,
+  z: Math.random()*0.8+0.2,
+  a: Math.random()*0.8+0.2,
+  r: Math.random()*1.5+0.5,
+  baseX: 0,
+  baseY: 0
 }));
+stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
-function draw() {
-  ctx.clearRect(0, 0, w, h);
-  stars.forEach(s => {
-    s.x += 0.15 * s.z;
-    if (s.x > w) s.x = 0;
+/* ===== COSMIC WORM ===== */
+const worm = {
+  segments:40,
+  size:10,
+  color:"rgba(0,150,255,0.9)",
+  pos:Array.from({length:40},()=>({x:w/2,y:h/2})),
+  vx:(Math.random()-0.5)*1.5,
+  vy:(Math.random()-0.5)*1.5
+};
+
+/* ===== NAMES FLOATING ===== */
+const floatingNames = [
+  {text:"John Bender", x:()=>Math.random()*w, y:()=>Math.random()*h, size:26, color:"rgba(255,255,255,0.9)"},
+  {text:"Veyra Blue", x:()=>Math.random()*w, y:()=>Math.random()*h, size:26, color:"rgba(255,255,255,0.9)"}
+];
+
+/* ===== DRAW LOOP ===== */
+function draw(){
+  ctx.clearRect(0,0,w,h);
+
+  // Stars drifting left to right
+  stars.forEach(s=>{
+    s.x += 0.2*s.z;
+    if(s.x > w) s.x = 0;
     ctx.globalAlpha = s.a * s.z;
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
+    ctx.arc(s.x, s.y, s.r*s.z, 0, Math.PI*2);
     ctx.fill();
   });
+
+  // Cosmic worm
+  let hpos = worm.pos[0];
+  hpos.x += worm.vx; hpos.y += worm.vy;
+  if(hpos.x<0||hpos.x>w) worm.vx*=-1;
+  if(hpos.y<0||hpos.y>h) worm.vy*=-1;
+  for(let i=1;i<worm.segments;i++){
+    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;
+    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;
+  }
+  worm.pos.forEach((p,i)=>{
+    ctx.globalAlpha=1-i*0.015;
+    ctx.fillStyle=worm.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // Floating names
+  floatingNames.forEach(n=>{
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = n.color;
+    ctx.font = `bold ${n.size}px sans-serif`;
+    ctx.fillText(n.text, n.x(), n.y());
+  });
+
   requestAnimationFrame(draw);
 }
 draw();
