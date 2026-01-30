@@ -1,5 +1,6 @@
 <!-- =========================
-     Current Blueprint
+     CURRENT BLUEPRINT
+     Notes: "J&V's" and "Blue Universe" text brightness fixed
 ========================= -->
 <!DOCTYPE html>
 <html lang="en">
@@ -42,9 +43,10 @@ canvas {
     - Head clamped to canvas edges
     - Works on desktop + mobile
   Text Objects:
-    - "J&V's": top-center, size 80px, cloudy blue, alpha pulsing 0 → 1
-    - "Blue Universe": top-center, size 50px, misty blue, static
-  Locked: Stars, shooting stars, Cosmic Worm remain untouched
+    "J&V's" - top-center, size 80px, cloudy blue, pulses alpha 0→1
+    "Blue Universe" - top-center, size 50px, misty blue, static alpha 1 (brightness fixed)
+  Locked: Stars, shooting stars, canvas background remain untouched
+  Notes for future dev: Segment count, size, velocity, gradient stops adjustable. Keep locked elements safe.
 ========================= */
 
 /* ===== CANVAS SETUP ===== */
@@ -95,8 +97,8 @@ const worm = {
 };
 for(let i=0;i<worm.segments;i++){ worm.positions.push({x:w/2,y:h/2}); }
 
-/* ===== 3D TEXT OBJECTS ===== */
-const textJV = {
+/* ===== TEXT OBJECTS ===== */
+const jvText = {
   text:"J&V's",
   size:80,
   x:w/2,
@@ -104,17 +106,15 @@ const textJV = {
   baseAlpha:0,
   pulseSpeed:0.02,
   alphaDirection:1,
-  color:"rgba(100,150,255,ALPHA)"
+  color:"rgba(100,150,255,ALPHA)" // cloudy blue
 };
 
-// Fixed: Static brightness for "Blue Universe" text
-const textBU = {
+const blueUniverseText = {
   text:"Blue Universe",
   size:50,
   x:w/2,
   y:160,
-  alpha:1,
-  color:"rgba(100,150,255,ALPHA)" // ALPHA replaced per frame
+  color:"rgba(100,150,255,1)" // misty blue, alpha fixed at 1
 };
 
 /* ===== DRAW FUNCTIONS ===== */
@@ -189,25 +189,24 @@ function updateWorm(){
   }
 }
 
-function drawTextJV(){
-  textJV.baseAlpha += textJV.pulseSpeed * textJV.alphaDirection;
-  if(textJV.baseAlpha>1){textJV.baseAlpha=1;textJV.alphaDirection=-1;}
-  if(textJV.baseAlpha<0){textJV.baseAlpha=0;textJV.alphaDirection=1;}
-  const color=textJV.color.replace("ALPHA",textJV.baseAlpha);
-  ctx.font=`bold ${textJV.size}px sans-serif`;
+function drawTextObj(){
+  // JV text pulsing
+  jvText.baseAlpha += jvText.pulseSpeed * jvText.alphaDirection;
+  if(jvText.baseAlpha>1){jvText.baseAlpha=1;jvText.alphaDirection=-1;}
+  if(jvText.baseAlpha<0){jvText.baseAlpha=0;jvText.alphaDirection=1;}
+  const colorJV=jvText.color.replace("ALPHA",jvText.baseAlpha);
+  ctx.font=`bold ${jvText.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
-  ctx.fillStyle=color;
-  ctx.fillText(textJV.text,textJV.x,textJV.y);
-}
+  ctx.fillStyle=colorJV;
+  ctx.fillText(jvText.text,jvText.x,jvText.y);
 
-function drawTextBU(){
-  const color=textBU.color.replace("ALPHA",textBU.alpha);
-  ctx.font=`bold ${textBU.size}px sans-serif`;
+  // Blue Universe text static alpha 1
+  ctx.font=`bold ${blueUniverseText.size}px sans-serif`;
   ctx.textAlign="center";
   ctx.textBaseline="middle";
-  ctx.fillStyle=color;
-  ctx.fillText(textBU.text,textBU.x,textBU.y);
+  ctx.fillStyle=blueUniverseText.color;
+  ctx.fillText(blueUniverseText.text,blueUniverseText.x,blueUniverseText.y);
 }
 
 /* ===== ANIMATION LOOP ===== */
@@ -217,17 +216,11 @@ function animate(){
   drawShootingStars();
   updateWorm();
   drawWorm();
-  drawTextJV();
-  drawTextBU();
+  drawTextObj();
   requestAnimationFrame(animate);
 }
 
 animate();
-
-/* =========================
-   Previous Blueprint
-========================= */
-/* This snapshot preserves the state of the above code before any future changes. No further edits will be made here. */
 </script>
 </body>
 </html>
