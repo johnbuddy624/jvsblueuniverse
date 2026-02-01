@@ -8,17 +8,26 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: black;
   overflow: hidden;
   width: 100%;
   height: 100%;
   font-family: sans-serif;
   color: rgba(120,170,255,0.9);
+  background: black;
 }
 
 canvas {
   position: fixed;
   inset: 0;
+  z-index: 1; /* Stars go above the mountains slightly */
+}
+
+/* Mountain image */
+#mountains {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: auto;
   z-index: 0;
 }
 
@@ -30,7 +39,7 @@ canvas {
   transform: translate(-50%, -50%);
   max-width: 720px;
   text-align: center;
-  z-index: 5;
+  z-index: 2;
   line-height: 1.45;
   font-size: 22px;
 }
@@ -41,7 +50,7 @@ canvas {
   color: rgba(100,150,255,1);
 }
 
-/* ===== AFFILIATE ORBIT ===== */
+/* ===== PROFILE BUTTONS ===== */
 .profile {
   position: absolute;
   width: 180px;
@@ -54,7 +63,7 @@ canvas {
   backdrop-filter: blur(6px);
   color: #cfe4ff;
   font-size: 18px;
-  z-index: 5;
+  z-index: 2;
 
   box-shadow:
     0 0 20px rgba(120,170,255,0.3),
@@ -95,7 +104,7 @@ canvas {
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100,149,237,0.4);
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
-  z-index: 5;
+  z-index: 2;
 }
 
 .button:hover {
@@ -106,6 +115,9 @@ canvas {
 </head>
 
 <body>
+
+<!-- ===== MOUNTAIN BACKGROUND ===== -->
+<img id="mountains" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80" alt="Mountain Range">
 
 <canvas id="space"></canvas>
 
@@ -159,7 +171,7 @@ canvas {
 </div>
 
 <script>
-/* ===== CANVAS SETUP ===== */
+/* ===== STARFIELD ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
@@ -171,7 +183,6 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/* ===== STARFIELD ===== */
 const stars = Array.from({ length: 600 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
@@ -180,64 +191,8 @@ const stars = Array.from({ length: 600 }, () => ({
   r: Math.random() * 1.5 + 0.5
 }));
 
-/* ===== PARALLAX MOUNTAINS ===== */
-function drawMountains() {
-  const layers = 5;
-  for (let i = 0; i < layers; i++) {
-    const offset = i * 50;
-    const color = `rgba(${20 + i*20}, ${20 + i*20}, ${60 + i*30}, 0.6)`;
-    ctx.beginPath();
-    ctx.moveTo(0, h - offset);
-    for (let x = 0; x <= w; x += 50) {
-      const y = h - offset - Math.sin((x + i*100) * 0.004) * 60 - i*25;
-      ctx.lineTo(x, y);
-    }
-    ctx.lineTo(w, h);
-    ctx.lineTo(0, h);
-    ctx.fillStyle = color;
-    ctx.fill();
-  }
-}
-
-/* ===== GLOWING MOON ===== */
-const moon = { x: w*0.8, y: h*0.25, radius: 60 };
-function drawMoon() {
-  const gradient = ctx.createRadialGradient(moon.x, moon.y, 0, moon.x, moon.y, moon.radius);
-  gradient.addColorStop(0, "rgba(255,255,230,0.9)");
-  gradient.addColorStop(1, "rgba(255,255,230,0)");
-  ctx.fillStyle = gradient;
-  ctx.beginPath();
-  ctx.arc(moon.x, moon.y, moon.radius, 0, Math.PI*2);
-  ctx.fill();
-}
-
-/* ===== DRIFTING CLOUDS ===== */
-const clouds = Array.from({ length: 8 }, () => ({
-  x: Math.random() * w,
-  y: Math.random() * h * 0.5,
-  size: Math.random() * 120 + 80,
-  speed: Math.random() * 0.2 + 0.05
-}));
-
-function drawClouds() {
-  clouds.forEach(c => {
-    ctx.fillStyle = "rgba(200,200,220,0.08)";
-    ctx.beginPath();
-    ctx.ellipse(c.x, c.y, c.size, c.size*0.4, 0, 0, Math.PI*2);
-    ctx.fill();
-    c.x += c.speed;
-    if (c.x - c.size > w) c.x = -c.size;
-  });
-}
-
-/* ===== DRAW LOOP ===== */
 function draw() {
   ctx.clearRect(0, 0, w, h);
-
-  drawMountains();
-  drawMoon();
-  drawClouds();
-
   stars.forEach(s => {
     s.x += 0.15 * s.z;
     if (s.x > w) s.x = 0;
@@ -247,11 +202,11 @@ function draw() {
     ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI*2);
     ctx.fill();
   });
-
   requestAnimationFrame(draw);
 }
 
 draw();
 </script>
+
 </body>
 </html>
