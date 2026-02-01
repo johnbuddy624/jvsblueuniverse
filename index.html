@@ -1,218 +1,248 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7345762652720113"  
-     crossorigin="anonymous"></script>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>J&V’s Blue Universe</title>  
-<style>  
-html, body {  
-  margin: 0;  
-  padding: 0;  
-  background: black;  
-  overflow: hidden;  
-  width: 100%;  
-  height: 100%;  
-  font-family: Times New Roman;  
-}  
-canvas {  
-  position: fixed;  
-  inset: 0;  
-  z-index: 0;  
-}  /* ===== BUTTON GROUP STYLES ===== */
-#buttonGroup {
-position: absolute;
-left: 50%;
-top: calc(50% - 220px);
-transform: translateX(-50%);
-z-index: 2;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J&V’s Blue Universe</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: Times New Roman;
 }
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ===== BUTTON GROUP STYLES ===== */
+#buttonGroup {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* ===== BUTTON STYLES ===== */
 #buttonGroup button {
-cursor: pointer;
-background: rgba(100, 149, 237, 0.6);
-color: white;
-border: none;
-border-radius: 12px;
-padding: 10px 20px;
-font-size: 28px;
-font-weight: bold;
-margin: 15px 15px;
-box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-transition: transform 0.1s, box-shadow 0.1s;
-text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  cursor: pointer;
+  background: rgba(100, 149, 237, 0.6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
 #buttonGroup button:hover {
-box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-text-shadow: 0 0 12px rgba(100,149,237,1);
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
 }
 #buttonGroup button:active {
-transform: translateY(3px);
-box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+}
+
+/* ===== RESPONSIVE BUTTONS ===== */
+@media (max-width: 600px) {
+  #buttonGroup {
+    top: 50%;
+    flex-direction: column;
+  }
+  #buttonGroup button {
+    width: 70%;
+    font-size: 24px;
+    padding: 12px 0;
+  }
 }
 </style>
+</head>
+<body>
+<canvas id="space"></canvas>
 
-</head>  
-<body>  
-<canvas id="space"></canvas>  <!-- ===== BUTTONS ===== -->  <div id="buttonGroup">  
-  <button id="donateBtn">Donate</button>  
-  <button id="aboutBtn">About Us</button>  
-  <button id="shopsBtn">Shops</button>  
-  <button id="affiliatesBtn">Affiliates</button>  
-  <button id="downloadsBtn">Downloads</button>  
-</div>  <script>  
-const canvas = document.getElementById("space");  
-const ctx = canvas.getContext("2d");  
-let w,h;  
-function resize(){   
-  w = canvas.width = window.innerWidth;   
-  h = canvas.height = window.innerHeight;   
-}  
-window.addEventListener("resize",resize);  
-resize();  
-  
-/* ===== STARS ===== */  
-const stars = Array.from({length:800},()=>({  
-  x:Math.random()*w,  
-  y:Math.random()*h,  
-  z:Math.random()*0.8+0.2,  
-  a:Math.random()*0.8+0.2,  
-  r:Math.random()*1.5+0.5,  
-  baseX:0,  
-  baseY:0  
-}));  
-stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });  
-  
-/* ===== SHOOTING STARS ===== */  
-let shootingStars=[];  
-setInterval(()=>{  
-  if(Math.random()<0.015){  
-    shootingStars.push({  
-      x:Math.random()*w,  
-      y:Math.random()*h,  
-      z:Math.random()*0.5+0.5,  
-      vx:(Math.random()*8-4),  
-      vy:(Math.random()*8-4),  
-      length:Math.random()*20+10,  
-      trail:5  
-    });  
-  }  
-},40);  
-  
-/* ===== COSMIC WORM ===== */  
-const worm={  
-  segments:60,  
-  size:12,  
-  color:"rgba(0,150,255,0.9)",  
-  pos:Array.from({length:60},()=>({x:w/2,y:h/2})),  
-  vx:(Math.random()-0.5)*1.5,  
-  vy:(Math.random()-0.5)*1.5  
-};  
-  
-/* ===== TEXT OBJECTS ===== */  
-const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };  
-const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };  
-const textWelcome = {   
-  text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙",   
-  x:()=>w/2,   
-  y:()=>h/2,   
-  size:30,   
-  color:"rgba(120,170,255,0.8)",  
-  maxWidth:()=>w * 0.7  
-};  
-  
-/* ===== DRAW LOOP ===== */  
-function draw(){  
-  ctx.clearRect(0,0,w,h);  
-  
-  // Stars with 3D parallax  
-  stars.forEach(s=>{  
-    let offsetX = 0; // remove mouse interaction for smoother drift  
-    let offsetY = 0;  
-    s.x += 0.1 * s.z; // slow drift  
-    if(s.x>w) s.x=0;  
-    ctx.globalAlpha=s.a*s.z;  
-    ctx.fillStyle="white";  
-    ctx.beginPath();  
-    ctx.arc(s.x + offsetX, s.y + offsetY, s.r*s.z,0,Math.PI*2);  
-    ctx.fill();  
-  });  
-  
-  // Shooting stars  
-  shootingStars.forEach((s,i)=>{  
-    for(let t=0;t<s.trail;t++){  
-      const factor = 1 - t/s.trail;  
-      ctx.strokeStyle=`rgba(255,255,255,${0.6*factor*s.z})`;  
-      ctx.lineWidth = 2*s.z*factor;  
-      ctx.beginPath();  
-      ctx.moveTo(s.x - s.vx*s.z*t, s.y - s.vy*s.z*t);  
-      ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));  
-      ctx.stroke();  
-    }  
-    s.x += s.vx * s.z;  
-    s.y += s.vy * s.z;  
-    if(s.x<0 || s.x>w || s.y<0 || s.y>h){  
-      shootingStars.splice(i,1);  
-    }  
-  });  
-  
-  // Cosmic worm  
-  let hpos=worm.pos[0];  
-  hpos.x+=worm.vx; hpos.y+=worm.vy;  
-  if(hpos.x<0||hpos.x>w) worm.vx*=-1;  
-  if(hpos.y<0||hpos.y>h) worm.vy*=-1;  
-  for(let i=1;i<worm.segments;i++){  
-    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;  
-    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;  
-  }  
-  worm.pos.forEach((p,i)=>{  
-    ctx.globalAlpha=1-i*0.015;  
-    ctx.fillStyle=worm.color;  
-    ctx.beginPath();  
-    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);  
-    ctx.fill();  
-  });  
-  
-  // Text  
-  ctx.globalAlpha=1;  
-  ctx.textAlign="center";  
-  ctx.font=`bold ${textJV.size}px Times New Roman`;  
-  ctx.fillStyle=textJV.color;  
-  ctx.fillText(textJV.text,textJV.x(),textJV.y);  
-  ctx.font=`${textBU.size}px Times New Roman`;  
-  ctx.fillStyle=textBU.color;  
-  ctx.fillText(textBU.text,textBU.x(),textBU.y);  
-  
-  // Wrapped welcome text  
-  ctx.font=`${textWelcome.size}px Times New Roman`;  
-  ctx.fillStyle=textWelcome.color;  
-  const words = textWelcome.text.split(" ");  
-  let line = "";  
-  let lineHeight = textWelcome.size * 1.2;  
-  let startY = textWelcome.y();  
-  let maxWidth = textWelcome.maxWidth();  
-  for(let i=0; i<words.length; i++){  
-    const testLine = line + words[i] + " ";  
-    const metrics = ctx.measureText(testLine);  
-    if(metrics.width > maxWidth && i>0){  
-      ctx.fillText(line, w/2, startY);  
-      line = words[i] + " ";  
-      startY += lineHeight;  
-    } else {  
-      line = testLine;  
-    }  
-  }  
-  ctx.fillText(line, w/2, startY);  
-  
-  requestAnimationFrame(draw);  
-}  
-draw();  
-  
-/* ===== BUTTON CLICKS ===== */  
-document.getElementById("donateBtn").addEventListener("click", () => {  
-  window.open("https://otieu.com/4/10549459", "_blank");  
-});  
-document.getElementById("aboutBtn").addEventListener("click", () => {  
-  window.location.href = "about.html"; // link to your about page  
-});  
-</script>  </body>  
+<!-- ===== BUTTONS ===== -->
+<div id="buttonGroup">
+  <button id="donateBtn">Donate</button>
+  <button id="aboutBtn">About Us</button>
+  <button id="shopsBtn">Shops</button>
+  <button id="affiliatesBtn">Affiliates</button>
+  <button id="downloadsBtn">Downloads</button>
+</div>
+
+<script>
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w,h;
+function resize(){ 
+  w = canvas.width = window.innerWidth; 
+  h = canvas.height = window.innerHeight; 
+}
+window.addEventListener("resize",resize);
+resize();
+
+/* ===== STARS ===== */
+const stars = Array.from({length:800},()=>({
+  x:Math.random()*w,
+  y:Math.random()*h,
+  z:Math.random()*0.8+0.2,
+  a:Math.random()*0.8+0.2,
+  r:Math.random()*1.5+0.5,
+  baseX:0,
+  baseY:0
+}));
+stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
+
+/* ===== SHOOTING STARS ===== */
+let shootingStars=[];
+setInterval(()=>{
+  if(Math.random()<0.015){
+    shootingStars.push({
+      x:Math.random()*w,
+      y:Math.random()*h,
+      z:Math.random()*0.5+0.5,
+      vx:(Math.random()*8-4),
+      vy:(Math.random()*8-4),
+      length:Math.random()*20+10,
+      trail:5
+    });
+  }
+},40);
+
+/* ===== COSMIC WORM ===== */
+const worm={
+  segments:60,
+  size:12,
+  color:"rgba(0,150,255,0.9)",
+  pos:Array.from({length:60},()=>({x:w/2,y:h/2})),
+  vx:(Math.random()-0.5)*1.5,
+  vy:(Math.random()-0.5)*1.5
+};
+
+/* ===== TEXT OBJECTS ===== */
+const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
+const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };
+const textWelcome = { 
+  text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙", 
+  x:()=>w/2, 
+  y:()=>h/2, 
+  size:30, 
+  color:"rgba(120,170,255,0.8)",
+  maxWidth:()=>w * 0.7
+};
+
+/* ===== DRAW LOOP ===== */
+function draw(){
+  ctx.clearRect(0,0,w,h);
+
+  // Stars with slow drift
+  stars.forEach(s=>{
+    s.x += 0.1 * s.z;
+    if(s.x>w) s.x=0;
+    ctx.globalAlpha=s.a*s.z;
+    ctx.fillStyle="white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // Shooting stars
+  shootingStars.forEach((s,i)=>{
+    for(let t=0;t<s.trail;t++){
+      const factor = 1 - t/s.trail;
+      ctx.strokeStyle=`rgba(255,255,255,${0.6*factor*s.z})`;
+      ctx.lineWidth = 2*s.z*factor;
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.vx*s.z*t, s.y - s.vy*s.z*t);
+      ctx.lineTo(s.x - s.vx*s.z*(t+1), s.y - s.vy*s.z*(t+1));
+      ctx.stroke();
+    }
+    s.x += s.vx * s.z;
+    s.y += s.vy * s.z;
+    if(s.x<0 || s.x>w || s.y<0 || s.y>h){
+      shootingStars.splice(i,1);
+    }
+  });
+
+  // Cosmic worm
+  let hpos=worm.pos[0];
+  hpos.x+=worm.vx; hpos.y+=worm.vy;
+  if(hpos.x<0||hpos.x>w) worm.vx*=-1;
+  if(hpos.y<0||hpos.y>h) worm.vy*=-1;
+  for(let i=1;i<worm.segments;i++){
+    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;
+    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;
+  }
+  worm.pos.forEach((p,i)=>{
+    ctx.globalAlpha=1-i*0.015;
+    ctx.fillStyle=worm.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // Text
+  ctx.globalAlpha=1;
+  ctx.textAlign="center";
+  ctx.font=`bold ${textJV.size}px Times New Roman`;
+  ctx.fillStyle=textJV.color;
+  ctx.fillText(textJV.text,textJV.x(),textJV.y);
+  ctx.font=`${textBU.size}px Times New Roman`;
+  ctx.fillStyle=textBU.color;
+  ctx.fillText(textBU.text,textBU.x(),textBU.y);
+
+  // Wrapped welcome text
+  ctx.font=`${textWelcome.size}px Times New Roman`;
+  ctx.fillStyle=textWelcome.color;
+  const words = textWelcome.text.split(" ");
+  let line = "";
+  let lineHeight = textWelcome.size * 1.2;
+  let startY = textWelcome.y();
+  let maxWidth = textWelcome.maxWidth();
+  for(let i=0; i<words.length; i++){
+    const testLine = line + words[i] + " ";
+    const metrics = ctx.measureText(testLine);
+    if(metrics.width > maxWidth && i>0){
+      ctx.fillText(line, w/2, startY);
+      line = words[i] + " ";
+      startY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, w/2, startY);
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== BUTTON CLICKS ===== */
+document.getElementById("donateBtn").addEventListener("click", () => {
+  window.open("https://otieu.com/4/10549459", "_blank");
+});
+document.getElementById("aboutBtn").addEventListener("click", () => {
+  window.location.href = "about.html";
+});
+document.getElementById("shopsBtn").addEventListener("click", () => {
+  window.location.href = "shops.html";
+});
+document.getElementById("affiliatesBtn").addEventListener("click", () => {
+  window.location.href = "affiliates.html";
+});
+document.getElementById("downloadsBtn").addEventListener("click", () => {
+  window.location.href = "downloads.html";
+});
+</script>
+</body>
 </html>
