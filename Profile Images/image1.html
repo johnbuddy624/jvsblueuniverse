@@ -1,8 +1,200 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile – J&V’s Blue Universe</title>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  color: rgba(120,170,255,0.9);
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ===== CENTER CONTENT ===== */
+#content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 720px;
+  text-align: center;
+  z-index: 2;
+  line-height: 1.45;
+  font-size: 22px;
+}
+
+#content h1 {
+  font-size: 58px;
+  margin-bottom: 20px;
+  color: rgba(100,150,255,1);
+}
+
+/* ===== AFFILIATE ORBIT ===== */
+.profile {
+  position: absolute;
+  width: 180px;
+  padding: 16px;
+  cursor: pointer;
+  text-align: center;
+  background: rgba(40,80,140,0.35);
+  border: 2px solid rgba(120,170,255,0.5);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  color: #cfe4ff;
+  font-size: 18px;
+  z-index: 2;
+
+  box-shadow:
+    0 0 20px rgba(120,170,255,0.3),
+    inset 0 0 12px rgba(120,170,255,0.2);
+
+  animation: float 6s ease-in-out infinite;
+}
+
+.profile strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.profile:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+
+/* ===== BUTTONS ===== */
+.button {
+  display: inline-block;
+  margin: 25px 10px 0;
+  cursor: pointer;
+  background: rgba(100,149,237,0.6);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 10px 22px;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+}
+
+.button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+</style>
+</head>
+
 <body>
-<background='PENUP_20260124_202833.png'>
+
+<canvas id="space"></canvas>
+
+<!-- ===== PROFILE BUTTONS ===== -->
+<div class="profile" onclick="location.href='https://jvbus.github.io/jvsblueuniverse/Profile Images/image1.html'"
+style="top:15%; left:42%; transform:translateX(-50%)">
+  <strong>Drawing One</strong>
+  Wormhole
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="top:35%; left:6%">
+  <strong>Drawing Two</strong>
+  Inspiration fuel 🚀
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="top:35%; right:6%">
+  <strong>Drawing Three</strong>
+  Cosmic tech
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="bottom:28%; left:6%">
+  <strong>Drawing Four</strong>
+  Design magic
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="bottom:28%; right:6%">
+  <strong>Drawing Five</strong>
+  Universe builders
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="bottom:8%; left:42%; transform:translateX(-50%)">
+  <strong>Drawing Six</strong>
+  Future ideas
+</div>
+
+  
+<!-- ===== CENTER TEXT ===== -->
+<div id="content">
+  <h1>Profile</h1>
+  <p>
+    This universe grows through creativity, trust, and collaboration.  
+    Some links on this page are drawing links — if you choose to support them,
+    it helps <strong>J&V’s Blue Universe</strong> grow at no extra cost to you 💙.
+  </p>
+
+  <p>
+    We only feature things we genuinely believe in — tools, ideas, and creators
+    that align with our values.
+  </p>
+
+  <button class="button" onclick="location.href='index.html'">Home</button>
+  <button class="button" onclick="window.open('https://otieu.com/4/10549473','_blank')">Donate</button>
+</div>
+
+<script>
+/* ===== STARFIELD ===== */
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+const stars = Array.from({ length: 600 }, () => ({
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.8 + 0.2,
+  a: Math.random() * 0.8 + 0.2,
+  r: Math.random() * 1.5 + 0.5
+}));
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  stars.forEach(s => {
+    s.x += 0.15 * s.z;
+    if (s.x > w) s.x = 0;
+    ctx.globalAlpha = s.a * s.z;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
 </body>
 </html>
-
-
