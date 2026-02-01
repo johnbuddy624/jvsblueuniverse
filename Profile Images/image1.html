@@ -22,6 +22,36 @@ canvas {
   z-index: 0;
 }
 
+//==IMAGE HTML==//
+<!-- Image overlay -->
+<img id="overlayImg" src="PENUP_20260124_202833.png" alt="Wormhole">
+//==IMAGE CSS==//
+#overlayImg {
+  position: absolute; /* allows free positioning over canvas */
+  top: 50px;          /* distance from top of viewport */
+  left: 100px;        /* distance from left */
+  width: 150px;       /* initial width */
+  height: auto;       /* maintain aspect ratio */
+  z-index: 5;         /* make sure it's above all canvases (canvases usually z-index 0 or 1) */
+  pointer-events: auto; /* allows clicks if needed */
+  transition: all 0.3s ease; /* smooth resizing/movement */
+}
+//==IMAGE JS==//
+const overlay = document.getElementById('overlayImg');
+
+// Example: move it dynamically
+overlay.style.top = '200px';
+overlay.style.left = '300px';
+
+// Example: resize dynamically
+overlay.style.width = '250px';
+
+// Optional: animate with mouse
+document.addEventListener('mousemove', (e) => {
+  overlay.style.left = `${e.clientX + 20}px`;
+  overlay.style.top = `${e.clientY + 20}px`;
+});
+
 /* ===== CENTER CONTENT ===== */
 #content {
   position: absolute;
@@ -79,13 +109,6 @@ canvas {
   <button class="button" onclick="window.open('https://jvbus.github.io/jvsblueuniverse/profile.html','_blank')">Profile</button>
 </div>
 
-{.img= 'PENUP_20260124_202833.png;
-position: absolute;
-top: 800px;
-bottom: 800px;
-width: 100px;
-height: 100px;
-}
 <script>
 /* ===== STARFIELD ===== */
 const canvas = document.getElementById("space");
