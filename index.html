@@ -1,12 +1,22 @@
-//------------------------------
-//--------- LOCK STARTS --------
-//------------------------------
+//===============================
+//------------ DOCTYPE ----------
+//============ STARTS ===========
 <!DOCTYPE html>
 <html lang="en">
+//===============================
+//----------- DOCTYPE -----------
+//============ ENDS =============
+
+//===============================
+//----------- HEAD --------------
+//========== STARTS =============
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>J&V’s Blue Universe</title>
+//=============================
+//----------- HEAD ------------
+//=========== ENDS ============
 <style>
 html, body {
   margin: 0;
@@ -22,10 +32,12 @@ canvas {
   inset: 0;
   z-index: 0;
 }
-//----------------------------
-//--------- LOCK ENDS --------
-//----------------------------
-/* ===== BUTTON GROUP STYLES ===== */
+//================================
+//----------- BUTTONS ------------
+//=========== STARTS =============
+/* ===== BUTTON GROUP STYLES =====
+Purpose: Styles the container holding all buttons. 
+It centers them, adds spacing, and controls wrapping behavior. */
 #buttonGroup {
   position: absolute;
   left: 50%;
@@ -37,7 +49,9 @@ canvas {
   gap: 15px;
 }
 
-/* ===== BUTTON STYLES ===== */
+/* ===== BUTTON STYLES =====
+Purpose: Styles each individual button (Donate, About Us, Shops, Affiliates, Downloads).
+Includes colors, shadows, hover effects, and click animation. */
 #buttonGroup button {
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
@@ -60,7 +74,8 @@ canvas {
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 
-/* ===== RESPONSIVE BUTTONS ===== */
+/* ===== RESPONSIVE BUTTONS =====
+Purpose: Adjusts buttons layout and size for mobile screens (<600px). */
 @media (max-width: 600px) {
   #buttonGroup {
     top: 50%;
@@ -72,12 +87,20 @@ canvas {
     padding: 12px 0;
   }
 }
+//==============================
+//----------- BUTTONS ----------
+//============= ENDS ===========
+
+//==============================
+//------------ BODY ------------
+//=========== STARTS ===========
 </style>
 </head>
 <body>
 <canvas id="space"></canvas>
 
-<!-- ===== BUTTONS ===== -->
+<!-- ===== BUTTONS =====
+Purpose: The actual buttons in HTML. -->
 <div id="buttonGroup">
   <button id="donateBtn">Donate</button>
   <button id="aboutBtn">About Us</button>
@@ -85,7 +108,14 @@ canvas {
   <button id="affiliatesBtn">Affiliates</button>
   <button id="downloadsBtn">Downloads</button>
 </div>
+//===============================
+//------------ BODY -------------
+//============= ENDS ============
 
+
+//===============================
+//-------- CANVAS SETUP ---------
+//=========== STARTS ============
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
@@ -96,10 +126,16 @@ function resize(){
 }
 window.addEventListener("resize",resize);
 resize();
-//------------------------------
-//--------- LOCK STARTS --------
-//------------------------------
-/* ===== STARS ===== */
+//================================
+//--------- CANVAS SETUP ---------
+//============= ENDS =============
+
+//==============================
+//----------- STARS ------------
+//=========== STARTS============
+/* ===== STARS =====
+Purpose: Creates an array of stars with random position, size, brightness.
+These are the static/moving background stars. */ 
 const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
@@ -111,7 +147,8 @@ const stars = Array.from({length:800},()=>({
 }));
 stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
-/* ===== SHOOTING STARS ===== */
+/* ===== SHOOTING STARS =====
+Purpose: Creates occasional shooting stars moving quickly with trail effect. */
 let shootingStars=[];
 setInterval(()=>{
   if(Math.random()<0.015){
@@ -127,7 +164,8 @@ setInterval(()=>{
   }
 },40);
 
-/* ===== COSMIC WORM ===== */
+/* ===== COSMIC WORM =====
+Purpose: A worm-like glowing trail that moves around the screen in 3D space. */
 const worm={
   segments:60,
   size:12,
@@ -136,11 +174,14 @@ const worm={
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
-//----------------------------
-//--------- LOCK ENDS --------
-//----------------------------
+//==============================
+//----------- STARS ------------
+//============ END =============
 
-/* ===== TEXT OBJECTS ===== */
+//================================
+//--------- TEXT OBJECTS ---------
+//=========== STARTS =============
+Purpose: Holds main title text and body welcome message. */
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
 const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };
 const textWelcome = { 
@@ -151,11 +192,15 @@ const textWelcome = {
   color:"rgba(120,170,255,0.8)",
   maxWidth:()=>w * 0.7
 };
-//------------------------------
-//--------- LOCK STARTS --------
-//------------------------------
+//================================
+//--------- TEXT OBJECTS ---------
+//============= ENDS =============
 
-/* ===== DRAW LOOP ===== */
+
+//================================
+//---------- DRAW LOOP -----------
+//=========== STARTS =============
+Purpose: Animates stars, shooting stars, cosmic worm, and draws all text each frame. */
 function draw(){
   ctx.clearRect(0,0,w,h);
 
@@ -204,9 +249,10 @@ function draw(){
     ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
     ctx.fill();
   });
-//----------------------------
-//--------- LOCK ENDS --------
-//----------------------------
+//================================
+//---------- DRAW LOOP -----------
+//============= ENDS =============
+
   // Text
   ctx.globalAlpha=1;
   ctx.textAlign="center";
@@ -242,7 +288,10 @@ function draw(){
 }
 draw();
 
-/* ===== BUTTON CLICKS ===== */
+//================================
+//--------- BUTTON CLICKS --------
+//============ STARTS ============
+/* Purpose: Each button opens a page or link when clicked. */
 document.getElementById("donateBtn").addEventListener("click", () => {
   window.open("https://otieu.com/4/10549459", "_blank");
 });
@@ -258,6 +307,9 @@ document.getElementById("affiliatesBtn").addEventListener("click", () => {
 document.getElementById("downloadsBtn").addEventListener("click", () => {
   window.location.href = "downloads.html";
 });
+//================================
+//--------- BUTTON CLICKS --------
+//============= ENDS =============
 </script>
 </body>
 </html>
