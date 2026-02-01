@@ -1,12 +1,21 @@
+
+/* ====================== DOCTYPE ======================= */
+
 <!DOCTYPE html>
 <html lang="en">  
-  <head>  
+  
+/* ========================= HEAD ======================== */
+  
+  <head>
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-  <title>J&V’s Blue Universe</title>
+    <title>J&V’s Blue Universe</title>
   </head>
+
+/* ========================= BODY ======================== */
+  
 <body>
-<style>  
+ <style>  
 html, body {  
   margin: 0;  
   padding: 0;  
@@ -22,40 +31,73 @@ canvas {
   z-index: 0;
 }
 
-/* ===== BUTTON GROUP STYLES ===== */
+/* ==================== BUTTON GROUP ================== */
+   
 #buttonGroup {
-position: absolute;
-left: 50%;
-top: calc(50% - 220px);
-transform: translateX(-50%);
-z-index: 2;
+  position: absolute;
+  top: 50%;               /* vertical center */
+  left: 50%;
+  transform: translate(-50%, -50%); /* center both horizontally and vertically */
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;        /* allows wrapping if screen is narrow */
+  justify-content: center;
+  gap: 20px;              /* space between buttons */
 }
+
+/* ====================== BUTTON STYLES ======================= */
+   
 #buttonGroup button {
-cursor: pointer;
-background: rgba(100, 149, 237, 0.6);
-color: white;
-border: none;
-border-radius: 12px;
-padding: 10px 20px;
-font-size: 28px;
-font-weight: bold;
-margin: 15px 15px;
-box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-transition: transform 0.1s, box-shadow 0.1s;
-text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  cursor: pointer;
+  background: rgba(100, 149, 237, 0.6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
+
 #buttonGroup button:hover {
-box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-text-shadow: 0 0 12px rgba(100,149,237,1);
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
 }
+
 #buttonGroup button:active {
-transform: translateY(3px);
-box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
-</style>
+   
+/* ================ RESPONSIVE FOR MOBILE ================== */
+   
+@media (max-width: 600px) {
+  #buttonGroup {
+    gap: 10px;           /* smaller space on mobile */
+  }
+  #buttonGroup button {
+    font-size: 20px;     /* smaller buttons */
+    padding: 6px 12px;   
+  }
+}
+
+/* EXTRA SMALL PHONES */
+@media (max-width: 360px) {
+  #buttonGroup {
+    flex-wrap: wrap;      /* wrap if too narrow */
+    gap: 6px;
+  }
+  #buttonGroup button {
+    font-size: 18px;
+    padding: 5px 8px;
+  }
+}
   
+/* ======================== BUTTONS ======================= */
   
-<canvas id="space"></canvas>  <!-- ===== BUTTONS ===== -->  <div id="buttonGroup">  
+  <div id="buttonGroup">
   <button id="donateBtn">Donate</button>  
   <button id="aboutBtn">About Us</button>  
   <button id="shopsBtn">Shops</button>  
@@ -72,35 +114,68 @@ function resize(){
 window.addEventListener("resize",resize);  
 resize();  
   
-/* ===== STARS ===== */  
-const stars = Array.from({length:800},()=>({  
-  x:Math.random()*w,  
-  y:Math.random()*h,  
-  z:Math.random()*0.8+0.2,  
-  a:Math.random()*0.8+0.2,  
-  r:Math.random()*1.5+0.5,  
-  baseX:0,  
-  baseY:0  
-}));  
-stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });  
+/* ======================== STARS ========================== */
+
+  const stars = Array.from({length:800},()=>({
+  x:Math.random()*w,
+  y:Math.random()*h,
+  z:Math.random()*0.8+0.2,
+  a:Math.random()*0.8+0.2,
+  r:Math.random()*1.5+0.5,
+  baseX:0,
+  baseY:0
+}));
+stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });  my
   
-/* ===== SHOOTING STARS ===== */  
-let shootingStars=[];  
-setInterval(()=>{  
-  if(Math.random()<0.015){  
-    shootingStars.push({  
-      x:Math.random()*w,  
-      y:Math.random()*h,  
-      z:Math.random()*0.5+0.5,  
-      vx:(Math.random()*8-4),  
-      vy:(Math.random()*8-4),  
-      length:Math.random()*20+10,  
-      trail:5  
-    });  
-  }  
-},40);  
+/* ============= SHOOTING STARS (REALISTIC) ================= */
   
-/* ===== COSMIC WORM ===== */  
+let shootingStars = [];
+const maxShootingStars = 6; // max number of stars on screen at once
+
+function spawnShootingStar() {
+  if (shootingStars.length < maxShootingStars && Math.random() < 0.015) {
+    // Diagonal angle between 30° and 60° downward
+    const angle = (Math.random() * 30 + 30) * (Math.PI / 180); 
+    const speed = Math.random() * 6 + 6; // 6–12 px per frame
+    shootingStars.push({
+      x: Math.random() * w,
+      y: Math.random() * h / 2, // spawn in upper half
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      length: Math.random() * 40 + 30, // long streaks
+      trail: Math.random() * 10 + 8    // smooth trails
+    });
+  }
+}
+
+function updateAndDrawShootingStars(ctx) {
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    const s = shootingStars[i];
+
+    // Draw trail
+    for (let t = 0; t < s.trail; t++) {
+      const factor = 1 - t / s.trail;
+      ctx.strokeStyle = `rgba(255,255,255,${0.6 * factor})`;
+      ctx.lineWidth = 2 * factor;
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.vx * t, s.y - s.vy * t);
+      ctx.lineTo(s.x - s.vx * (t + 1), s.y - s.vy * (t + 1));
+      ctx.stroke();
+    }
+
+    // Update position
+    s.x += s.vx;
+    s.y += s.vy;
+
+    // Remove if offscreen
+    if (s.x > w + s.length || s.y > h + s.length) {
+      shootingStars.splice(i, 1);
+    }
+  }
+}
+  
+/* ================ COSMIC WORM ================ */
+
 const worm={  
   segments:60,  
   size:12,  
@@ -110,7 +185,8 @@ const worm={
   vy:(Math.random()-0.5)*1.5  
 };  
   
-/* ===== TEXT OBJECTS ===== */  
+/* =============== TEXT OBJECTS =============== */
+
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };  
 const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };  
 const textWelcome = {   
@@ -122,15 +198,18 @@ const textWelcome = {
   maxWidth:()=>w * 0.7  
 };  
   
-/* ===== DRAW LOOP ===== */  
-function draw(){  
-  ctx.clearRect(0,0,w,h);  
+/* /* ====================== BUTTON STYLES ======================= */
   
-  // Stars with 3D parallax  
+function draw(){  
+  ctx.clearRect(0,0,w,h);
+  
+/* ============== STARS WITH 3D PARALLAX ============== */
+  
+  // Stars with 3D parallax
   stars.forEach(s=>{  
-    let offsetX = 0; // remove mouse interaction for smoother drift  
+    let offsetX = 0;
     let offsetY = 0;  
-    s.x += 0.1 * s.z; // slow drift  
+    s.x += 0.1 * s.z;
     if(s.x>w) s.x=0;  
     ctx.globalAlpha=s.a*s.z;  
     ctx.fillStyle="white";  
@@ -139,7 +218,7 @@ function draw(){
     ctx.fill();  
   });  
 
-/* =========== SHOOTING STARS ============ */
+/* ==================== SHOOTING STARS =================== */
 
 shootingStars.forEach((s,i)=>{  
     for(let t=0;t<s.trail;t++){  
@@ -174,8 +253,10 @@ shootingStars.forEach((s,i)=>{
     ctx.beginPath();  
     ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);  
     ctx.fill();  
-  });  
-  
+  });
+    
+ /* ================== TEXT ================= */
+    
 // Text  
 ctx.globalAlpha=1;  
 ctx.textAlign="center";  
@@ -186,7 +267,7 @@ ctx.font=`${textBU.size}px Times New Roman`;
 ctx.fillStyle=textBU.color;  
 ctx.fillText(textBU.text,textBU.x(),textBU.y);
 
-/* ========= WRAPPED WELCOME TEXT ======== */  
+/* ========== WRAPPED WELCOME TEXT ============ */  
 
 ctx.font=`${textWelcome.size}px Times New Roman`;  
   ctx.fillStyle=textWelcome.color;  
@@ -212,7 +293,8 @@ ctx.font=`${textWelcome.size}px Times New Roman`;
 }  
 draw();  
   
-/* ===== BUTTON CLICKS ===== */  
+/* ============= BUTTON CLICKS ============= */
+    
 document.getElementById("donateBtn").addEventListener("click", () => {  
   window.open("https://otieu.com/4/10549459", "_blank");  
 });  
