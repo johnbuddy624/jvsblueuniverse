@@ -198,42 +198,35 @@ function drawMountains() {
 
   mountainCtx.clearRect(0, 0, mw, mh);
 
-  // Scale image to fit width
+  // Scale image to fill width
   const scale = mw / mountainImg.width;
   const imgWidth = mw;
   const imgHeight = mountainImg.height * scale;
   const drawX = 0;
   const drawY = mh - imgHeight;
 
-  // Draw the image temporarily offscreen
+  // Draw the image on an offscreen canvas
   const offCanvas = document.createElement("canvas");
   offCanvas.width = imgWidth;
   offCanvas.height = imgHeight;
   const offCtx = offCanvas.getContext("2d");
   offCtx.drawImage(mountainImg, 0, 0, imgWidth, imgHeight);
 
-  // Get image data
+  // Make top portion transparent (replace sky)
   const imgData = offCtx.getImageData(0, 0, imgWidth, imgHeight);
   const data = imgData.data;
 
-  // Replace sky color with transparent
-  for (let y = 0; y < imgHeight; y++) {
+  const skyHeight = Math.floor(imgHeight * 0.35); // top 35% = sky
+  for (let y = 0; y < skyHeight; y++) {
     for (let x = 0; x < imgWidth; x++) {
       const i = (y * imgWidth + x) * 4;
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      // Detect bright blue sky (you can adjust thresholds)
-      if (r < 100 && g < 150 && b > 180) {
-        data[i + 3] = 0; // make pixel fully transparent
-      }
+      data[i + 3] = 0; // alpha = 0
     }
   }
 
   offCtx.putImageData(imgData, 0, 0);
 
-  // Draw processed image to main canvas
+  // Draw processed image onto main canvas
   mountainCtx.drawImage(offCanvas, drawX, drawY, imgWidth, imgHeight);
 }
 </script>
