@@ -56,7 +56,7 @@ html, body {
   color: rgba(100,150,255,1);
 }
 
-/* Buttons & profile cards */
+/* Buttons & profile cards as before */
 .profile {
   position: absolute;
   width: 180px;
@@ -101,9 +101,13 @@ html, body {
 </head>
 <body>
 
+<!-- Starfield canvas -->
 <canvas id="starsCanvas"></canvas>
+
+<!-- Mountains canvas -->
 <canvas id="mountainsCanvas"></canvas>
 
+<!-- ===== PROFILE BUTTONS ===== -->
 <div class="profile" onclick="location.href='https://otieu.com/4/10549473'" style="top:15%; left:42%; transform:translateX(-50%)">
   <strong>Drawing One</strong> My beautiful universe
 </div>
@@ -128,6 +132,7 @@ html, body {
   <strong>Drawing Six</strong> Future ideas
 </div>
 
+<!-- ===== CENTER TEXT ===== -->
 <div id="content">
   <h1>Profile</h1>
   <p>This universe grows through creativity, trust, and collaboration. Some links are drawing links — supporting them helps <strong>J&V’s Blue Universe</strong> 💙.</p>
@@ -167,8 +172,7 @@ function drawStars(){
 }
 drawStars();
 
-/* ===== ENHANCED MOUNTAIN RANGE WITH FOG ===== */
-<script>
+/* ===== MOUNTAIN RANGE ===== */
 const mountainCanvas = document.getElementById("mountainsCanvas");
 const mountainCtx = mountainCanvas.getContext("2d");
 let mw, mh;
