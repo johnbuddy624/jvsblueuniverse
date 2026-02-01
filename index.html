@@ -81,13 +81,16 @@ Purpose: Styles each individual button */
 Purpose: Keep mobile buttons similar to desktop while fitting smaller screens. */
 @media (max-width: 600px) {
   #buttonGroup {
-    top: 25%; /* move down slightly from top */
-    transform: translateX(-50%); /* keep horizontal centering */
-    gap: 12px; /* slightly smaller gap for narrow screens */
+    top: 25%; /* adjust vertical position */
+    flex-direction: row; /* keep buttons in one row */
+    flex-wrap: nowrap; /* prevent wrapping */
+    gap: 10px; /* small spacing between buttons */
+    transform: translateX(-50%);
   }
+
   #buttonGroup button {
-    font-size: 24px; /* smaller but readable */
-    padding: 8px 16px;
+    font-size: 22px;  /* slightly smaller than desktop */
+    padding: 8px 12px; /* smaller for mobile width */
   }
 }
 /*=============================
