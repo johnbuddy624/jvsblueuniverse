@@ -3,8 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Profile – J&V’s Blue Universe</title>
-
+</head>
 <style>
+
+<canvas id="space"></canvas>
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -14,12 +22,6 @@ html, body {
   height: 100%;
   font-family: sans-serif;
   color: rgba(120,170,255,0.9);
-}
-
-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
 }
 
 /* ===== CENTER CONTENT ===== */
@@ -40,6 +42,9 @@ canvas {
   margin-bottom: 20px;
   color: rgba(100,150,255,1);
 }
+
+</style>
+<body>
 
 /* ===== AFFILIATE ORBIT ===== */
 .profile {
@@ -102,12 +107,6 @@ canvas {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
 }
-</style>
-</head>
-
-<body>
-
-<canvas id="space"></canvas>
 
 <!-- ===== PROFILE BUTTONS ===== -->
 <div class="profile" onclick="location.href='https://otieu.com/4/10549473'" style="top:15%; left:42%; transform:translateX(-50%)">
