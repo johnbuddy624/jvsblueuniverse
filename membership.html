@@ -181,37 +181,31 @@ function resizeMountains() {
 window.addEventListener("resize", resizeMountains);
 resizeMountains();
 
+// Function to draw smooth mountains with multiple layers
 function drawMountains() {
   mountainCtx.clearRect(0, 0, mw, mh);
 
   const layers = [
-    { color: "rgba(20,40,60,0.9)", peaks: 6, offset: mh*0.6, smoothness: 0.6 },
-    { color: "rgba(40,70,100,0.7)", peaks: 5, offset: mh*0.65, smoothness: 0.5 },
-    { color: "rgba(60,90,130,0.5)", peaks: 4, offset: mh*0.7, smoothness: 0.4 }
+    { color: "rgba(20,40,60,0.9)", peaks: 6, offset: mh*0.6 },
+    { color: "rgba(40,70,100,0.7)", peaks: 5, offset: mh*0.65 },
+    { color: "rgba(60,90,130,0.5)", peaks: 4, offset: mh*0.7 }
   ];
 
   layers.forEach(layer => {
     mountainCtx.beginPath();
-    mountainCtx.moveTo(0, mh);
     let step = mw / (layer.peaks*2);
+    mountainCtx.moveTo(0, mh);
 
-    for(let i = 0; i <= layer.peaks*2; i++) {
-      const x = i*step;
-      const peak = layer.offset - Math.random()*(mh*0.1)*layer.smoothness;
-      const y = (i%2 === 0) ? peak : layer.offset;
+    for (let i = 0; i <= layer.peaks*2; i++) {
+      const x = i * step;
+      const peak = Math.random() * mh*0.1 + (layer.offset - mh*0.1);
+      const y = (i % 2 === 0) ? peak : layer.offset;
       mountainCtx.lineTo(x, y);
     }
 
     mountainCtx.lineTo(mw, mh);
     mountainCtx.closePath();
     mountainCtx.fillStyle = layer.color;
-    mountainCtx.fill();
-
-    // Add subtle fog at base
-    const fogGradient = mountainCtx.createLinearGradient(0, layer.offset, 0, mh);
-    fogGradient.addColorStop(0, "rgba(30,50,70,0.2)");
-    fogGradient.addColorStop(1, "rgba(30,50,70,0.8)");
-    mountainCtx.fillStyle = fogGradient;
     mountainCtx.fill();
   });
 }
