@@ -186,30 +186,34 @@ window.addEventListener("resize", resizeMountains);
 resizeMountains();
 
 // Function to draw smooth mountains with multiple layers
-function drawMountains() {
+function draw3DMountains() {
   mountainCtx.clearRect(0, 0, mw, mh);
 
   const layers = [
-    { color: "rgba(20,40,60,0.9)", peaks: 6, offset: mh*0.6 },
-    { color: "rgba(40,70,100,0.7)", peaks: 5, offset: mh*0.65 },
-    { color: "rgba(60,90,130,0.5)", peaks: 4, offset: mh*0.7 }
+    { base: mh * 0.6, peaks: 6, color: "rgb(15,25,40)", jagged: 0.9 },
+    { base: mh * 0.7, peaks: 5, color: "rgb(35,55,85)", jagged: 0.7 },
+    { base: mh * 0.8, peaks: 4, color: "rgb(65,95,130)", jagged: 0.5 }
   ];
 
-  layers.forEach(layer => {
+  layers.forEach((layer, index) => {
+    const gradient = mountainCtx.createLinearGradient(0, layer.base - mh*0.2, 0, layer.base);
+    gradient.addColorStop(0, layer.color);
+    gradient.addColorStop(1, "rgb(0,0,0)");
+
     mountainCtx.beginPath();
-    let step = mw / (layer.peaks*2);
     mountainCtx.moveTo(0, mh);
 
-    for (let i = 0; i <= layer.peaks*2; i++) {
+    const step = mw / (layer.peaks * 2);
+    for (let i = 0; i <= layer.peaks * 2; i++) {
       const x = i * step;
-      const peak = Math.random() * mh*0.1 + (layer.offset - mh*0.1);
-      const y = (i % 2 === 0) ? peak : layer.offset;
+      const randomHeight = Math.random() * mh * 0.1 * layer.jagged;
+      const y = (i % 2 === 0) ? layer.base - randomHeight : layer.base - randomHeight/2;
       mountainCtx.lineTo(x, y);
     }
 
     mountainCtx.lineTo(mw, mh);
     mountainCtx.closePath();
-    mountainCtx.fillStyle = layer.color;
+    mountainCtx.fillStyle = gradient;
     mountainCtx.fill();
   });
 }
