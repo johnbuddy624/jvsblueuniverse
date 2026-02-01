@@ -8,9 +8,7 @@
 <!-- Image overlay -->
 <img id="overlayImg" src="PENUP_20260124_202833~2.png" alt="Wormhole">
 
-/*================================================*/
 /*======================CSS=======================*/
-/*================================================*/
 
 <style>
 html, body {
@@ -29,7 +27,9 @@ canvas {
   inset: 0;
   z-index: 0;
 }
+  
 /* ===== CENTER CONTENT ===== */
+
 #content {
   position: absolute;
   top: 50%;
@@ -49,6 +49,7 @@ canvas {
 }
 
 /* ===== BUTTONS ===== */
+
 .button {
   display: inline-block;
   margin: 25px 10px 0;
@@ -67,9 +68,10 @@ canvas {
 .button:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
-}
+} 
 
-                          /*==IMAGE CSS==*/
+/*==IMAGE CSS==*/
+
 #overlayImg {
   position: absolute; /* allows free positioning over canvas */
   top: 50px;          /* distance from top of viewport */
@@ -87,7 +89,8 @@ canvas {
 
 <canvas id="space"></canvas>
 
-<!-- ===== CENTER TEXT ===== -->
+/*==== CENTER TEXT =====*/
+
 <div id="content">
   <h1>Wormhole</h1>
   <p>This is my wormhole test!</p>
@@ -99,9 +102,9 @@ canvas {
 </div>
 
 <script>
-/*================================================*/
+
 /*=========================JS=====================*/
-/*================================================*/
+
 /*==IMAGE JS==*/
 const overlay = document.getElementById('overlayImg');
 
