@@ -2,157 +2,256 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Breakout Atari Style</title>
+<title>Profile – J&V’s Blue Universe</title>
+
 <style>
-body { margin:0; overflow:hidden; background:black; }
-canvas { display:block; margin:0 auto; background:#000; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  color: rgba(120,170,255,0.9);
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ===== CENTER CONTENT ===== */
+#content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 720px;
+  text-align: center;
+  z-index: 5;
+  line-height: 1.45;
+  font-size: 22px;
+}
+
+#content h1 {
+  font-size: 58px;
+  margin-bottom: 20px;
+  color: rgba(100,150,255,1);
+}
+
+/* ===== AFFILIATE ORBIT ===== */
+.profile {
+  position: absolute;
+  width: 180px;
+  padding: 16px;
+  cursor: pointer;
+  text-align: center;
+  background: rgba(40,80,140,0.35);
+  border: 2px solid rgba(120,170,255,0.5);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  color: #cfe4ff;
+  font-size: 18px;
+  z-index: 5;
+
+  box-shadow:
+    0 0 20px rgba(120,170,255,0.3),
+    inset 0 0 12px rgba(120,170,255,0.2);
+
+  animation: float 6s ease-in-out infinite;
+}
+
+.profile strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.profile:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+
+/* ===== BUTTONS ===== */
+.button {
+  display: inline-block;
+  margin: 25px 10px 0;
+  cursor: pointer;
+  background: rgba(100,149,237,0.6);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 10px 22px;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  z-index: 5;
+}
+
+.button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
 </style>
 </head>
+
 <body>
-<canvas id="gameCanvas"></canvas>
+
+<canvas id="space"></canvas>
+
+<!-- ===== PROFILE BUTTONS ===== -->
+<div class="profile" onclick="location.href='https://otieu.com/4/10549473'" style="top:15%; left:42%; transform:translateX(-50%)">
+  <strong>Drawing One</strong>
+  My beautiful universe
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="top:35%; left:6%">
+  <strong>Drawing Two</strong>
+  Inspiration fuel 🚀
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="top:35%; right:6%">
+  <strong>Drawing Three</strong>
+  Cosmic tech
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="bottom:28%; left:6%">
+  <strong>Drawing Four</strong>
+  Design magic
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="bottom:28%; right:6%">
+  <strong>Drawing Five</strong>
+  Universe builders
+</div>
+
+<div class="profile" onclick="location.href='index.html'" style="bottom:8%; left:42%; transform:translateX(-50%)">
+  <strong>Drawing Six</strong>
+  Future ideas
+</div>
+
+<!-- ===== CENTER TEXT ===== -->
+<div id="content">
+  <h1>Profile</h1>
+  <p>
+    This universe grows through creativity, trust, and collaboration.  
+    Some links on this page are drawing links — if you choose to support them,
+    it helps <strong>J&V’s Blue Universe</strong> grow at no extra cost to you 💙.
+  </p>
+
+  <p>
+    We only feature things we genuinely believe in — tools, ideas, and creators
+    that align with our values.
+  </p>
+
+  <button class="button" onclick="location.href='index.html'">Home</button>
+  <button class="button" onclick="window.open('https://otieu.com/4/10549473','_blank')">Donate</button>
+</div>
+
 <script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = 800;
-canvas.height = 600;
+/* ===== CANVAS SETUP ===== */
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w, h;
 
-// PADDLE
-const paddle = {
-  width: 100,
-  height: 15,
-  x: canvas.width/2 - 50,
-  y: canvas.height - 30,
-  speed: 8,
-  dx: 0
-};
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
-// BALL
-const ball = {
-  x: canvas.width/2,
-  y: canvas.height - 45,
-  radius: 10,
-  speed: 5,
-  dx: 3,
-  dy: -3
-};
+/* ===== STARFIELD ===== */
+const stars = Array.from({ length: 600 }, () => ({
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.8 + 0.2,
+  a: Math.random() * 0.8 + 0.2,
+  r: Math.random() * 1.5 + 0.5
+}));
 
-// BRICKS
-const brickRowCount = 5;
-const brickColumnCount = 8;
-const brickWidth = 80;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 50;
-const brickOffsetLeft = 35;
-
-const bricks = [];
-for(let c=0;c<brickColumnCount;c++){
-  bricks[c] = [];
-  for(let r=0;r<brickRowCount;r++){
-    bricks[c][r] = { x:0, y:0, status:1 };
+/* ===== PARALLAX MOUNTAINS ===== */
+function drawMountains() {
+  const layers = 5;
+  for (let i = 0; i < layers; i++) {
+    const offset = i * 50;
+    const color = `rgba(${20 + i*20}, ${20 + i*20}, ${60 + i*30}, 0.6)`;
+    ctx.beginPath();
+    ctx.moveTo(0, h - offset);
+    for (let x = 0; x <= w; x += 50) {
+      const y = h - offset - Math.sin((x + i*100) * 0.004) * 60 - i*25;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.fillStyle = color;
+    ctx.fill();
   }
 }
 
-// CONTROLS
-document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowLeft') paddle.dx = -paddle.speed;
-  if(e.key==='ArrowRight') paddle.dx = paddle.speed;
-});
-document.addEventListener('keyup', e=>{
-  if(e.key==='ArrowLeft' || e.key==='ArrowRight') paddle.dx = 0;
-});
-
-// DRAW FUNCTIONS
-function drawPaddle(){
-  ctx.fillStyle = 'white';
-  ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-}
-
-function drawBall(){
+/* ===== GLOWING MOON ===== */
+const moon = { x: w*0.8, y: h*0.25, radius: 60 };
+function drawMoon() {
+  const gradient = ctx.createRadialGradient(moon.x, moon.y, 0, moon.x, moon.y, moon.radius);
+  gradient.addColorStop(0, "rgba(255,255,230,0.9)");
+  gradient.addColorStop(1, "rgba(255,255,230,0)");
+  ctx.fillStyle = gradient;
   ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-  ctx.fillStyle = 'red';
+  ctx.arc(moon.x, moon.y, moon.radius, 0, Math.PI*2);
   ctx.fill();
-  ctx.closePath();
 }
 
-function drawBricks(){
-  for(let c=0;c<brickColumnCount;c++){
-    for(let r=0;r<brickRowCount;r++){
-      if(bricks[c][r].status===1){
-        const brickX = c*(brickWidth+brickPadding) + brickOffsetLeft;
-        const brickY = r*(brickHeight+brickPadding) + brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        ctx.fillStyle = 'lime';
-        ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
-      }
-    }
-  }
+/* ===== DRIFTING CLOUDS ===== */
+const clouds = Array.from({ length: 8 }, () => ({
+  x: Math.random() * w,
+  y: Math.random() * h * 0.5,
+  size: Math.random() * 120 + 80,
+  speed: Math.random() * 0.2 + 0.05
+}));
+
+function drawClouds() {
+  clouds.forEach(c => {
+    ctx.fillStyle = "rgba(200,200,220,0.08)";
+    ctx.beginPath();
+    ctx.ellipse(c.x, c.y, c.size, c.size*0.4, 0, 0, Math.PI*2);
+    ctx.fill();
+    c.x += c.speed;
+    if (c.x - c.size > w) c.x = -c.size;
+  });
 }
 
-// COLLISION
-function collision(){
-  for(let c=0;c<brickColumnCount;c++){
-    for(let r=0;r<brickRowCount;r++){
-      const b = bricks[c][r];
-      if(b.status===1){
-        if(ball.x > b.x && ball.x < b.x+brickWidth &&
-           ball.y > b.y && ball.y < b.y+brickHeight){
-          ball.dy = -ball.dy;
-          b.status = 0;
-        }
-      }
-    }
-  }
+/* ===== DRAW LOOP ===== */
+function draw() {
+  ctx.clearRect(0, 0, w, h);
 
-  // Paddle
-  if(ball.y + ball.radius > paddle.y && 
-     ball.x > paddle.x && ball.x < paddle.x + paddle.width){
-    ball.dy = -ball.dy;
-    // optional: add dx change based on hit position
-    let hitPos = ball.x - (paddle.x + paddle.width/2);
-    ball.dx = hitPos*0.1;
-  }
+  drawMountains();
+  drawMoon();
+  drawClouds();
 
-  // Walls
-  if(ball.x + ball.radius > canvas.width || ball.x - ball.radius <0) ball.dx = -ball.dx;
-  if(ball.y - ball.radius <0) ball.dy = -ball.dy;
+  stars.forEach(s => {
+    s.x += 0.15 * s.z;
+    if (s.x > w) s.x = 0;
+    ctx.globalAlpha = s.a * s.z;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI*2);
+    ctx.fill();
+  });
 
-  // Bottom (lose)
-  if(ball.y + ball.radius > canvas.height){
-    alert("Game Over!");
-    document.location.reload();
-  }
+  requestAnimationFrame(draw);
 }
 
-// UPDATE
-function update(){
-  paddle.x += paddle.dx;
-  if(paddle.x<0) paddle.x=0;
-  if(paddle.x+paddle.width>canvas.width) paddle.x=canvas.width-paddle.width;
-
-  ball.x += ball.dx;
-  ball.y += ball.dy;
-
-  collision();
-}
-
-// DRAW
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  drawPaddle();
-  drawBall();
-  drawBricks();
-}
-
-// LOOP
-function loop(){
-  update();
-  draw();
-  requestAnimationFrame(loop);
-}
-loop();
+draw();
 </script>
 </body>
 </html>
