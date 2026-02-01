@@ -170,7 +170,11 @@ drawStars();
 const mountainCanvas = document.getElementById("mountainsCanvas");
 const mountainCtx = mountainCanvas.getContext("2d");
 let mw, mh;
-function resizeMountains(){ mw = mountainCanvas.width = window.innerWidth; mh = mountainCanvas.height = window.innerHeight; drawMountains(); }
+function resizeMountains(){
+  mw = mountainCanvas.width = window.innerWidth;
+  mh = mountainCanvas.height = window.innerHeight;
+  drawMountains();
+}
 window.addEventListener("resize", resizeMountains);
 resizeMountains();
 
@@ -180,11 +184,14 @@ mountainImg.onload = drawMountains;
 
 function drawMountains(){
   mountainCtx.clearRect(0,0,mw,mh);
-  // Draw the mountains at the bottom
-  const ratio = mountainImg.width / mountainImg.height;
-  const imgHeight = mh * 0.6; // mountains take bottom 60% of viewport
-  const imgWidth = imgHeight * ratio;
-  mountainCtx.drawImage(mountainImg, (mw-imgWidth)/2, mh-imgHeight, imgWidth, imgHeight);
+
+  // Fill full width and keep aspect ratio
+  const scale = mw / mountainImg.width;
+  const imgWidth = mw;
+  const imgHeight = mountainImg.height * scale;
+
+  // Draw aligned to bottom
+  mountainCtx.drawImage(mountainImg, 0, mh - imgHeight, imgWidth, imgHeight);
 }
 </script>
 
