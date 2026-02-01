@@ -168,6 +168,7 @@ function drawStars(){
 drawStars();
 
 /* ===== ENHANCED MOUNTAIN RANGE WITH FOG ===== */
+<script>
 const mountainCanvas = document.getElementById("mountainsCanvas");
 const mountainCtx = mountainCanvas.getContext("2d");
 let mw, mh;
@@ -183,34 +184,28 @@ resizeMountains();
 function drawMountains() {
   mountainCtx.clearRect(0, 0, mw, mh);
 
+  // Each layer: darker in front, lighter in back
   const layers = [
-    { color: "rgba(20,40,60,0.9)", peaks: 6, offset: mh*0.6, smoothness: 0.6 },
-    { color: "rgba(40,70,100,0.7)", peaks: 5, offset: mh*0.65, smoothness: 0.5 },
-    { color: "rgba(60,90,130,0.5)", peaks: 4, offset: mh*0.7, smoothness: 0.4 }
+    { color: "rgb(15,25,40)", peaks: 8, base: mh*0.55, jagged: 0.8 },
+    { color: "rgb(30,50,80)", peaks: 6, base: mh*0.65, jagged: 0.6 },
+    { color: "rgb(60,90,130)", peaks: 5, base: mh*0.75, jagged: 0.4 }
   ];
 
   layers.forEach(layer => {
     mountainCtx.beginPath();
-    mountainCtx.moveTo(0, mh);
-    let step = mw / (layer.peaks*2);
+    mountainCtx.moveTo(0, mh); // bottom-left
+    const step = mw / (layer.peaks*2);
 
     for(let i = 0; i <= layer.peaks*2; i++) {
-      const x = i*step;
-      const peak = layer.offset - Math.random()*(mh*0.1)*layer.smoothness;
-      const y = (i%2 === 0) ? peak : layer.offset;
+      const x = i * step;
+      // jagged peaks
+      const y = layer.base - Math.random()*(mh*0.15)*layer.jagged;
       mountainCtx.lineTo(x, y);
     }
 
-    mountainCtx.lineTo(mw, mh);
+    mountainCtx.lineTo(mw, mh); // bottom-right
     mountainCtx.closePath();
     mountainCtx.fillStyle = layer.color;
-    mountainCtx.fill();
-
-    // Add subtle fog at base
-    const fogGradient = mountainCtx.createLinearGradient(0, layer.offset, 0, mh);
-    fogGradient.addColorStop(0, "rgba(30,50,70,0.2)");
-    fogGradient.addColorStop(1, "rgba(30,50,70,0.8)");
-    mountainCtx.fillStyle = fogGradient;
     mountainCtx.fill();
   });
 }
