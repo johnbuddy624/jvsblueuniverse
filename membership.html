@@ -16,18 +16,13 @@ html, body {
   background: black;
 }
 
-/* Starfield canvas */
-#starsCanvas {
+canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
+  inset: 0;
+  z-index: 1; /* Stars go above the mountains slightly */
 }
 
-/* Mountains canvas */
+/* Mountain image */
 #mountains {
   position: fixed;
   bottom: 0;
@@ -36,7 +31,7 @@ html, body {
   z-index: 0;
 }
 
-/* Center content */
+/* ===== CENTER CONTENT ===== */
 #content {
   position: absolute;
   top: 50%;
@@ -55,7 +50,7 @@ html, body {
   color: rgba(100,150,255,1);
 }
 
-/* Buttons & profile cards as before */
+/* ===== PROFILE BUTTONS ===== */
 .profile {
   position: absolute;
   width: 180px;
@@ -69,15 +64,33 @@ html, body {
   color: #cfe4ff;
   font-size: 18px;
   z-index: 2;
-  box-shadow: 0 0 20px rgba(120,170,255,0.3),
-              inset 0 0 12px rgba(120,170,255,0.2);
+
+  box-shadow:
+    0 0 20px rgba(120,170,255,0.3),
+    inset 0 0 12px rgba(120,170,255,0.2);
+
   animation: float 6s ease-in-out infinite;
 }
 
-.profile strong { display: block; margin-bottom: 6px; font-size: 20px; color: #fff; }
-@keyframes float { 0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)} }
-.profile:hover { box-shadow:0 0 20px rgba(100,149,237,0.8),0 0 40px rgba(100,149,237,0.4); }
+.profile strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
 
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.profile:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+
+/* ===== BUTTONS ===== */
 .button {
   display: inline-block;
   margin: 25px 10px 0;
@@ -93,6 +106,7 @@ html, body {
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
   z-index: 2;
 }
+
 .button:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
@@ -102,131 +116,96 @@ html, body {
 
 <body>
 
-<!-- Starfield canvas -->
-<canvas id="starsCanvas"></canvas>
+<!-- ===== MOUNTAIN BACKGROUND ===== -->
+<img id="mountains" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80" alt="Mountain Range">
 
-<!-- Mountains canvas -->
-<canvas id="mountainsCanvas"></canvas>
+<canvas id="space"></canvas>
 
 <!-- ===== PROFILE BUTTONS ===== -->
 <div class="profile" onclick="location.href='https://otieu.com/4/10549473'" style="top:15%; left:42%; transform:translateX(-50%)">
-  <strong>Drawing One</strong> My beautiful universe
+  <strong>Drawing One</strong>
+  My beautiful universe
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="top:35%; left:6%">
-  <strong>Drawing Two</strong> Inspiration fuel 🚀
+  <strong>Drawing Two</strong>
+  Inspiration fuel 🚀
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="top:35%; right:6%">
-  <strong>Drawing Three</strong> Cosmic tech
+  <strong>Drawing Three</strong>
+  Cosmic tech
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="bottom:28%; left:6%">
-  <strong>Drawing Four</strong> Design magic
+  <strong>Drawing Four</strong>
+  Design magic
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="bottom:28%; right:6%">
-  <strong>Drawing Five</strong> Universe builders
+  <strong>Drawing Five</strong>
+  Universe builders
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="bottom:8%; left:42%; transform:translateX(-50%)">
-  <strong>Drawing Six</strong> Future ideas
+  <strong>Drawing Six</strong>
+  Future ideas
 </div>
 
 <!-- ===== CENTER TEXT ===== -->
 <div id="content">
   <h1>Profile</h1>
-  <p>This universe grows through creativity, trust, and collaboration. Some links are drawing links — supporting them helps <strong>J&V’s Blue Universe</strong> 💙.</p>
+  <p>
+    This universe grows through creativity, trust, and collaboration.  
+    Some links on this page are drawing links — if you choose to support them,
+    it helps <strong>J&V’s Blue Universe</strong> grow at no extra cost to you 💙.
+  </p>
+
+  <p>
+    We only feature things we genuinely believe in — tools, ideas, and creators
+    that align with our values.
+  </p>
+
   <button class="button" onclick="location.href='index.html'">Home</button>
   <button class="button" onclick="window.open('https://otieu.com/4/10549473','_blank')">Donate</button>
 </div>
 
 <script>
 /* ===== STARFIELD ===== */
-const starCanvas = document.getElementById("starsCanvas");
-const starCtx = starCanvas.getContext("2d");
-let sw, sh;
-function resizeStars() { sw = starCanvas.width = window.innerWidth; sh = starCanvas.height = window.innerHeight; }
-window.addEventListener("resize", resizeStars);
-resizeStars();
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
 const stars = Array.from({ length: 600 }, () => ({
-  x: Math.random()*sw,
-  y: Math.random()*sh,
-  z: Math.random()*0.8+0.2,
-  a: Math.random()*0.8+0.2,
-  r: Math.random()*1.5+0.5
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.8 + 0.2,
+  a: Math.random() * 0.8 + 0.2,
+  r: Math.random() * 1.5 + 0.5
 }));
 
-function drawStars(){
-  starCtx.clearRect(0,0,sw,sh);
-  stars.forEach(s=>{
-    s.x += 0.15*s.z;
-    if(s.x>sw) s.x=0;
-    starCtx.globalAlpha = s.a*s.z;
-    starCtx.fillStyle = "white";
-    starCtx.beginPath();
-    starCtx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
-    starCtx.fill();
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  stars.forEach(s => {
+    s.x += 0.15 * s.z;
+    if (s.x > w) s.x = 0;
+    ctx.globalAlpha = s.a * s.z;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI*2);
+    ctx.fill();
   });
-  requestAnimationFrame(drawStars);
+  requestAnimationFrame(draw);
 }
-drawStars();
 
-/* ===== MOUNTAIN RANGE WITH TRANSPARENT SKY ===== */
-const mountainCanvas = document.getElementById("mountainsCanvas");
-const mountainCtx = mountainCanvas.getContext("2d");
-let mw, mh;
-
-function resizeMountains() {
-  mw = mountainCanvas.width = window.innerWidth;
-  mh = mountainCanvas.height = window.innerHeight;
-  drawMountains();
-}
-window.addEventListener("resize", resizeMountains);
-resizeMountains();
-
-const mountainImg = new Image();
-mountainImg.crossOrigin = "anonymous";
-mountainImg.src = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80";
-mountainImg.onload = drawMountains;
-
-function drawMountains() {
-  if (!mountainImg.complete) return;
-
-  mountainCtx.clearRect(0, 0, mw, mh);
-
-  // Scale image to fill width
-  const scale = mw / mountainImg.width;
-  const imgWidth = mw;
-  const imgHeight = mountainImg.height * scale;
-  const drawX = 0;
-  const drawY = mh - imgHeight;
-
-  // Draw the image on an offscreen canvas
-  const offCanvas = document.createElement("canvas");
-  offCanvas.width = imgWidth;
-  offCanvas.height = imgHeight;
-  const offCtx = offCanvas.getContext("2d");
-  offCtx.drawImage(mountainImg, 0, 0, imgWidth, imgHeight);
-
-  // Make top portion transparent (replace sky)
-  const imgData = offCtx.getImageData(0, 0, imgWidth, imgHeight);
-  const data = imgData.data;
-
-  const skyHeight = Math.floor(imgHeight * 0.35); // top 35% = sky
-  for (let y = 0; y < skyHeight; y++) {
-    for (let x = 0; x < imgWidth; x++) {
-      const i = (y * imgWidth + x) * 4;
-      data[i + 3] = 0; // alpha = 0
-    }
-  }
-
-  offCtx.putImageData(imgData, 0, 0);
-
-  // Draw processed image onto main canvas
-  mountainCtx.drawImage(offCanvas, drawX, drawY, imgWidth, imgHeight);
-}
+draw();
 </script>
 
 </body>
