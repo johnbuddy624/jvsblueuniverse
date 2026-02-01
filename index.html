@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>J&V’s Blue Universe</title>
 
+  <!-- ====================== CSS STYLES ====================== -->
   <style>
+    /* ===== Global Styles ===== */
     html, body {
       margin: 0;
       padding: 0;
@@ -22,6 +24,7 @@
       z-index: 0;
     }
 
+    /* ===== Button Group Container ===== */
     #buttonGroup {
       position: absolute;
       left: 50%;
@@ -34,6 +37,7 @@
       gap: 15px;
     }
 
+    /* ===== Button Styles ===== */
     #buttonGroup button {
       cursor: pointer;
       background: rgba(100, 149, 237, 0.6);
@@ -58,6 +62,7 @@
       box-shadow: 0 2px 8px rgba(100,149,237,0.3);
     }
 
+    /* ===== Responsive: Mobile ===== */
     @media (max-width: 600px) {
       #buttonGroup {
         top: 18%;
@@ -69,6 +74,7 @@
       }
     }
 
+    /* ===== Responsive: Extra Small Phones ===== */
     @media (max-width: 360px) {
       #buttonGroup {
         gap: 6px;
@@ -84,6 +90,7 @@
 <body>
   <canvas id="space"></canvas>
 
+  <!-- ===== Button Group ===== -->
   <div id="buttonGroup">
     <button id="donateBtn">Donate</button>
     <button id="aboutBtn">About Us</button>
@@ -92,10 +99,11 @@
     <button id="downloadsBtn">Downloads</button>
   </div>
 
+  <!-- ====================== JAVASCRIPT ====================== -->
   <script>
+    /* ===== Canvas Setup ===== */
     const canvas = document.getElementById("space");
     const ctx = canvas.getContext("2d");
-
     let w, h;
 
     function resize() {
@@ -105,6 +113,7 @@
     window.addEventListener("resize", resize);
     resize();
 
+    /* ===== Star Field Setup ===== */
     const stars = Array.from({ length: 800 }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
@@ -114,8 +123,10 @@
       tw: Math.random() * Math.PI * 2
     }));
 
+    /* ===== Shooting Stars (empty for now) ===== */
     let shootingStars = [];
 
+    /* ===== Cosmic Worm Setup ===== */
     const worm = {
       segments: 60,
       size: 12,
@@ -128,6 +139,7 @@
       vy: (Math.random() - 0.5) * 0.8
     };
 
+    /* ===== Text Objects ===== */
     const textJV = {
       text: "J&V's",
       x: () => w / 2,
@@ -152,9 +164,11 @@
       maxWidth: () => (w < 600 ? w * 0.85 : w * 0.7)
     };
 
+    /* ===== Main Draw Loop ===== */
     function draw() {
       ctx.clearRect(0, 0, w, h);
 
+      /* --- Draw Stars --- */
       stars.forEach(s => {
         s.x += 0.1 * s.z;
         if (s.x > w) s.x = 0;
@@ -165,6 +179,7 @@
         ctx.fill();
       });
 
+      /* --- Update Cosmic Worm --- */
       let hpos = worm.pos[0];
       hpos.x += worm.vx;
       hpos.y += worm.vy;
@@ -184,6 +199,7 @@
         ctx.fill();
       });
 
+      /* --- Draw Text --- */
       ctx.globalAlpha = 1;
       ctx.textAlign = "center";
 
@@ -220,6 +236,7 @@
 
     draw();
 
+    /* ===== Button Click Handlers ===== */
     document.getElementById("donateBtn").onclick = () =>
       window.open("https://otieu.com/4/10549459", "_blank");
 
