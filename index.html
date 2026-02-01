@@ -192,13 +192,16 @@ const worm={
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };  
 const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };  
 const textWelcome = {   
-  text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙",   
-  x:()=>w/2,   
-  y:()=> (w < 600 ? h * 0.55 : h/2), // move text closer to buttons on small screens  
-  size:()=> (w < 600 ? 20 : 30),    // smaller font on mobile  
-  color:"rgba(120,170,255,0.8)",  
-  maxWidth:()=> (w < 600 ? w * 0.85 : w * 0.7) // slightly wider for mobile  
-};  
+  text:"We appreciate you joining OUR universe ...",   
+  x:()=> w/2,   
+  y:()=> {
+    if (w < 600) return h*0.35; // below buttons on mobile
+    return h/2;                  // center on desktop
+  },
+  size:()=> (w < 600 ? 20 : 30),
+  color:"rgba(120,170,255,0.8)",
+  maxWidth:()=> (w < 600 ? w*0.85 : w*0.7)
+};
 /*=============================  
 = END TEXT OBJECTS SECTION =  
 ===============================*/  
