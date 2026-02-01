@@ -33,7 +33,7 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 100;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -187,7 +187,7 @@ resizeMountains();
 
 // Function to draw smooth mountains with multiple layers
 function draw3DMountains() {
-  mountainCtx.clearRect(0, 0, mw, mh);
+  mountainCtx.clearRect(60, 60, mw, mh);
 
   const layers = [
     { base: mh * 0.6, peaks: 6, color: "rgb(15,25,40)", jagged: 0.9 },
