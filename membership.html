@@ -3,41 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <title>Profile – J&V’s Blue Universe</title>
+
 <style>
 html, body {
   margin: 0;
   padding: 0;
+  background: black;
   overflow: hidden;
   width: 100%;
   height: 100%;
   font-family: sans-serif;
   color: rgba(120,170,255,0.9);
-  background: black;
 }
 
-/* Starfield canvas */
-#starsCanvas {
+canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: 0;
-  pointer-events: none;
 }
 
-/* Mountains canvas */
-#mountainsCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Center content */
+/* ===== CENTER CONTENT ===== */
 #content {
   position: absolute;
   top: 50%;
@@ -45,7 +30,7 @@ html, body {
   transform: translate(-50%, -50%);
   max-width: 720px;
   text-align: center;
-  z-index: 2;
+  z-index: 5;
   line-height: 1.45;
   font-size: 22px;
 }
@@ -56,7 +41,7 @@ html, body {
   color: rgba(100,150,255,1);
 }
 
-/* Buttons & profile cards as before */
+/* ===== AFFILIATE ORBIT ===== */
 .profile {
   position: absolute;
   width: 180px;
@@ -69,15 +54,34 @@ html, body {
   backdrop-filter: blur(6px);
   color: #cfe4ff;
   font-size: 18px;
-  z-index: 2;
-  box-shadow: 0 0 20px rgba(120,170,255,0.3),
-              inset 0 0 12px rgba(120,170,255,0.2);
+  z-index: 5;
+
+  box-shadow:
+    0 0 20px rgba(120,170,255,0.3),
+    inset 0 0 12px rgba(120,170,255,0.2);
+
   animation: float 6s ease-in-out infinite;
 }
-.profile strong { display: block; margin-bottom: 6px; font-size: 20px; color: #fff; }
-@keyframes float { 0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)} }
-.profile:hover { box-shadow:0 0 20px rgba(100,149,237,0.8),0 0 40px rgba(100,149,237,0.4); }
 
+.profile strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.profile:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+
+/* ===== BUTTONS ===== */
 .button {
   display: inline-block;
   margin: 25px 10px 0;
@@ -91,133 +95,163 @@ html, body {
   font-weight: bold;
   box-shadow: 0 5px 15px rgba(100,149,237,0.4);
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
-  z-index: 2;
+  z-index: 5;
 }
+
 .button:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
 }
 </style>
 </head>
+
 <body>
 
-<!-- Starfield canvas -->
-<canvas id="starsCanvas"></canvas>
-
-<!-- Mountains canvas -->
-<canvas id="mountainsCanvas"></canvas>
+<canvas id="space"></canvas>
 
 <!-- ===== PROFILE BUTTONS ===== -->
 <div class="profile" onclick="location.href='https://otieu.com/4/10549473'" style="top:15%; left:42%; transform:translateX(-50%)">
-  <strong>Drawing One</strong> My beautiful universe
+  <strong>Drawing One</strong>
+  My beautiful universe
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="top:35%; left:6%">
-  <strong>Drawing Two</strong> Inspiration fuel 🚀
+  <strong>Drawing Two</strong>
+  Inspiration fuel 🚀
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="top:35%; right:6%">
-  <strong>Drawing Three</strong> Cosmic tech
+  <strong>Drawing Three</strong>
+  Cosmic tech
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="bottom:28%; left:6%">
-  <strong>Drawing Four</strong> Design magic
+  <strong>Drawing Four</strong>
+  Design magic
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="bottom:28%; right:6%">
-  <strong>Drawing Five</strong> Universe builders
+  <strong>Drawing Five</strong>
+  Universe builders
 </div>
 
 <div class="profile" onclick="location.href='index.html'" style="bottom:8%; left:42%; transform:translateX(-50%)">
-  <strong>Drawing Six</strong> Future ideas
+  <strong>Drawing Six</strong>
+  Future ideas
 </div>
 
 <!-- ===== CENTER TEXT ===== -->
 <div id="content">
   <h1>Profile</h1>
-  <p>This universe grows through creativity, trust, and collaboration. Some links are drawing links — supporting them helps <strong>J&V’s Blue Universe</strong> 💙.</p>
+  <p>
+    This universe grows through creativity, trust, and collaboration.  
+    Some links on this page are drawing links — if you choose to support them,
+    it helps <strong>J&V’s Blue Universe</strong> grow at no extra cost to you 💙.
+  </p>
+
+  <p>
+    We only feature things we genuinely believe in — tools, ideas, and creators
+    that align with our values.
+  </p>
+
   <button class="button" onclick="location.href='index.html'">Home</button>
   <button class="button" onclick="window.open('https://otieu.com/4/10549473','_blank')">Donate</button>
 </div>
 
 <script>
-/* ===== STARFIELD ===== */
-const starCanvas = document.getElementById("starsCanvas");
-const starCtx = starCanvas.getContext("2d");
-let sw, sh;
-function resizeStars() { sw = starCanvas.width = window.innerWidth; sh = starCanvas.height = window.innerHeight; }
-window.addEventListener("resize", resizeStars);
-resizeStars();
+/* ===== CANVAS SETUP ===== */
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+let w, h;
 
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+/* ===== STARFIELD ===== */
 const stars = Array.from({ length: 600 }, () => ({
-  x: Math.random()*sw,
-  y: Math.random()*sh,
-  z: Math.random()*0.8+0.2,
-  a: Math.random()*0.8+0.2,
-  r: Math.random()*1.5+0.5
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.8 + 0.2,
+  a: Math.random() * 0.8 + 0.2,
+  r: Math.random() * 1.5 + 0.5
 }));
 
-function drawStars(){
-  starCtx.clearRect(0,0,sw,sh);
-  stars.forEach(s=>{
-    s.x += 0.15*s.z;
-    if(s.x>sw) s.x=0;
-    starCtx.globalAlpha = s.a*s.z;
-    starCtx.fillStyle = "white";
-    starCtx.beginPath();
-    starCtx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
-    starCtx.fill();
-  });
-  requestAnimationFrame(drawStars);
-}
-drawStars();
-
-/* ===== MOUNTAIN RANGE ===== */
-const mountainCanvas = document.getElementById("mountainsCanvas");
-const mountainCtx = mountainCanvas.getContext("2d");
-let mw, mh;
-
-function resizeMountains() {
-  mw = mountainCanvas.width = window.innerWidth;
-  mh = mountainCanvas.height = window.innerHeight;
-  drawMountains();
-}
-window.addEventListener("resize", resizeMountains);
-resizeMountains();
-
-// Function to draw smooth mountains with multiple layers
-function draw3DMountains() {
-  mountainCtx.clearRect(100, 100, 100, 100);
-
-  const layers = [
-    { base: mh * 0.6, peaks: 6, color: "rgb(15,25,40)", jagged: 0.9 },
-    { base: mh * 0.7, peaks: 5, color: "rgb(35,55,85)", jagged: 0.7 },
-    { base: mh * 0.8, peaks: 4, color: "rgb(65,95,130)", jagged: 0.5 }
-  ];
-
-  layers.forEach((layer, index) => {
-    const gradient = mountainCtx.createLinearGradient(0, layer.base - mh*0.2, 0, layer.base);
-    gradient.addColorStop(0, layer.color);
-    gradient.addColorStop(1, "rgb(0,0,0)");
-
-    mountainCtx.beginPath();
-    mountainCtx.moveTo(0, mh);
-
-    const step = mw / (layer.peaks * 2);
-    for (let i = 0; i <= layer.peaks * 2; i++) {
-      const x = i * step;
-      const randomHeight = Math.random() * mh * 0.1 * layer.jagged;
-      const y = (i % 2 === 0) ? layer.base - randomHeight : layer.base - randomHeight/2;
-      mountainCtx.lineTo(x, y);
+/* ===== PARALLAX MOUNTAINS ===== */
+function drawMountains() {
+  const layers = 5;
+  for (let i = 0; i < layers; i++) {
+    const offset = i * 50;
+    const color = `rgba(${20 + i*20}, ${20 + i*20}, ${60 + i*30}, 0.6)`;
+    ctx.beginPath();
+    ctx.moveTo(0, h - offset);
+    for (let x = 0; x <= w; x += 50) {
+      const y = h - offset - Math.sin((x + i*100) * 0.004) * 60 - i*25;
+      ctx.lineTo(x, y);
     }
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+}
 
-    mountainCtx.lineTo(mw, mh);
-    mountainCtx.closePath();
-    mountainCtx.fillStyle = gradient;
-    mountainCtx.fill();
+/* ===== GLOWING MOON ===== */
+const moon = { x: w*0.8, y: h*0.25, radius: 60 };
+function drawMoon() {
+  const gradient = ctx.createRadialGradient(moon.x, moon.y, 0, moon.x, moon.y, moon.radius);
+  gradient.addColorStop(0, "rgba(255,255,230,0.9)");
+  gradient.addColorStop(1, "rgba(255,255,230,0)");
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(moon.x, moon.y, moon.radius, 0, Math.PI*2);
+  ctx.fill();
+}
+
+/* ===== DRIFTING CLOUDS ===== */
+const clouds = Array.from({ length: 8 }, () => ({
+  x: Math.random() * w,
+  y: Math.random() * h * 0.5,
+  size: Math.random() * 120 + 80,
+  speed: Math.random() * 0.2 + 0.05
+}));
+
+function drawClouds() {
+  clouds.forEach(c => {
+    ctx.fillStyle = "rgba(200,200,220,0.08)";
+    ctx.beginPath();
+    ctx.ellipse(c.x, c.y, c.size, c.size*0.4, 0, 0, Math.PI*2);
+    ctx.fill();
+    c.x += c.speed;
+    if (c.x - c.size > w) c.x = -c.size;
   });
 }
-</script>
 
+/* ===== DRAW LOOP ===== */
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+
+  drawMountains();
+  drawMoon();
+  drawClouds();
+
+  stars.forEach(s => {
+    s.x += 0.15 * s.z;
+    if (s.x > w) s.x = 0;
+    ctx.globalAlpha = s.a * s.z;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r * s.z, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
 </body>
 </html>
