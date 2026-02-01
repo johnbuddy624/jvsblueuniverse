@@ -37,57 +37,67 @@ z-index: 0;
 /=============================
 = BUTTONS STYLES SECTION =
 ===============================/
-/* ===== BUTTON GROUP STYLES =====
-Purpose: Styles the container holding all buttons. */
+/* ===== BUTTON GROUP STYLES ===== */
 #buttonGroup {
-position: absolute;
-left: 50%;
-transform: translateX(-50%);
-z-index: 2;
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
-gap: 15px;
+  position: absolute;
+  top: 10%; /* adjust vertical position */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap; /* allow wrapping if screen is really small */
+  justify-content: center;
+  gap: 15px;
 }
 
-/* ===== BUTTON STYLES =====
-Purpose: Styles each individual button */
+/* ===== BUTTON STYLES ===== */
 #buttonGroup button {
-cursor: pointer;
-background: rgba(100, 149, 237, 0.6);
-color: white;
-border: none;
-border-radius: 12px;
-padding: 10px 20px;
-font-size: 28px;
-font-weight: bold;
-box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-transition: transform 0.1s, box-shadow 0.1s;
-text-shadow: 0 0 8px rgba(100,149,237,0.8);
+  cursor: pointer;
+  background: rgba(100, 149, 237, 0.6);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
 #buttonGroup button:hover {
-box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
-text-shadow: 0 0 12px rgba(100,149,237,1);
+  box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
+  text-shadow: 0 0 12px rgba(100,149,237,1);
 }
 #buttonGroup button:active {
-transform: translateY(3px);
-box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+  transform: translateY(3px);
+  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
 }
 
-/* ===== RESPONSIVE BUTTONS (Adjusted) =====
-Purpose: Keep mobile buttons similar to desktop while fitting smaller screens. /
+/* ===== RESPONSIVE BUTTONS ===== */
 @media (max-width: 600px) {
   #buttonGroup {
-    top: 25%; /* adjust vertical position */
-    flex-direction: row; /* keep buttons in one row */
-    flex-wrap: nowrap; /* prevent wrapping */
-    gap: 10px; /* small spacing between buttons */
+    top: 20%;              /* push buttons slightly down */
+    flex-direction: row;    /* horizontal row */
+    flex-wrap: nowrap;      /* prevent stacking */
+    gap: 10px;              /* smaller gap */
     transform: translateX(-50%);
   }
 
   #buttonGroup button {
-    font-size: 22px;  /* slightly smaller than desktop */
-    padding: 8px 12px; /* smaller for mobile width */
+    font-size: 22px;        /* smaller for mobile */
+    padding: 8px 12px;      /* tighter padding */
+  }
+}
+
+/* Optional: very small phones */
+@media (max-width: 360px) {
+  #buttonGroup {
+    flex-wrap: wrap;        /* allow wrapping if really narrow */
+    gap: 8px;
+  }
+  #buttonGroup button {
+    font-size: 20px;
+    padding: 6px 10px;
   }
 }
 /=============================
