@@ -15,70 +15,84 @@
 /* ========================= BODY ======================== */
   
 <body>
- <style>  
-html, body {  
-  margin: 0;  
-  padding: 0;  
-  background: black;  
-  overflow: hidden;  
-  width: 100%;  
-  height: 100%;  
-  font-family: Times New Roman;  
-}  
-canvas {  
-  position: fixed;  
-  inset: 0;  
-  z-index: 0;
-}
+  <canvas id="space"></canvas>
+
+  <div id="buttonGroup">
+    <button id="donateBtn">Donate</button>
+    <button id="aboutBtn">About Us</button>
+    <button id="shopsBtn">Shops</button>
+    <button id="affiliatesBtn">Affiliates</button>
+    <button id="downloadsBtn">Downloads</button>
+  </div>
+
+  <style>  
+    html, body {  
+      margin: 0;  
+      padding: 0;  
+      background: black;  
+      overflow: hidden;  
+      width: 100%;  
+      height: 100%;  
+      font-family: Times New Roman;  
+    }  
+    canvas {  
+      position: fixed;  
+      inset: 0;  
+      z-index: 0;  
+    }  
 
 /* ==================== BUTTON GROUP ================== */
    
 #buttonGroup {
-  position: absolute;
-  top: 50%;               /* vertical center */
-  left: 50%;
-  transform: translate(-50%, -50%); /* center both horizontally and vertically */
-  z-index: 2;
-  display: flex;
-  flex-wrap: wrap;        /* allows wrapping if screen is narrow */
-  justify-content: center;
-  gap: 20px;              /* space between buttons */
+      position: absolute;
+      left: 50%;
+      top: calc(50% - 220px);
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
 }
-
+    
 /* ====================== BUTTON STYLES ======================= */
    
 #buttonGroup button {
-  cursor: pointer;
-  background: rgba(100, 149, 237, 0.6);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 20px;
-  font-size: 28px;
-  font-weight: bold;
-  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-  transition: transform 0.1s, box-shadow 0.1s;
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
-}
-
+      cursor: pointer;
+      background: rgba(100, 149, 237, 0.6);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 28px;
+      font-weight: bold;
+      margin: 15px 15px;
+      box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+      transition: transform 0.1s, box-shadow 0.1s;
+      text-shadow: 0 0 8px rgba(100,149,237,0.8);
+    }
+    
 #buttonGroup button:hover {
   box-shadow: 0 0 20px rgba(100,149,237,0.8), 0 0 40px rgba(100,149,237,0.4);
   text-shadow: 0 0 12px rgba(100,149,237,1);
 }
-
 #buttonGroup button:active {
-  transform: translateY(3px);
-  box-shadow: 0 2px 8px rgba(100,149,237,0.3);
-}
+      transform: translateY(3px);
+      box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+    }
+  </style>
+</body>
    
 /* ================ RESPONSIVE FOR MOBILE ================== */
    
 @media (max-width: 600px) {
   #buttonGroup {
-    gap: 10px;           /* smaller space on mobile */
+    top: 18%;             /* mobile-only vertical adjustment */
+    gap: 10px;            /* smaller space on mobile */
   }
   #buttonGroup button {
-    font-size: 20px;     /* smaller buttons */
+    font-size: 20px;      /* smaller buttons */
     padding: 6px 12px;   
   }
 }
@@ -97,35 +111,51 @@ canvas {
   
 /* ======================== BUTTONS ======================= */
   
-  <div id="buttonGroup">
+<div id="buttonGroup">
   <button id="donateBtn">Donate</button>  
   <button id="aboutBtn">About Us</button>  
   <button id="shopsBtn">Shops</button>  
   <button id="affiliatesBtn">Affiliates</button>  
   <button id="downloadsBtn">Downloads</button>  
-</div>  <script>  
-const canvas = document.getElementById("space");  
-const ctx = canvas.getContext("2d");  
-let w,h;  
-function resize(){   
+</div>
+
+<canvas id="space"></canvas>
+
+<script>
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+
+function resize() {   
   w = canvas.width = window.innerWidth;   
   h = canvas.height = window.innerHeight;   
-}  
-window.addEventListener("resize",resize);  
-resize();  
+}
+
+window.addEventListener("resize", resize);
+resize();
+</script>
   
 /* ======================== STARS ========================== */
 
-  const stars = Array.from({length:800},()=>({
-  x:Math.random()*w,
-  y:Math.random()*h,
-  z:Math.random()*0.8+0.2,
-  a:Math.random()*0.8+0.2,
-  r:Math.random()*1.5+0.5,
-  baseX:0,
-  baseY:0
+const stars = Array.from({ length: 800 }, () => ({
+  x: Math.random() * w,
+  y: Math.random() * h,
+  z: Math.random() * 0.8 + 0.2,     // depth
+  a: Math.random() * 0.6 + 0.4,     // base alpha
+  r: Math.random() * 1.2 + 0.4,     // radius
+  tw: Math.random() * Math.PI * 2, // twinkle phase
 }));
-stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });  my
+
+function updateStars() {
+  for (const s of stars) {
+    s.x += 0.05 * s.z;              // slow parallax drift
+    if (s.x > w) s.x = 0;
+
+    s.tw += 0.02;                   // smooth twinkle
+    s.alpha = s.a + Math.sin(s.tw) * 0.15;
+  }
+}
   
 /* ============= SHOOTING STARS (REALISTIC) ================= */
   
@@ -176,47 +206,70 @@ function updateAndDrawShootingStars(ctx) {
   
 /* ================ COSMIC WORM ================ */
 
-const worm={  
-  segments:60,  
-  size:12,  
-  color:"rgba(0,150,255,0.9)",  
-  pos:Array.from({length:60},()=>({x:w/2,y:h/2})),  
-  vx:(Math.random()-0.5)*1.5,  
-  vy:(Math.random()-0.5)*1.5  
-};  
+const worm = {
+  segments: 60,
+  size: 12,
+  color: "rgba(0,150,255,0.9)",
+  pos: Array.from({ length: 60 }, () => ({
+    x: w / 2 + (Math.random() - 0.5) * 5,
+    y: h / 2 + (Math.random() - 0.5) * 5
+  })),
+  vx: (Math.random() - 0.5) * 0.8,
+  vy: (Math.random() - 0.5) * 0.8,
+  speed: 0.8
+};
   
 /* =============== TEXT OBJECTS =============== */
 
-const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };  
-const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };  
-const textWelcome = {   
-  text:"We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙",   
-  x:()=>w/2,   
-  y:()=>h/2,   
-  size:30,   
-  color:"rgba(120,170,255,0.8)",  
-  maxWidth:()=>w * 0.7  
-};  
+const textJV = {
+  text: "J&V's",
+  x: () => w / 2,
+  y: () => (w < 600 ? 70 : 100),
+  size: () => (w < 600 ? 48 : 80),
+  color: "rgba(100,150,255,1)"
+};
+
+const textBU = {
+  text: "Blue Universe",
+  x: () => w / 2,
+  y: () => (w < 600 ? 115 : 160),
+  size: () => (w < 600 ? 30 : 50),
+  color: "rgba(120,170,255,0.85)"
+};
+
+const textWelcome = {
+  text: "We appreciate you joining OUR universe, we are expanding it daily with new and different ideas, if you have any idea or question please don't hesitate to email me at johnbuddy624@gmail.com and if you would like to support our universe we have the donate button for donations, no pressure, no obligations, any donations would help our universe grow. Hope to see you soon. We will have more updates ASAP 😀 💙",
+  x: () => w / 2,
+  y: () => (w < 600 ? h * 0.55 : h / 2),
+  size: () => (w < 600 ? 18 : 30),
+  color: "rgba(120,170,255,0.8)",
+  maxWidth: () => (w < 600 ? w * 0.85 : w * 0.7)
+};
   
-/* /* ====================== BUTTON STYLES ======================= */
-  
-function draw(){  
-  ctx.clearRect(0,0,w,h);
-  
-/* ============== STARS WITH 3D PARALLAX ============== */
-  
-  // Stars with 3D parallax
-  stars.forEach(s=>{  
-    let offsetX = 0;
-    let offsetY = 0;  
-    s.x += 0.1 * s.z;
-    if(s.x>w) s.x=0;  
-    ctx.globalAlpha=s.a*s.z;  
-    ctx.fillStyle="white";  
-    ctx.beginPath();  
-    ctx.arc(s.x + offsetX, s.y + offsetY, s.r*s.z,0,Math.PI*2);  
-    ctx.fill();  
-  });  
+/* ============== STARS WITH SMOOTH 3D PARALLAX ============== */
+
+stars.forEach(s => {
+  // slow horizontal drift based on depth
+  s.x += 0.15 * s.z;
+  s.y += 0.02 * s.z;
+
+  // wrap around screen cleanly
+  if (s.x > w) s.x = 0;
+  if (s.y > h) s.y = 0;
+  if (s.y < 0) s.y = h;
+
+  ctx.globalAlpha = s.a * s.z;
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(
+    s.x,
+    s.y,
+    s.r * s.z,
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
+});
 
 /* ==================== SHOOTING STARS =================== */
 
@@ -239,34 +292,65 @@ shootingStars.forEach((s,i)=>{
 
 /* ============= COSMIC WORM ============= */
 
-  let hpos=worm.pos[0];  
-  hpos.x+=worm.vx; hpos.y+=worm.vy;  
-  if(hpos.x<0||hpos.x>w) worm.vx*=-1;  
-  if(hpos.y<0||hpos.y>h) worm.vy*=-1;  
-  for(let i=1;i<worm.segments;i++){  
-    worm.pos[i].x+=(worm.pos[i-1].x-worm.pos[i].x)*0.15;  
-    worm.pos[i].y+=(worm.pos[i-1].y-worm.pos[i].y)*0.15;  
-  }  
-  worm.pos.forEach((p,i)=>{  
-    ctx.globalAlpha=1-i*0.015;  
-    ctx.fillStyle=worm.color;  
-    ctx.beginPath();  
-    ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);  
-    ctx.fill();  
-  });
+let hpos = worm.pos[0];
+
+// smooth head movement
+hpos.x += worm.vx;
+hpos.y += worm.vy;
+
+// soft edge bounce (no harsh snapping)
+if (hpos.x < 0 || hpos.x > w) worm.vx *= -1;
+if (hpos.y < 0 || hpos.y > h) worm.vy *= -1;
+
+// gentle random drift for life-like motion
+worm.vx += (Math.random() - 0.5) * 0.02;
+worm.vy += (Math.random() - 0.5) * 0.02;
+
+// speed cap (prevents jitter/explosions)
+const maxSpeed = 1.6;
+worm.vx = Math.max(-maxSpeed, Math.min(maxSpeed, worm.vx));
+worm.vy = Math.max(-maxSpeed, Math.min(maxSpeed, worm.vy));
+
+// trailing body smoothing
+for (let i = 1; i < worm.segments; i++) {
+  worm.pos[i].x += (worm.pos[i - 1].x - worm.pos[i].x) * 0.18;
+  worm.pos[i].y += (worm.pos[i - 1].y - worm.pos[i].y) * 0.18;
+}
+
+// draw worm with soft fade
+worm.pos.forEach((p, i) => {
+  ctx.globalAlpha = Math.max(0, 1 - i * 0.018);
+  ctx.fillStyle = worm.color;
+  ctx.beginPath();
+  ctx.arc(
+    p.x,
+    p.y,
+    worm.size * (1 - i * 0.013),
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
+});
     
  /* ================== TEXT ================= */
     
-// Text  
-ctx.globalAlpha=1;  
-ctx.textAlign="center";  
-ctx.font=`bold ${textJV.size}px Times New Roman`;  
-ctx.fillStyle=textJV.color;
-ctx.fillText(textJV.text,textJV.x(),textJV.y);  
-ctx.font=`${textBU.size}px Times New Roman`;  
-ctx.fillStyle=textBU.color;  
-ctx.fillText(textBU.text,textBU.x(),textBU.y);
+ctx.save();
 
+ctx.globalAlpha = 1;
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+// J&V text
+ctx.font = `bold ${textJV.size}px Times New Roman`;
+ctx.fillStyle = textJV.color;
+ctx.fillText(textJV.text, textJV.x(), textJV.y);
+
+// Blue Universe text
+ctx.font = `${textBU.size}px Times New Roman`;
+ctx.fillStyle = textBU.color;
+ctx.fillText(textBU.text, textBU.x(), textBU.y);
+
+ctx.restore();
 /* ========== WRAPPED WELCOME TEXT ============ */  
 
 ctx.font=`${textWelcome.size}px Times New Roman`;  
@@ -281,19 +365,19 @@ ctx.font=`${textWelcome.size}px Times New Roman`;
     const metrics = ctx.measureText(testLine);  
     if(metrics.width > maxWidth && i>0){  
       ctx.fillText(line, w/2, startY);  
-      line = words[i] + " ";  
+      line = words[i] + " ";  uu
       startY += lineHeight;  
     } else {  
       line = testLine;  
     }  
-  }  
-  ctx.fillText(line, w/2, startY);  
+  }  9
+  ctx.fillText(line, w/2, sta⁹rtY);  
   
   requestAnimationFrame(draw);  
 }  
 draw();  
   
-/* ============= BUTTON CLICKS ============= */
+/* ==================== BUTTON CLICKS ===================== */
     
 document.getElementById("donateBtn").addEventListener("click", () => {  
   window.open("https://otieu.com/4/10549459", "_blank");  
