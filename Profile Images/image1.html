@@ -25,32 +25,6 @@ canvas {
 //==IMAGE HTML==//
 <!-- Image overlay -->
 <img id="overlayImg" src="Profile Images/PENUP_20260124_202833~2.png" alt="Wormhole">
-//==IMAGE CSS==//
-#overlayImg {
-  position: absolute; /* allows free positioning over canvas */
-  top: 50px;          /* distance from top of viewport */
-  left: 100px;        /* distance from left */
-  width: 150px;       /* initial width */
-  height: auto;       /* maintain aspect ratio */
-  z-index: 5;         /* make sure it's above all canvases (canvases usually z-index 0 or 1) */
-  pointer-events: auto; /* allows clicks if needed */
-  transition: all 0.3s ease; /* smooth resizing/movement */
-}
-//==IMAGE JS==//
-const overlay = document.getElementById('overlayImg');
-
-// Example: move it dynamically
-overlay.style.top = '200px';
-overlay.style.left = '300px';
-
-// Example: resize dynamically
-overlay.style.width = '250px';
-
-// Optional: animate with mouse
-document.addEventListener('mousemove', (e) => {
-  overlay.style.left = `${e.clientX + 20}px`;
-  overlay.style.top = `${e.clientY + 20}px`;
-});
 
 /* ===== CENTER CONTENT ===== */
 #content {
@@ -91,13 +65,25 @@ document.addEventListener('mousemove', (e) => {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
 }
+
+                          //==IMAGE CSS==//
+#overlayImg {
+  position: absolute; /* allows free positioning over canvas */
+  top: 50px;          /* distance from top of viewport */
+  left: 100px;        /* distance from left */
+  width: 150px;       /* initial width */
+  height: auto;       /* maintain aspect ratio */
+  z-index: 5;         /* make sure it's above all canvases (canvases usually z-index 0 or 1) */
+  pointer-events: auto; /* allows clicks if needed */
+  transition: all 0.3s ease; /* smooth resizing/movement */
+}
 </style>
 </head>
 
 <body>
 
 <canvas id="space"></canvas>
-  
+
 <!-- ===== CENTER TEXT ===== -->
 <div id="content">
   <h1>Wormhole</h1>
@@ -110,6 +96,23 @@ document.addEventListener('mousemove', (e) => {
 </div>
 
 <script>
+
+//==IMAGE JS==//
+const overlay = document.getElementById('overlayImg');
+
+// Example: move it dynamically
+overlay.style.top = '200px';
+overlay.style.left = '300px';
+
+// Example: resize dynamically
+overlay.style.width = '250px';
+
+// Optional: animate with mouse
+document.addEventListener('mousemove', (e) => {
+  overlay.style.left = `${e.clientX + 20}px`;
+  overlay.style.top = `${e.clientY + 20}px`;
+});
+  
 /* ===== STARFIELD ===== */
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
