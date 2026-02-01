@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <title>Profile – J&V’s Blue Universe</title>
 </head>
-  
+<body> 
 <style>
-/* css */
+  
+  /* css */
+  
 html, body {
   margin: 0;
   padding: 0;
@@ -18,13 +20,16 @@ html, body {
   color: rgba(120,170,255,0.9);
 }
 
+<canvas id="space"></canvas>
+  
 canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-/* ===== CENTER CONTENT ===== */
+  /* CENTER CONTENT */
+  
 #content {
   position: absolute;
   top: 50%;
@@ -43,7 +48,8 @@ canvas {
   color: rgba(100,150,255,1);
 }
 
-/* ===== AFFILIATE ORBIT ===== */
+  /* AFFILIATE ORBIT */
+  
 .profile {
   position: absolute;
   width: 180px;
@@ -83,7 +89,8 @@ canvas {
               0 0 40px rgba(100,149,237,0.4);
 }
 
-/* ===== BUTTONS ===== */
+  /* BUTTONS */
+  
 .button {
   display: inline-block;
   margin: 25px 10px 0;
@@ -103,13 +110,15 @@ canvas {
   box-shadow: 0 0 20px rgba(100,149,237,0.8),
               0 0 40px rgba(100,149,237,0.4);
 }
+  
 </style>
 
-<body>
-// JS
-<canvas id="space"></canvas>
 
-<!-- ===== PROFILE BUTTONS ===== -->
+  
+  // JS
+
+  // PROFILE BUTTONS
+  
 <div class="profile" onclick="location.href='image.html'"
 style="top:15%; left:42%; transform:translateX(-50%)">
   <strong>Drawing One</strong>
@@ -140,9 +149,9 @@ style="top:15%; left:42%; transform:translateX(-50%)">
   <strong>Drawing Six</strong>
   Future ideas
 </div>
-
   
-<!-- ===== CENTER TEXT ===== -->
+  // CENTER TEXT
+  
 <div id="content">
   <h1>My Personal Profile</h1>
   <p>
@@ -160,7 +169,9 @@ style="top:15%; left:42%; transform:translateX(-50%)">
 </div>
 
 <script>
-/* ===== STARFIELD ===== */
+  
+  // STARFIELD
+  
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
 let w, h;
@@ -193,8 +204,11 @@ function draw() {
   });
   requestAnimationFrame(draw);
 }
+  
 draw();
+  
 </script>
 
 </body>
+  
 </html>
