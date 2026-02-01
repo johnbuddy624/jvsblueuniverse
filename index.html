@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7345762652720113"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>J&V’s Blue Universe</title>
@@ -26,10 +24,15 @@ canvas {
 #buttonGroup {
   position: absolute;
   left: 50%;
-  top: calc(50% - 220px);
   transform: translateX(-50%);
   z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
 }
+
+/* ===== BUTTON STYLES ===== */
 #buttonGroup button {
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
@@ -39,7 +42,6 @@ canvas {
   padding: 10px 20px;
   font-size: 28px;
   font-weight: bold;
-  margin: 15px 15px;
   box-shadow: 0 5px 15px rgba(100,149,237,0.4);
   transition: transform 0.1s, box-shadow 0.1s;
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
@@ -51,6 +53,19 @@ canvas {
 #buttonGroup button:active {
   transform: translateY(3px);
   box-shadow: 0 2px 8px rgba(100,149,237,0.3);
+}
+
+/* ===== RESPONSIVE BUTTONS ===== */
+@media (max-width: 600px) {
+  #buttonGroup {
+    top: 50%;
+    flex-direction: column;
+  }
+  #buttonGroup button {
+    width: 70%;
+    font-size: 24px;
+    padding: 12px 0;
+  }
 }
 </style>
 </head>
@@ -131,16 +146,14 @@ const textWelcome = {
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars with 3D parallax
+  // Stars with slow drift
   stars.forEach(s=>{
-    let offsetX = 0; // remove mouse interaction for smoother drift
-    let offsetY = 0;
-    s.x += 0.1 * s.z; // slow drift
+    s.x += 0.1 * s.z;
     if(s.x>w) s.x=0;
     ctx.globalAlpha=s.a*s.z;
     ctx.fillStyle="white";
     ctx.beginPath();
-    ctx.arc(s.x + offsetX, s.y + offsetY, s.r*s.z,0,Math.PI*2);
+    ctx.arc(s.x, s.y, s.r*s.z,0,Math.PI*2);
     ctx.fill();
   });
 
@@ -219,7 +232,16 @@ document.getElementById("donateBtn").addEventListener("click", () => {
   window.open("https://otieu.com/4/10549459", "_blank");
 });
 document.getElementById("aboutBtn").addEventListener("click", () => {
-  window.location.href = "about.html"; // link to your about page
+  window.location.href = "about.html";
+});
+document.getElementById("shopsBtn").addEventListener("click", () => {
+  window.location.href = "shops.html";
+});
+document.getElementById("affiliatesBtn").addEventListener("click", () => {
+  window.location.href = "affiliates.html";
+});
+document.getElementById("downloadsBtn").addEventListener("click", () => {
+  window.location.href = "downloads.html";
 });
 </script>
 </body>
