@@ -56,7 +56,7 @@ html, body {
   color: rgba(100,150,255,1);
 }
 
-/* Buttons & profile cards as before */
+/* Buttons & profile cards */
 .profile {
   position: absolute;
   width: 180px;
@@ -101,13 +101,9 @@ html, body {
 </head>
 <body>
 
-<!-- Starfield canvas -->
 <canvas id="starsCanvas"></canvas>
-
-<!-- Mountains canvas -->
 <canvas id="mountainsCanvas"></canvas>
 
-<!-- ===== PROFILE BUTTONS ===== -->
 <div class="profile" onclick="location.href='https://otieu.com/4/10549473'" style="top:15%; left:42%; transform:translateX(-50%)">
   <strong>Drawing One</strong> My beautiful universe
 </div>
@@ -132,7 +128,6 @@ html, body {
   <strong>Drawing Six</strong> Future ideas
 </div>
 
-<!-- ===== CENTER TEXT ===== -->
 <div id="content">
   <h1>Profile</h1>
   <p>This universe grows through creativity, trust, and collaboration. Some links are drawing links — supporting them helps <strong>J&V’s Blue Universe</strong> 💙.</p>
@@ -172,7 +167,7 @@ function drawStars(){
 }
 drawStars();
 
-/* ===== MOUNTAIN RANGE ===== */
+/* ===== ENHANCED MOUNTAIN RANGE WITH FOG ===== */
 const mountainCanvas = document.getElementById("mountainsCanvas");
 const mountainCtx = mountainCanvas.getContext("2d");
 let mw, mh;
@@ -185,31 +180,37 @@ function resizeMountains() {
 window.addEventListener("resize", resizeMountains);
 resizeMountains();
 
-// Function to draw smooth mountains with multiple layers
 function drawMountains() {
   mountainCtx.clearRect(0, 0, mw, mh);
 
   const layers = [
-    { color: "rgba(20,40,60,0.9)", peaks: 6, offset: mh*0.6 },
-    { color: "rgba(40,70,100,0.7)", peaks: 5, offset: mh*0.65 },
-    { color: "rgba(60,90,130,0.5)", peaks: 4, offset: mh*0.7 }
+    { color: "rgba(20,40,60,0.9)", peaks: 6, offset: mh*0.6, smoothness: 0.6 },
+    { color: "rgba(40,70,100,0.7)", peaks: 5, offset: mh*0.65, smoothness: 0.5 },
+    { color: "rgba(60,90,130,0.5)", peaks: 4, offset: mh*0.7, smoothness: 0.4 }
   ];
 
   layers.forEach(layer => {
     mountainCtx.beginPath();
-    let step = mw / (layer.peaks*2);
     mountainCtx.moveTo(0, mh);
+    let step = mw / (layer.peaks*2);
 
-    for (let i = 0; i <= layer.peaks*2; i++) {
-      const x = i * step;
-      const peak = Math.random() * mh*0.1 + (layer.offset - mh*0.1);
-      const y = (i % 2 === 0) ? peak : layer.offset;
+    for(let i = 0; i <= layer.peaks*2; i++) {
+      const x = i*step;
+      const peak = layer.offset - Math.random()*(mh*0.1)*layer.smoothness;
+      const y = (i%2 === 0) ? peak : layer.offset;
       mountainCtx.lineTo(x, y);
     }
 
     mountainCtx.lineTo(mw, mh);
     mountainCtx.closePath();
     mountainCtx.fillStyle = layer.color;
+    mountainCtx.fill();
+
+    // Add subtle fog at base
+    const fogGradient = mountainCtx.createLinearGradient(0, layer.offset, 0, mh);
+    fogGradient.addColorStop(0, "rgba(30,50,70,0.2)");
+    fogGradient.addColorStop(1, "rgba(30,50,70,0.8)");
+    mountainCtx.fillStyle = fogGradient;
     mountainCtx.fill();
   });
 }
