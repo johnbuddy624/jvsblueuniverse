@@ -19,17 +19,23 @@ html, body {
 /* Starfield canvas */
 #starsCanvas {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
+  pointer-events: none;
 }
 
 /* Mountains canvas */
 #mountainsCanvas {
   position: fixed;
-  bottom: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
+  pointer-events: none; /* so buttons still clickable */
 }
 
 /* Center content */
@@ -169,11 +175,12 @@ function drawStars(){
 }
 drawStars();
 
-/* ===== MOUNTAIN RANGE ===== */
+/* ===== MOUNTAIN RANGE WITH TRANSPARENT SKY ===== */
 const mountainCanvas = document.getElementById("mountainsCanvas");
 const mountainCtx = mountainCanvas.getContext("2d");
 let mw, mh;
-function resizeMountains(){
+
+function resizeMountains() {
   mw = mountainCanvas.width = window.innerWidth;
   mh = mountainCanvas.height = window.innerHeight;
   drawMountains();
@@ -182,19 +189,52 @@ window.addEventListener("resize", resizeMountains);
 resizeMountains();
 
 const mountainImg = new Image();
+mountainImg.crossOrigin = "anonymous";
 mountainImg.src = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80";
 mountainImg.onload = drawMountains;
 
-function drawMountains(){
-  mountainCtx.clearRect(0,0,mw,mh);
+function drawMountains() {
+  if (!mountainImg.complete) return;
 
-  // Fill full width and keep aspect ratio
+  mountainCtx.clearRect(0, 0, mw, mh);
+
+  // Scale image to fit width
   const scale = mw / mountainImg.width;
   const imgWidth = mw;
   const imgHeight = mountainImg.height * scale;
+  const drawX = 0;
+  const drawY = mh - imgHeight;
 
-  // Draw aligned to bottom
-  mountainCtx.drawImage(mountainImg, 0, mh - imgHeight, imgWidth, imgHeight);
+  // Draw the image temporarily offscreen
+  const offCanvas = document.createElement("canvas");
+  offCanvas.width = imgWidth;
+  offCanvas.height = imgHeight;
+  const offCtx = offCanvas.getContext("2d");
+  offCtx.drawImage(mountainImg, 0, 0, imgWidth, imgHeight);
+
+  // Get image data
+  const imgData = offCtx.getImageData(0, 0, imgWidth, imgHeight);
+  const data = imgData.data;
+
+  // Replace sky color with transparent
+  for (let y = 0; y < imgHeight; y++) {
+    for (let x = 0; x < imgWidth; x++) {
+      const i = (y * imgWidth + x) * 4;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+
+      // Detect bright blue sky (you can adjust thresholds)
+      if (r < 100 && g < 150 && b > 180) {
+        data[i + 3] = 0; // make pixel fully transparent
+      }
+    }
+  }
+
+  offCtx.putImageData(imgData, 0, 0);
+
+  // Draw processed image to main canvas
+  mountainCtx.drawImage(offCanvas, drawX, drawY, imgWidth, imgHeight);
 }
 </script>
 
