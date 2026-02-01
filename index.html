@@ -9,7 +9,7 @@
 
 //===============================
 //----------- HEAD --------------
-//========== STARTS =============
+//========== STARTS ===========
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +18,9 @@
 //----------- HEAD ------------
 //=========== ENDS ============
 <style>
+/*=============================
+= HTML & BODY STYLES SECTION =
+===============================*/
 html, body {
   margin: 0;
   padding: 0;
@@ -27,17 +30,18 @@ html, body {
   height: 100%;
   font-family: Times New Roman;
 }
+
 canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
-//================================
-//----------- BUTTONS ------------
-//=========== STARTS =============
+
+/*=============================
+= BUTTONS STYLES SECTION =
+===============================*/
 /* ===== BUTTON GROUP STYLES =====
-Purpose: Styles the container holding all buttons. 
-It centers them, adds spacing, and controls wrapping behavior. */
+Purpose: Styles the container holding all buttons. */
 #buttonGroup {
   position: absolute;
   left: 50%;
@@ -50,8 +54,7 @@ It centers them, adds spacing, and controls wrapping behavior. */
 }
 
 /* ===== BUTTON STYLES =====
-Purpose: Styles each individual button (Donate, About Us, Shops, Affiliates, Downloads).
-Includes colors, shadows, hover effects, and click animation. */
+Purpose: Styles each individual button */
 #buttonGroup button {
   cursor: pointer;
   background: rgba(100, 149, 237, 0.6);
@@ -87,19 +90,19 @@ Purpose: Adjusts buttons layout and size for mobile screens (<600px). */
     padding: 12px 0;
   }
 }
-//==============================
-//----------- BUTTONS ----------
-//============= ENDS ===========
+/*=============================
+= END BUTTONS STYLES SECTION =
+===============================*/
 
-//==============================
-//------------ BODY ------------
-//=========== STARTS ===========
+/*=============================
+= BODY CONTENT SECTION =
+===============================*/
 </style>
 </head>
 <body>
 <canvas id="space"></canvas>
 
-<!-- ===== BUTTONS =====
+<!-- ===== BUTTONS HTML =====
 Purpose: The actual buttons in HTML. -->
 <div id="buttonGroup">
   <button id="donateBtn">Donate</button>
@@ -108,14 +111,13 @@ Purpose: The actual buttons in HTML. -->
   <button id="affiliatesBtn">Affiliates</button>
   <button id="downloadsBtn">Downloads</button>
 </div>
-//===============================
-//------------ BODY -------------
-//============= ENDS ============
+/*=============================
+= END BODY CONTENT SECTION =
+===============================*/
 
-
-//===============================
-//-------- CANVAS SETUP ---------
-//=========== STARTS ============
+/*=============================
+= CANVAS SETUP SECTION =
+===============================*/
 <script>
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
@@ -126,16 +128,14 @@ function resize(){
 }
 window.addEventListener("resize",resize);
 resize();
-//================================
-//--------- CANVAS SETUP ---------
-//============= ENDS =============
+/*=============================
+= END CANVAS SETUP SECTION =
+===============================*/
 
-//==============================
-//----------- STARS ------------
-//=========== STARTS============
-/* ===== STARS =====
-Purpose: Creates an array of stars with random position, size, brightness.
-These are the static/moving background stars. */ 
+/*=============================
+= STARS & WORM SECTION =
+===============================*/
+/* ===== STARS ===== */
 const stars = Array.from({length:800},()=>({
   x:Math.random()*w,
   y:Math.random()*h,
@@ -147,8 +147,7 @@ const stars = Array.from({length:800},()=>({
 }));
 stars.forEach(s => { s.baseX = s.x; s.baseY = s.y; });
 
-/* ===== SHOOTING STARS =====
-Purpose: Creates occasional shooting stars moving quickly with trail effect. */
+/* ===== SHOOTING STARS ===== */
 let shootingStars=[];
 setInterval(()=>{
   if(Math.random()<0.015){
@@ -164,8 +163,7 @@ setInterval(()=>{
   }
 },40);
 
-/* ===== COSMIC WORM =====
-Purpose: A worm-like glowing trail that moves around the screen in 3D space. */
+/* ===== COSMIC WORM ===== */
 const worm={
   segments:60,
   size:12,
@@ -174,14 +172,13 @@ const worm={
   vx:(Math.random()-0.5)*1.5,
   vy:(Math.random()-0.5)*1.5
 };
-//==============================
-//----------- STARS ------------
-//============ END =============
+/*=============================
+= END STARS & WORM SECTION =
+===============================*/
 
-//================================
-//--------- TEXT OBJECTS ---------
-//=========== STARTS =============
-/* Purpose: Holds main title text and body welcome message. */
+/*=============================
+= TEXT OBJECTS SECTION =
+===============================*/
 const textJV = { text:"J&V's", x:()=>w/2, y:100, size:80, color:"rgba(100,150,255,1)" };
 const textBU = { text:"Blue Universe", x:()=>w/2, y:160, size:50, color:"rgba(120,170,255,0.85)" };
 const textWelcome = { 
@@ -192,19 +189,17 @@ const textWelcome = {
   color:"rgba(120,170,255,0.8)",
   maxWidth:()=>w * 0.7
 };
-//================================
-//--------- TEXT OBJECTS ---------
-//============= ENDS =============
+/*=============================
+= END TEXT OBJECTS SECTION =
+===============================*/
 
-
-//================================
-//---------- DRAW LOOP -----------
-//=========== STARTS =============
-/* Purpose: Animates stars, shooting stars, cosmic worm, and draws all text each frame. */
+/*=============================
+= DRAW LOOP SECTION =
+===============================*/
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // Stars with slow drift
+  // Stars
   stars.forEach(s=>{
     s.x += 0.1 * s.z;
     if(s.x>w) s.x=0;
@@ -249,9 +244,6 @@ function draw(){
     ctx.arc(p.x,p.y,worm.size*(1-i*0.012),0,Math.PI*2);
     ctx.fill();
   });
-//================================
-//---------- DRAW LOOP -----------
-//============= ENDS =============
 
   // Text
   ctx.globalAlpha=1;
@@ -263,7 +255,7 @@ function draw(){
   ctx.fillStyle=textBU.color;
   ctx.fillText(textBU.text,textBU.x(),textBU.y);
 
-  // Wrapped welcome text
+  // Welcome text
   ctx.font=`${textWelcome.size}px Times New Roman`;
   ctx.fillStyle=textWelcome.color;
   const words = textWelcome.text.split(" ");
@@ -287,11 +279,13 @@ function draw(){
   requestAnimationFrame(draw);
 }
 draw();
+/*=============================
+= END DRAW LOOP SECTION =
+===============================*/
 
-//================================
-//--------- BUTTON CLICKS --------
-//============ STARTS ============
-/* Purpose: Each button opens a page or link when clicked. */
+/*=============================
+= BUTTON CLICKS SECTION =
+===============================*/
 document.getElementById("donateBtn").addEventListener("click", () => {
   window.open("https://otieu.com/4/10549459", "_blank");
 });
@@ -307,9 +301,9 @@ document.getElementById("affiliatesBtn").addEventListener("click", () => {
 document.getElementById("downloadsBtn").addEventListener("click", () => {
   window.location.href = "downloads.html";
 });
-//================================
-//--------- BUTTON CLICKS --------
-//============= ENDS =============
+/*=============================
+= END BUTTON CLICKS SECTION =
+===============================*/
 </script>
 </body>
 </html>
