@@ -1,5 +1,97 @@
 /* Profile Page */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  color: rgba(120,170,255,0.9);
+} 
+  
+.button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
 
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.profile:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+
+  /* BUTTONS */
+  
+.button {
+  display: inline-block;
+  margin: 25px 10px 0;
+  cursor: pointer;
+  background: rgba(100,149,237,0.6);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 10px 22px;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+}
+
+  canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.profile strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+    /* CENTER CONTENT */
+  
+#content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 720px;
+  text-align: center;
+  z-index: 2;
+  line-height: 1.45;
+  font-size: 22px;
+}
+
+#content h1 {
+  font-size: 58px;
+  margin-bottom: 20px;
+  color: rgba(100,150,255,1);
+}
+
+  /* AFFILIATE ORBIT */
+  
+.profile {
+  position: absolute;
+  width: 180px;
+  padding: 16px;
+  cursor: pointer;
+  text-align: center;
+  background: rgba(40,80,140,0.35);
+  border: 2px solid rgba(120,170,255,0.5);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  color: #cfe4ff;
+  font-size: 18px;
+  z-index: 2;
+}
 
 
 
