@@ -9,7 +9,7 @@
   
 <!-- Image overlay -->
   
-<img id="overlayImg" src="PENUP_20260124_202833~2.png" alt="Wormhole">
+<img id="overlayImg" src="PENUP_20260120_132037.png" alt="Dark Water">
 </head> 
 
 <style>
@@ -37,7 +37,7 @@ canvas {
 
 #content {
   position: absolute;
-  top: 50%;
+  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
   max-width: 720px;
@@ -79,13 +79,15 @@ canvas {
 
 #overlayImg {
   position: absolute; /* allows free positioning over canvas */
-  top: 5%;          /* distance from top of viewport */
-  left: 22%;        /* distance from left */
-  width: 550px;       /* initial width */
-  height: 550px;       /* initial height */
+  top: 10%;          /* distance from top of viewport */
+  left: 35%;        /* distance from left */
+  width: 350px;       /* initial width */
+  height: 350px;       /* initial height */
   z-index: 5;         /* make sure it's above all canvases (canvases usually z-index 0 or 1) */
-  pointer-events: auto; /* allows clicks if needed */
- /* transition: all 0.3s ease; */ /* smooth resizing/movement */
+  border: 100px;
+  border-radius: 20px;
+  color: white;
+  border-shadow: 0 20px 20px rgba(100,149,237,0.8)
 }
   
 </style>
@@ -95,12 +97,12 @@ canvas {
 <!-- CENTER TEXT -->
   
 <div id="content">
-  <h1>Wormhole</h1>
-  <p>This is my wormhole test!</p>
+  <h1>Beautiful Universe</h1>
+  <p>This is one of my universe pictures with the rocky clouds like saturn, did this as a request from someone</p>
 
   <p>Below we made it easy to go back home and the main profile page</p>
 
-  <button class="button" onclick="location.href='index.html'">Home</button>
+  <button class="button" onclick="window.open('https://jvbus.github.io/jvsblueuniverse/index.html','_blank')">Home</button>
   <button class="button" onclick="window.open('https://jvbus.github.io/jvsblueuniverse/profile.html','_blank')">Profile</button>
 </div>
   
