@@ -1,9 +1,12 @@
-/* Profile Page */
-
-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  font-family: sans-serif;
+  color: rgba(120,170,255,0.9);
+  overflow: hidden;
 }
 
 #space {
@@ -16,15 +19,11 @@ canvas {
   background: black;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
+canvas {
+  position: fixed;
+  inset: 0;
   background: black;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  font-family: sans-serif;
-  color: rgba(120,170,255,0.9);
+  z-index: 0;
 }
 
 @keyframes float {
@@ -51,7 +50,7 @@ html, body {
   color: rgba(100,150,255,1);
 }
 
-/* BUTTONS */
+
   
 .button {
   display: inline-block;
@@ -107,21 +106,3 @@ html, body {
 
   animation: float 6s ease-in-out infinite;
 }
-
-
-
-
-
-
-
-/* About Page */
-
-
-
-
-
-
-
-
-
-/* Index Page */
