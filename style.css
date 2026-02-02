@@ -1,4 +1,5 @@
 /* Profile Page */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -10,10 +11,7 @@ html, body {
   color: rgba(120,170,255,0.9);
 } 
   
-.button:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8),
-              0 0 40px rgba(100,149,237,0.4);
-}
+
 
 @keyframes float {
   0%   { transform: translateY(0px); }
@@ -42,6 +40,13 @@ html, body {
   box-shadow: 0 5px 15px rgba(100,149,237,0.4);
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
+  .button:hover {
+     box-shadow: 0 0 20px rgba(100,149,237,0.8),
+                 0 0 40px rgba(100,149,237,0.4);
+  }
+
+
+
 
   canvas {
   position: fixed;
@@ -70,14 +75,14 @@ html, body {
   font-size: 22px;
 }
 
-#content h1 {
+#content: h1 {
   font-size: 58px;
   margin-bottom: 20px;
   color: rgba(100,150,255,1);
 }
 
-  /* AFFILIATE ORBIT */
-  
+  /* PROFILE BUTTON ORBIT */
+
 .profile {
   position: absolute;
   width: 180px;
@@ -93,7 +98,13 @@ html, body {
   z-index: 2;
 }
 
+{
+    box-shadow:
+    0 0 20px rgba(120,170,255,0.3),
+    inset 0 0 12px rgba(120,170,255,0.2);
 
+  animation: float 6s ease-in-out infinite;
+}
 
 
 
