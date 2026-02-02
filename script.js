@@ -1,9 +1,6 @@
-// Profile
-
-  // STARFIELD
-  
 const canvas = document.getElementById("space");
 const ctx = canvas.getContext("2d");
+
 let w, h;
 
 function resize() {
@@ -13,6 +10,7 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+// STARFIELD
 const stars = Array.from({ length: 600 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
@@ -22,7 +20,8 @@ const stars = Array.from({ length: 600 }, () => ({
 }));
 
 function draw() {
-  ctx.clearRect(0, 0, w, h);
+  
+ctx.clearRect(0, 0, w, h);
   stars.forEach(s => {
     s.x += 0.15 * s.z;
     if (s.x > w) s.x = 0;
@@ -34,7 +33,6 @@ function draw() {
   });
   requestAnimationFrame(draw);
 }
-  
 draw();
 
 
