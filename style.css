@@ -6,6 +6,13 @@ canvas {
   z-index: 0;
 }
 
+#space {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: black;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -58,7 +65,7 @@ html, body {
   text-shadow: 0 0 8px rgba(100,149,237,0.8);
 }
 
-  .button:hover {
+.button:hover {
      box-shadow: 0 0 20px rgba(100,149,237,0.8),
                  0 0 40px rgba(100,149,237,0.4);
   }
