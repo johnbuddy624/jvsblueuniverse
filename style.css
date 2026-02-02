@@ -1,16 +1,22 @@
-/* ===== FULL SCREEN CANVAS ===== */
-html, body {
-  margin: 0;
-  padding: 0;
-  background: black;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-}
+/* Profile Page */
 
-canvas {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
+
+
+
+
+
+
+
+
+
+/* About Page */
+
+
+
+
+
+
+
+
+
+/* Index Page */
