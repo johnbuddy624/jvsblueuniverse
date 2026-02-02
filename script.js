@@ -10,7 +10,6 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-// STARFIELD
 const stars = Array.from({ length: 600 }, () => ({
   x: Math.random() * w,
   y: Math.random() * h,
@@ -34,21 +33,3 @@ ctx.clearRect(0, 0, w, h);
   requestAnimationFrame(draw);
 }
 draw();
-
-
-
-
-
-
-
-
-// Index
-
-
-
-
-
-
-
-
-// About
