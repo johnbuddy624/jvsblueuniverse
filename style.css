@@ -93,7 +93,7 @@ html, body {
               0 0 40px rgba(100,149,237,0.4);
 }
 
-.profile: strong {
+.profile strong {
   display: block;
   margin-bottom: 6px;
   font-size: 20px;
