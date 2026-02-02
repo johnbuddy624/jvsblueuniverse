@@ -5,10 +5,7 @@
 <title>Profile – J&V’s Blue Universe</title>
 </head>
 
-<style> maybe get rid of
-  
-  /* css */
- <body>  
+<style>
 html, body {
   margin: 0;
   padding: 0;
@@ -18,17 +15,55 @@ html, body {
   height: 100%;
   font-family: sans-serif;
   color: rgba(120,170,255,0.9);
+} 
+  
+.button:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
 }
 
-<canvas id="space"></canvas>
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.profile:hover {
+  box-shadow: 0 0 20px rgba(100,149,237,0.8),
+              0 0 40px rgba(100,149,237,0.4);
+}
+
+  /* BUTTONS */
   
-canvas {
+.button {
+  display: inline-block;
+  margin: 25px 10px 0;
+  cursor: pointer;
+  background: rgba(100,149,237,0.6);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 10px 22px;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
+  text-shadow: 0 0 8px rgba(100,149,237,0.8);
+}
+
+  canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-  /* CENTER CONTENT */
+.profile strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+    /* CENTER CONTENT */
   
 #content {
   position: absolute;
@@ -63,61 +98,22 @@ canvas {
   color: #cfe4ff;
   font-size: 18px;
   z-index: 2;
+}
 
-  box-shadow:
+    box-shadow:
     0 0 20px rgba(120,170,255,0.3),
     inset 0 0 12px rgba(120,170,255,0.2);
 
   animation: float 6s ease-in-out infinite;
 }
-
-.profile strong {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 20px;
-  color: #ffffff;
-}
-
-@keyframes float {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-
-.profile:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8),
-              0 0 40px rgba(100,149,237,0.4);
-}
-
-  /* BUTTONS */
-  
-.button {
-  display: inline-block;
-  margin: 25px 10px 0;
-  cursor: pointer;
-  background: rgba(100,149,237,0.6);
-  color: white;
-  border: none;
-  border-radius: 15px;
-  padding: 10px 22px;
-  font-size: 26px;
-  font-weight: bold;
-  box-shadow: 0 5px 15px rgba(100,149,237,0.4);
-  text-shadow: 0 0 8px rgba(100,149,237,0.8);
-}
-
-.button:hover {
-  box-shadow: 0 0 20px rgba(100,149,237,0.8),
-              0 0 40px rgba(100,149,237,0.4);
-}
-  
 </style>
+  /* css */
+ <body>  
+<canvas id="space"></canvas>
 
+   // JS
 
-  
-  // JS
-
-  // PROFILE BUTTONS
+   // PROFILE BUTTONS
   
 <div class="profile" onclick="location.href='image.html'"
 style="top:15%; left:42%; transform:translateX(-50%)">
