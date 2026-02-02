@@ -44,7 +44,7 @@ canvas {
   font-size: 22px;
 }
 
-#content: h1 {
+#content h1 {
   font-size: 58px;
   margin-bottom: 20px;
   color: rgba(100,150,255,1);
@@ -99,7 +99,7 @@ canvas {
   color: #ffffff;
 }
 
-{
+.profile {
     box-shadow:
     0 0 20px rgba(120,170,255,0.3),
     inset 0 0 12px rgba(120,170,255,0.2);
